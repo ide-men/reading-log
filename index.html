@@ -216,30 +216,6 @@ html, body {
   font-weight: 700;
 }
 
-/* 統計 */
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 28px;
-  margin-bottom: 16px;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.stat-label {
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
-
 /* ボタン */
 .main-btn {
   width: 100%;
@@ -1158,21 +1134,6 @@ html, body {
       <div class="xp-text"><span id="xp">0</span> / 5 XP</div>
     </section>
     
-    <div class="stats-row">
-      <div class="stat-item">
-        <div class="stat-value" id="time">0:00</div>
-        <div class="stat-label">累計</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="sessions">0</div>
-        <div class="stat-label">回数</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="books">0</div>
-        <div class="stat-label">読了</div>
-      </div>
-    </div>
-    
     <button class="main-btn" id="startBtn">読書をはじめる</button>
     
     <div class="quote">
@@ -1547,10 +1508,6 @@ function updateUI() {
   document.getElementById('xp').textContent = xpInLevel;
   const percent = (xpInLevel / XP_PER_LEVEL) * 100;
   document.getElementById('ring').style.strokeDashoffset = 414.69 - (percent / 100 * 414.69);
-  
-  document.getElementById('time').textContent = formatTime(state.total);
-  document.getElementById('sessions').textContent = state.sessions;
-  document.getElementById('books').textContent = state.books.length;
   
   const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
