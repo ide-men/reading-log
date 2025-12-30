@@ -732,6 +732,16 @@ function addXP(amount) {
 // ========================================
 // 本棚
 // ========================================
+function checkCoverImages() {
+  document.querySelectorAll('.mini-book[data-cover-url]').forEach(el => {
+    const url = el.dataset.coverUrl;
+    const img = new Image();
+    img.onload = () => el.classList.remove('cover-error');
+    img.onerror = () => el.classList.add('cover-error');
+    img.src = url;
+  });
+}
+
 function renderBooks() {
   const bookCount = state.books.length;
   document.getElementById('bookCount').textContent = bookCount;
@@ -777,13 +787,15 @@ function renderBooks() {
         width:${width}px;
         ${bgStyle}
         transform: rotate(${tilt}deg);
-      ">
+      "${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}"` : ''}>
         <div class="book-tooltip">
           <div class="tooltip-title">${escapeHtml(book.title)}</div>
           ${linkBtn}
         </div>
       </div>`;
   }).join('');
+
+  checkCoverImages();
 
   bookList.innerHTML = [...state.books].reverse().map(book => {
     const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
