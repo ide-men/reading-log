@@ -575,23 +575,9 @@ html, body {
   display: none;
 }
 
-.mini-book.has-cover.cover-error::before {
-  display: flex;
-  content: '!';
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 12px;
-  height: 12px;
-  background: rgba(248, 113, 113, 0.9);
-  border-radius: 50%;
-  font-size: 9px;
-  font-weight: 700;
-  color: white;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
+/* カバーエラー時はリンクなしと同じデザイン（警告なし） */
+.mini-book.cover-error {
+  background-image: none !important;
 }
 
 .mini-book.has-cover {
@@ -602,28 +588,6 @@ html, body {
     var(--shadow-sm);
 }
 
-.mini-book.cover-error::before {
-  display: flex;
-  content: '!';
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 12px;
-  height: 12px;
-  background: rgba(248, 113, 113, 0.9);
-  border-radius: 50%;
-  font-size: 9px;
-  font-weight: 700;
-  color: white;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-}
-
-.mini-book.cover-error::after {
-  display: none;
-}
 
 /* Book Tooltip */
 .book-tooltip {
@@ -791,23 +755,6 @@ html, body {
   display: block;
 }
 
-.book-icon.cover-error::after {
-  content: '!';
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  display: flex;
-  width: 14px;
-  height: 14px;
-  background: rgba(248, 113, 113, 0.9);
-  border-radius: 50%;
-  font-size: 9px;
-  font-weight: 700;
-  color: white;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-}
 
 .book-info {
   flex: 1;
