@@ -822,8 +822,8 @@ function renderBooks() {
     const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
 
     const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.parentElement.classList.add('cover-error')">`
-      : '';
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.parentElement.classList.add('cover-error')"><span class="book-icon-emoji">📕</span>`
+      : '<span class="book-icon-emoji">📕</span>';
 
     return `
       <div class="book-item">
