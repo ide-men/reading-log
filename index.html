@@ -1670,9 +1670,7 @@ let pendingLink = null;
 
 function openLink(url, event) {
   if (event) event.preventDefault();
-  pendingLink = url;
-  document.getElementById('linkConfirmUrl').textContent = url;
-  document.getElementById('linkConfirm').classList.add('active');
+  window.open(url, '_blank');
 }
 
 function confirmOpenLink() {
