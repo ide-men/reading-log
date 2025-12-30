@@ -743,9 +743,13 @@ function checkCoverImages() {
       const color = el.dataset.color;
       if (color && el.classList.contains('mini-book')) {
         // 本棚の本はグラデーション背景に戻す
+        // 個別に設定されたbackgroundプロパティをクリアしてから設定
         const darkerColor = adjustColor(color, -20);
         const lighterColor = adjustColor(color, 15);
-        el.style.backgroundImage = 'none';
+        el.style.backgroundColor = '';
+        el.style.backgroundImage = '';
+        el.style.backgroundSize = '';
+        el.style.backgroundPosition = '';
         el.style.background = `linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%)`;
       }
     };
