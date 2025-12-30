@@ -97,7 +97,6 @@ export const SAMPLE_BOOKS = [
   { title: 'エッセンシャル思考', link: 'https://www.amazon.co.jp/dp/4761270438' },
   { title: 'アウトプット大全', link: 'https://www.amazon.co.jp/dp/4801400558' },
   { title: '1日1ページ、読むだけで身につく世界の教養365', link: 'https://www.amazon.co.jp/dp/4866510552' },
-  { title: 'DIE WITH ZERO', link: 'https://www.amazon.co.jp/dp/447810911X' },
   { title: '限りある時間の使い方', link: 'https://www.amazon.co.jp/dp/4761276150' },
   { title: 'チーズはどこへ消えた？', link: 'https://www.amazon.co.jp/dp/459403019X' },
   { title: '君たちはどう生きるか', link: 'https://www.amazon.co.jp/dp/4003315812' },
