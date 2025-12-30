@@ -294,6 +294,7 @@ html, body {
     inset 0 0 20px rgba(0,0,0,0.4),
     0 8px 20px rgba(0,0,0,0.5);
   position: relative;
+  overflow: visible;
 }
 
 /* 木目テクスチャ */
@@ -317,9 +318,11 @@ html, body {
   position: relative;
   margin-bottom: 4px;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  padding-top: 80px;
+  margin-top: -80px;
 }
 
 .shelf-board::-webkit-scrollbar {
