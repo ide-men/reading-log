@@ -749,18 +749,25 @@ html, body {
   border-radius: var(--radius-sm);
 }
 
-.book-icon-fallback {
-  display: none;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
+.book-icon.has-cover .book-cover {
+  position: absolute;
+  inset: 0;
 }
 
-.book-icon-emoji {
+.book-icon.cover-error .book-cover {
+  display: none;
+}
+
+.book-icon.cover-error::after {
+  content: '!';
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 16px;
+  height: 16px;
+  background: rgba(248, 113, 113, 0.9);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
   align-items: center;
   justify-content: center;
 }

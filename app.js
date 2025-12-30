@@ -733,7 +733,7 @@ function addXP(amount) {
 // 本棚
 // ========================================
 function checkCoverImages() {
-  document.querySelectorAll('.mini-book[data-cover-url]').forEach(el => {
+  document.querySelectorAll('[data-cover-url]').forEach(el => {
     const url = el.dataset.coverUrl;
     const img = new Image();
     img.onload = () => el.classList.remove('cover-error');
@@ -797,18 +797,22 @@ function renderBooks() {
 
   checkCoverImages();
 
-  bookList.innerHTML = [...state.books].reverse().map(book => {
+  bookList.innerHTML = [...state.books].reverse().map((book, i) => {
     const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
     const linkBtn = link ? `<button data-link="${link}">↗</button>` : '';
 
+    // リストは逆順なのでカラーインデックスも逆順に
+    const colorIndex = state.books.length - 1 - i;
+    const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
+
     const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="book-icon-fallback">📕</div>`
-      : '<div class="book-icon-emoji">📕</div>';
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.parentElement.classList.add('cover-error')">`
+      : '';
 
     return `
       <div class="book-item">
-        <div class="book-icon">${coverHtml}</div>
+        <div class="book-icon${book.coverUrl ? ' has-cover' : ''}" style="background-color: ${color}"${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}"` : ''}>${coverHtml}</div>
         <div class="book-info">
           <div class="book-name">${escapeHtml(book.title)}</div>
           <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
