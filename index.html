@@ -219,20 +219,164 @@ html, body {
 /* ボタン */
 .main-btn {
   width: 100%;
-  padding: 16px;
-  font-size: 16px;
+  padding: 20px 24px;
+  font-size: 18px;
   font-weight: 700;
   font-family: inherit;
   border: none;
-  border-radius: 24px;
+  border-radius: 28px;
   cursor: pointer;
   background: linear-gradient(135deg, var(--accent), #d4956a);
   color: var(--bg);
-  box-shadow: 0 0 40px var(--accent-glow);
+  box-shadow:
+    0 0 60px var(--accent-glow),
+    0 8px 32px rgba(232, 168, 124, 0.35),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.main-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--accent), #d4956a, var(--accent));
+  z-index: -1;
+  animation: btn-glow 3s ease-in-out infinite;
+}
+
+.main-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: btn-shine 4s ease-in-out infinite;
+}
+
+@keyframes btn-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+@keyframes btn-shine {
+  0%, 100% { left: -100%; }
+  50% { left: 100%; }
+}
+
+.main-btn-icon {
+  font-size: 24px;
+  animation: icon-bounce 2s ease-in-out infinite;
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.main-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 80px var(--accent-glow),
+    0 12px 40px rgba(232, 168, 124, 0.4),
+    inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .main-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.98) translateY(0);
+}
+
+/* ホームカード */
+.home-hero {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+
+.home-greeting {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.home-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.home-subtitle {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.home-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #d4956a);
+  opacity: 0.6;
+}
+
+.home-stat-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.home-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.home-stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.home-stat-card.streak .home-stat-value {
+  color: var(--accent);
+}
+
+.btn-wrapper {
+  margin-bottom: 20px;
+}
+
+.btn-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 12px;
+  opacity: 0.8;
 }
 
 /* 引用 */
@@ -1261,10 +1405,33 @@ html, body {
 <div class="content">
   <!-- ホームタブ -->
   <div class="tab active" id="tab-home">
-    <div style="padding-top: 20px;">
-      <button class="main-btn" id="startBtn">読書をはじめる</button>
+    <div class="home-hero">
+      <p class="home-greeting" id="homeGreeting">おかえりなさい</p>
+      <h2 class="home-title" id="homeTitle">今日も読書日和</h2>
+      <p class="home-subtitle" id="homeSubtitle">📚 読書の旅を続けよう</p>
     </div>
-    
+
+    <div class="home-stats">
+      <div class="home-stat-card">
+        <div class="home-stat-icon">📖</div>
+        <div class="home-stat-value" id="homeTodayMin">0</div>
+        <div class="home-stat-label">今日の読書（分）</div>
+      </div>
+      <div class="home-stat-card streak">
+        <div class="home-stat-icon">🔥</div>
+        <div class="home-stat-value" id="homeStreak">0</div>
+        <div class="home-stat-label">日連続</div>
+      </div>
+    </div>
+
+    <div class="btn-wrapper">
+      <button class="main-btn" id="startBtn">
+        <span class="main-btn-icon">📖</span>
+        <span>読書をはじめる</span>
+      </button>
+      <p class="btn-hint" id="btnHint">タップして読書タイマーを開始</p>
+    </div>
+
     <div class="quote">
       <p id="quoteText">読書は心の旅路。一ページが新しい世界への扉となる。</p>
       <p id="quoteAuthor">— 今日の一言</p>
@@ -1752,6 +1919,51 @@ function updateUI() {
   document.getElementById('quoteText').textContent = quote.text;
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
 
+  // ホーム画面の統計を更新
+  document.getElementById('homeTodayMin').textContent = state.today;
+  const streak = calculateStreak(state.history);
+  document.getElementById('homeStreak').textContent = streak;
+
+  // 時間帯に応じた挨拶
+  const hour = new Date().getHours();
+  let greeting, title, subtitle;
+  if (hour >= 5 && hour < 12) {
+    greeting = 'おはようございます';
+    title = '朝の読書で1日をスタート';
+    subtitle = '🌅 素敵な朝を本と共に';
+  } else if (hour >= 12 && hour < 17) {
+    greeting = 'こんにちは';
+    title = 'ちょっと休憩に読書を';
+    subtitle = '☀️ 午後のひとときを本と共に';
+  } else if (hour >= 17 && hour < 21) {
+    greeting = 'おつかれさまです';
+    title = '夜の読書タイム';
+    subtitle = '🌙 リラックスして本の世界へ';
+  } else {
+    greeting = 'お疲れ様です';
+    title = '静かな夜の読書を';
+    subtitle = '🌃 深夜の読書は格別';
+  }
+
+  document.getElementById('homeGreeting').textContent = greeting;
+  document.getElementById('homeTitle').textContent = title;
+  document.getElementById('homeSubtitle').textContent = subtitle;
+
+  // ヒント文を動的に変更
+  const hints = [
+    'タップして読書タイマーを開始',
+    '10分以上の読書でXPゲット！',
+    '今日の読書を記録しよう',
+    '読書の習慣を続けよう'
+  ];
+  if (state.today > 0) {
+    hints.push(`今日は${state.today}分読書済み！`);
+  }
+  if (streak > 0) {
+    hints.push(`${streak}日連続記録中！`);
+  }
+  document.getElementById('btnHint').textContent = hints[Math.floor(Math.random() * hints.length)];
+
   saveState();
 }
 
@@ -1776,7 +1988,7 @@ function startReading() {
   seconds = 0;
   document.getElementById('readingScreen').classList.add('active');
   timer = setInterval(() => seconds++, 1000);
-  document.getElementById('startBtn').textContent = '読書中...';
+  document.getElementById('startBtn').innerHTML = '<span class="main-btn-icon">🔥</span><span>読書中...</span>';
 }
 
 function stopReading() {
@@ -1798,7 +2010,7 @@ function stopReading() {
     addXP(1 + Math.floor(minutes / 10));
   }
   
-  document.getElementById('startBtn').textContent = '読書をはじめる';
+  document.getElementById('startBtn').innerHTML = '<span class="main-btn-icon">📖</span><span>読書をはじめる</span>';
   seconds = 0;
   updateUI();
 }
