@@ -742,15 +742,6 @@ html, body {
   display: none;
 }
 
-.book-icon.cover-error .book-cover {
-  display: none;
-}
-
-.book-icon.cover-error .book-icon-emoji {
-  display: block;
-}
-
-
 .book-info {
   flex: 1;
   min-width: 0;

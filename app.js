@@ -732,18 +732,6 @@ function addXP(amount) {
 // ========================================
 // 本棚
 // ========================================
-function checkCoverImages() {
-  document.querySelectorAll('[data-cover-url]').forEach(el => {
-    const url = el.dataset.coverUrl;
-    const img = new Image();
-    img.onload = () => {};
-    img.onerror = () => {
-      // カバー画像取得エラー（CSSには影響させない）
-      console.log('Cover image load failed:', url);
-    };
-    img.src = url;
-  });
-}
 
 function renderBooks() {
   const bookCount = state.books.length;
@@ -798,8 +786,6 @@ function renderBooks() {
       </div>`;
   }).join('');
 
-  checkCoverImages();
-
   bookList.innerHTML = [...state.books].reverse().map((book, i) => {
     const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
@@ -810,7 +796,7 @@ function renderBooks() {
     const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
 
     const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.parentElement.classList.add('cover-error');this.parentElement.classList.remove('has-cover')"><span class="book-icon-emoji">📕</span>`
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover"><span class="book-icon-emoji">📕</span>`
       : '<span class="book-icon-emoji">📕</span>';
 
     return `
