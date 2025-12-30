@@ -391,62 +391,37 @@ html, body {
   transform: scale(0.98) translateY(0);
 }
 
-/* ホームカード */
-.home-hero {
+/* ホーム画面 - シンプル */
+.home-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 20px 0;
+}
+
+/* 引用 - 下部に控えめに */
+.quote-bottom {
+  position: absolute;
+  bottom: 100px;
+  left: 20px;
+  right: 20px;
   text-align: center;
-  padding: 32px 0 24px;
+  opacity: 0.6;
 }
 
-.home-greeting {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-
-.home-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-
-.home-subtitle {
-  font-size: 13px;
-  color: var(--accent);
-}
-
-.btn-wrapper {
-  margin-bottom: 20px;
-}
-
-.btn-hint {
-  text-align: center;
+.quote-bottom p:first-child {
   font-size: 12px;
-  color: var(--text-dim);
-  margin-top: 12px;
-  opacity: 0.8;
-}
-
-/* 引用 */
-.quote {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-top: 14px;
-}
-
-.quote p:first-child {
-  font-size: 13px;
   font-style: italic;
-  line-height: 1.7;
+  line-height: 1.6;
+  color: var(--text-dim);
 }
 
-.quote p:last-child {
-  font-size: 11px;
+.quote-bottom p:last-child {
+  font-size: 10px;
   color: var(--text-dim);
-  margin-top: 6px;
-  text-align: right;
+  margin-top: 4px;
 }
 
 /* 本棚セクション */
@@ -1548,21 +1523,14 @@ html, body {
 <div class="content">
   <!-- ホームタブ -->
   <div class="tab active" id="tab-home">
-    <div class="home-hero">
-      <p class="home-greeting" id="homeGreeting">おかえりなさい</p>
-      <h2 class="home-title" id="homeTitle">今日も読書日和</h2>
-      <p class="home-subtitle" id="homeSubtitle">📚 読書の旅を続けよう</p>
-    </div>
-
-    <div class="btn-wrapper">
+    <div class="home-center">
       <button class="main-btn" id="startBtn">
         <span class="main-btn-icon">📖</span>
         <span>読書をはじめる</span>
       </button>
-      <p class="btn-hint" id="btnHint">タップして読書タイマーを開始</p>
     </div>
 
-    <div class="quote">
+    <div class="quote-bottom">
       <p id="quoteText">読書は心の旅路。一ページが新しい世界への扉となる。</p>
       <p id="quoteAuthor">— 今日の一言</p>
     </div>
@@ -2114,59 +2082,13 @@ function updateButtonAnimation() {
   // 新しいアニメーションクラスを追加
   btnIcon.classList.add(`anim-${config.anim}`);
 
-  // ヒントテキストを更新（オプション）
-  const hint = document.getElementById('btnHint');
-  if (hint && Math.random() < 0.5) {
-    hint.textContent = config.label;
-  }
 }
 
 function updateUI() {
+  // 引用を更新
   const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
-
-  const streak = calculateStreak(state.history);
-
-  // 時間帯に応じた挨拶
-  const hour = new Date().getHours();
-  let greeting, title, subtitle;
-  if (hour >= 5 && hour < 12) {
-    greeting = 'おはようございます';
-    title = '朝の読書で1日をスタート';
-    subtitle = '🌅 素敵な朝を本と共に';
-  } else if (hour >= 12 && hour < 17) {
-    greeting = 'こんにちは';
-    title = 'ちょっと休憩に読書を';
-    subtitle = '☀️ 午後のひとときを本と共に';
-  } else if (hour >= 17 && hour < 21) {
-    greeting = 'おつかれさまです';
-    title = '夜の読書タイム';
-    subtitle = '🌙 リラックスして本の世界へ';
-  } else {
-    greeting = 'お疲れ様です';
-    title = '静かな夜の読書を';
-    subtitle = '🌃 深夜の読書は格別';
-  }
-
-  document.getElementById('homeGreeting').textContent = greeting;
-  document.getElementById('homeTitle').textContent = title;
-  document.getElementById('homeSubtitle').textContent = subtitle;
-
-  // ヒント文を動的に変更
-  const hints = [
-    'タップして読書タイマーを開始',
-    '10分以上の読書でXPゲット！',
-    '今日の読書を記録しよう',
-    '読書の習慣を続けよう'
-  ];
-  if (state.today > 0) {
-    hints.push(`今日は${state.today}分読書済み！`);
-  }
-  if (streak > 0) {
-    hints.push(`${streak}日連続記録中！`);
-  }
-  document.getElementById('btnHint').textContent = hints[Math.floor(Math.random() * hints.length)];
 
   // ボタンのアニメーションを更新
   updateButtonAnimation();
