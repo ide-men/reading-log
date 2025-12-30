@@ -739,7 +739,6 @@ function checkCoverImages() {
     img.onload = () => el.classList.remove('cover-error');
     img.onerror = () => {
       // カバー画像エラー時はリンクなしと同じデザインに
-      el.classList.add('cover-error');
       el.classList.remove('has-cover');
       const color = el.dataset.color;
       if (color && el.classList.contains('mini-book')) {
@@ -751,6 +750,9 @@ function checkCoverImages() {
         el.style.backgroundSize = '';
         el.style.backgroundPosition = '';
         el.style.background = `linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%)`;
+      } else {
+        // リストの本はcover-errorクラスを追加して絵文字を表示
+        el.classList.add('cover-error');
       }
     };
     img.src = url;
