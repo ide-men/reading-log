@@ -1,15 +1,15 @@
 // ========================================
 // 定数・設定
 // ========================================
-const STORAGE_VERSION = 5;
-const LEGACY_STORAGE_KEY = 'readingLogV4';
+const SCHEMA_VERSION = 1;
 
+// バージョン付きキー名（将来のマイグレーション時に新しいキーを作成可能）
 const STORAGE_KEYS = {
-  meta: 'rl_meta',
-  stats: 'rl_stats',
-  books: 'rl_books',
-  history: 'rl_history',
-  archivedHistory: 'rl_archived'
+  meta: 'rl_v1_meta',
+  stats: 'rl_v1_stats',
+  books: 'rl_v1_books',
+  history: 'rl_v1_history',
+  archived: 'rl_v1_archived'
 };
 
 const CONFIG = {
@@ -94,7 +94,7 @@ let editingBookId = null;
 
 function createInitialMeta() {
   return {
-    version: STORAGE_VERSION,
+    schemaVersion: SCHEMA_VERSION,
     createdAt: new Date().toISOString()
   };
 }
@@ -117,92 +117,61 @@ function createInitialState() {
     stats: createInitialStats(),
     books: [],
     history: [],
-    archivedHistory: {}
+    archived: {}
   };
 }
 
-// V4からV5へのマイグレーション
-function migrateFromV4() {
-  const legacyData = localStorage.getItem(LEGACY_STORAGE_KEY);
-  if (!legacyData) return null;
+// ========================================
+// マイグレーションインフラ
+// ========================================
+// 将来のマイグレーション関数を登録するオブジェクト
+// 例: migrations[2] = (state) => { /* v1 -> v2 の変換 */ return newState; }
+const migrations = {};
 
-  try {
-    const parsed = JSON.parse(legacyData);
-
-    // 配列データのバリデーション
-    const books = Array.isArray(parsed.books) ? parsed.books : [];
-    const history = Array.isArray(parsed.history) ? parsed.history : [];
-
-    const firstSessionDate = history.length > 0 && history[0].d
-      ? history[0].d
-      : null;
-
-    const newState = {
-      meta: {
-        version: STORAGE_VERSION,
-        createdAt: firstSessionDate || new Date().toISOString(),
-        migratedAt: new Date().toISOString(),
-        migratedFrom: 'V4'
-      },
-      stats: {
-        total: typeof parsed.total === 'number' ? parsed.total : 0,
-        today: typeof parsed.today === 'number' ? parsed.today : 0,
-        date: parsed.date || new Date().toDateString(),
-        sessions: typeof parsed.sessions === 'number' ? parsed.sessions : 0,
-        xp: typeof parsed.xp === 'number' ? parsed.xp : 0,
-        lv: typeof parsed.lv === 'number' ? parsed.lv : 1,
-        firstSessionDate
-      },
-      books,
-      history,
-      archivedHistory: {}
-    };
-
-    // 新形式で保存
-    saveStateToStorage(newState);
-
-    // 旧データをバックアップキーに移動（安全のため）
-    localStorage.setItem(LEGACY_STORAGE_KEY + '_backup', legacyData);
-    localStorage.removeItem(LEGACY_STORAGE_KEY);
-
-    console.log('Migration from V4 completed successfully');
-    return newState;
-  } catch (e) {
-    console.error('Migration failed:', e);
-    return null;
+// 現在のスキーマバージョンまでマイグレーションを実行
+function runMigrations(loadedState, fromVersion) {
+  let currentState = loadedState;
+  for (let v = fromVersion + 1; v <= SCHEMA_VERSION; v++) {
+    if (migrations[v]) {
+      console.log(`Migrating from v${v - 1} to v${v}...`);
+      currentState = migrations[v](currentState);
+      currentState.meta.schemaVersion = v;
+      currentState.meta.migratedAt = new Date().toISOString();
+    }
   }
+  return currentState;
 }
 
 function loadState() {
   try {
-    // まず新形式をチェック
     const meta = localStorage.getItem(STORAGE_KEYS.meta);
     if (meta) {
       const parsedMeta = JSON.parse(meta);
-      if (parsedMeta.version === STORAGE_VERSION) {
-        const loadedState = {
-          meta: parsedMeta,
-          stats: JSON.parse(localStorage.getItem(STORAGE_KEYS.stats) || '{}'),
-          books: JSON.parse(localStorage.getItem(STORAGE_KEYS.books) || '[]'),
-          history: JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]'),
-          archivedHistory: JSON.parse(localStorage.getItem(STORAGE_KEYS.archivedHistory) || '{}')
-        };
+      const loadedState = {
+        meta: parsedMeta,
+        stats: JSON.parse(localStorage.getItem(STORAGE_KEYS.stats) || '{}'),
+        books: JSON.parse(localStorage.getItem(STORAGE_KEYS.books) || '[]'),
+        history: JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]'),
+        archived: JSON.parse(localStorage.getItem(STORAGE_KEYS.archived) || '{}')
+      };
 
-        // 日付リセット
-        const today = new Date().toDateString();
-        if (loadedState.stats.date !== today) {
-          loadedState.stats.today = 0;
-          loadedState.stats.date = today;
-        }
-
-        return loadedState;
+      // 日付リセット
+      const today = new Date().toDateString();
+      if (loadedState.stats.date !== today) {
+        loadedState.stats.today = 0;
+        loadedState.stats.date = today;
       }
+
+      // 必要ならマイグレーション実行
+      const currentVersion = parsedMeta.schemaVersion || 1;
+      if (currentVersion < SCHEMA_VERSION) {
+        const migratedState = runMigrations(loadedState, currentVersion);
+        saveStateToStorage(migratedState);
+        return migratedState;
+      }
+
+      return loadedState;
     }
-
-    // V4からのマイグレーションを試行
-    const migrated = migrateFromV4();
-    if (migrated) return migrated;
-
   } catch (e) {
     console.error('Failed to load state:', e);
   }
@@ -214,7 +183,7 @@ function saveStateToStorage(s) {
   localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(s.stats));
   localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(s.books));
   localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(s.history));
-  localStorage.setItem(STORAGE_KEYS.archivedHistory, JSON.stringify(s.archivedHistory));
+  localStorage.setItem(STORAGE_KEYS.archived, JSON.stringify(s.archived));
 }
 
 function saveState() {
@@ -244,18 +213,18 @@ function cleanupHistory() {
   // 古い履歴を月別に集約
   for (const entry of toArchive) {
     const monthKey = entry.d.substring(0, 7); // "YYYY-MM"
-    if (!state.archivedHistory[monthKey]) {
-      state.archivedHistory[monthKey] = { sessions: 0, totalMinutes: 0 };
+    if (!state.archived[monthKey]) {
+      state.archived[monthKey] = { sessions: 0, totalMinutes: 0 };
     }
-    state.archivedHistory[monthKey].sessions++;
-    state.archivedHistory[monthKey].totalMinutes += entry.m;
+    state.archived[monthKey].sessions++;
+    state.archived[monthKey].totalMinutes += entry.m;
   }
 
   // 1年以上前のアーカイブを削除
-  for (const monthKey of Object.keys(state.archivedHistory)) {
+  for (const monthKey of Object.keys(state.archived)) {
     const monthDate = new Date(monthKey + '-01');
     if (monthDate < archiveCutoff) {
-      delete state.archivedHistory[monthKey];
+      delete state.archived[monthKey];
     }
   }
 
@@ -313,13 +282,13 @@ function updateStorageDisplay() {
 // ========================================
 function exportData() {
   const exportObj = {
-    exportVersion: STORAGE_VERSION,
+    exportSchemaVersion: SCHEMA_VERSION,
     exportDate: new Date().toISOString(),
     meta: state.meta,
     stats: state.stats,
     books: state.books,
     history: state.history,
-    archivedHistory: state.archivedHistory
+    archived: state.archived
   };
 
   const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
@@ -347,8 +316,8 @@ function importData(file) {
     try {
       const imported = JSON.parse(e.target.result);
 
-      // バリデーション強化
-      if (!imported.exportVersion || !imported.stats || !imported.books) {
+      // バリデーション
+      if (!imported.stats || !imported.books) {
         showToast('無効なバックアップファイルです', 4000);
         return;
       }
@@ -369,7 +338,11 @@ function importData(file) {
       }
 
       state = {
-        meta: imported.meta || createInitialMeta(),
+        meta: {
+          schemaVersion: SCHEMA_VERSION,
+          createdAt: imported.meta?.createdAt || new Date().toISOString(),
+          importedAt: new Date().toISOString()
+        },
         stats: {
           total: imported.stats.total || 0,
           today: imported.stats.today || 0,
@@ -381,10 +354,8 @@ function importData(file) {
         },
         books: imported.books || [],
         history: imported.history || [],
-        archivedHistory: imported.archivedHistory || {}
+        archived: imported.archived || {}
       };
-      state.meta.version = STORAGE_VERSION;
-      state.meta.importedAt = new Date().toISOString();
 
       saveState();
       updateUI();
