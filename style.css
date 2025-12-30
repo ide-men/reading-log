@@ -769,7 +769,9 @@ html, body {
   text-overflow: ellipsis;
 }
 
-.book-name a {
+.book-name a,
+.book-name a:link,
+.book-name a:visited {
   color: inherit;
   text-decoration: none;
 }
