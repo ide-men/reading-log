@@ -325,6 +325,69 @@ html, body {
   min-width: 12px;
   border-radius: 2px 2px 0 0;
   cursor: pointer;
+  position: relative;
+}
+
+/* ツールチップ */
+.book-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-width: 140px;
+  max-width: 200px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+}
+
+.mini-book:hover .book-tooltip,
+.book-tooltip:hover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.book-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--elevated);
+}
+
+.tooltip-title {
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tooltip-title:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.tooltip-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-family: inherit;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: var(--bg);
+  cursor: pointer;
+  text-align: center;
 }
 
 .empty-shelf {
@@ -860,6 +923,11 @@ html, body {
   font-weight: 700;
 }
 
+.confirm-ok.link {
+  background: var(--accent);
+  color: var(--bg);
+}
+
 /* トースト */
 .toast {
   position: fixed;
@@ -1199,6 +1267,20 @@ html, body {
     </div>
   </div>
 
+  <!-- リンク確認 -->
+
+  <div class="confirm-overlay" id="linkConfirm">
+    <div class="confirm-box">
+      <div class="confirm-icon">🔗</div>
+      <div class="confirm-title">外部リンクを開く</div>
+      <div class="confirm-text" id="linkConfirmUrl"></div>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" data-close="linkConfirm">キャンセル</button>
+        <button class="confirm-ok link" id="confirmLinkBtn">開く</button>
+      </div>
+    </div>
+  </div>
+
   <!-- レベルアップ -->
 
   <div class="levelup-overlay" id="levelupOverlay">
@@ -1325,6 +1407,26 @@ function isValidUrl(str) {
 }
 
 // ========================================
+// リンク確認
+// ========================================
+let pendingLink = null;
+
+function openLink(url, event) {
+  if (event) event.preventDefault();
+  pendingLink = url;
+  document.getElementById('linkConfirmUrl').textContent = url;
+  document.getElementById('linkConfirm').classList.add('active');
+}
+
+function confirmOpenLink() {
+  if (pendingLink) {
+    window.open(pendingLink, '_blank');
+    pendingLink = null;
+  }
+  closeModal('linkConfirm');
+}
+
+// ========================================
 // UI更新
 // ========================================
 function updateUI() {
@@ -1441,16 +1543,26 @@ function renderBooks() {
   shelf.innerHTML = state.books.map((book, i) => {
     const color = BOOK_COLORS[i % BOOK_COLORS.length];
     const height = 36 + (i * 7) % 18;
-    return `<div class="mini-book" style="height:${height}px;background:${color}"></div>`;
+    const hasLink = isValidUrl(book.link);
+    const linkBtn = hasLink
+      ? `<button class="tooltip-btn" onclick="openLink('${escapeHtml(book.link)}', event)">リンクを開く</button>`
+      : '';
+    return `
+      <div class="mini-book" style="height:${height}px;background:${color}">
+        <div class="book-tooltip">
+          <div class="tooltip-title">${escapeHtml(book.title)}</div>
+          ${linkBtn}
+        </div>
+      </div>`;
   }).join('');
   
   bookList.innerHTML = [...state.books].reverse().map(book => {
     const link = isValidUrl(book.link) ? escapeHtml(book.link) : null;
-    const titleHtml = link 
-      ? `<a href="${link}" target="_blank">${escapeHtml(book.title)}</a>` 
+    const titleHtml = link
+      ? `<a href="#" onclick="openLink('${link}', event)">${escapeHtml(book.title)}</a>`
       : escapeHtml(book.title);
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
-    
+
     return `
       <div class="book-item">
         <div class="book-icon">📕</div>
@@ -1735,6 +1847,7 @@ document.getElementById('confirmResetBtn').addEventListener('click', () => {
 });
 
 document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDeleteBook);
+document.getElementById('confirmLinkBtn').addEventListener('click', confirmOpenLink);
 
 document.getElementById('closeLevelup').addEventListener('click', () => {
   document.getElementById('levelupOverlay').classList.remove('active');
