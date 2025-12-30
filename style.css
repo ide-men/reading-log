@@ -577,6 +577,21 @@ html, body {
 
 .mini-book.has-cover.cover-error::before {
   display: flex;
+  content: '!';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: rgba(248, 113, 113, 0.9);
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
 }
 
 .mini-book.has-cover {
