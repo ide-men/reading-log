@@ -4,8 +4,45 @@
 
 ## 技術スタック
 
-- HTML (index.html) + CSS (style.css) + JS (app.js)
+- HTML (index.html) + CSS (style.css) + JS (ES Modules)
 - Vanilla JavaScript / 外部依存なし
+
+## ファイル構成
+
+```
+js/
+├── app.js           # エントリポイント・初期化
+├── constants.js     # 定数・設定値（TITLES, QUOTES, COLORS等）
+├── state.js         # State Manager（状態管理パターン）
+├── storage.js       # 永続化・マイグレーション・バックアップ
+├── utils.js         # ユーティリティ関数
+├── timer.js         # 読書タイマー管理
+├── books.js         # 本のCRUD・レンダリング
+├── stats.js         # 統計計算・グラフ表示
+├── animations.js    # ボタン・読書画面アニメーション
+├── ui.js            # UI操作・モーダル・エフェクト
+└── events.js        # イベントリスナー設定
+```
+
+## 状態管理
+
+State Managerパターンを採用（`js/state.js`）:
+
+```javascript
+import { stateManager } from './state.js';
+
+// 状態の取得
+const state = stateManager.getState();
+
+// 状態の更新（自動的にストレージに保存）
+stateManager.updateStats({ total: 100 });
+stateManager.addBook({ id: Date.now(), title: '...' });
+
+// 変更の購読
+stateManager.subscribe((newState) => {
+  // 状態変更時のコールバック
+});
+```
 
 ## ローカルストレージ
 
@@ -30,7 +67,7 @@
 ### マイグレーションの仕組み
 
 ```javascript
-// app.js 内のマイグレーションインフラ
+// js/storage.js 内のマイグレーションインフラ
 const migrations = {};
 
 // 将来 V2 に移行する際の例:

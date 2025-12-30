@@ -1,0 +1,107 @@
+// ========================================
+// 定数・設定
+// ========================================
+
+export const SCHEMA_VERSION = 1;
+
+export const STORAGE_KEYS = {
+  meta: 'rl_v1_meta',
+  stats: 'rl_v1_stats',
+  books: 'rl_v1_books',
+  history: 'rl_v1_history',
+  archived: 'rl_v1_archived'
+};
+
+export const CONFIG = {
+  xpPerLevel: 5,
+  xpPerBook: 10,
+  minSessionMinutes: 10,
+  msPerDay: 86400000,
+  historyRetentionDays: 90,
+  archiveRetentionDays: 365,
+  storageWarningPercent: 80
+};
+
+export const TITLES = [
+  { lv: 1, name: '読書ビギナー', sub: '読書の旅が始まる', icon: '🌱' },
+  { lv: 3, name: '本の虫', sub: '少しずつ習慣に', icon: '🐛' },
+  { lv: 5, name: '読書家', sub: '読書が日常になった', icon: '📖' },
+  { lv: 10, name: '読書マニア', sub: '本なしでは生きられない', icon: '📚' },
+  { lv: 20, name: '読書マスター', sub: '知識の探求者', icon: '🎓' },
+  { lv: 35, name: '読書の達人', sub: '本と共に生きる', icon: '⚔️' },
+  { lv: 50, name: '読書王', sub: '書物の王国の主', icon: '👑' },
+  { lv: 75, name: '読書の賢者', sub: '無限の知恵', icon: '🧙' },
+  { lv: 100, name: '読書神', sub: '神の領域へ', icon: '✨' }
+];
+
+export const QUOTES = [
+  { text: '読書は心の旅路。一ページが新しい世界への扉となる。', author: '今日の一言' },
+  { text: '本を読むことは、他人の頭で考えることである。', author: 'ショーペンハウアー' },
+  { text: '良書は最良の友人である。', author: 'プロヴァーブ' },
+  { text: '知識への投資は、常に最高の利息がつく。', author: 'ベンジャミン・フランクリン' },
+  { text: '本は心の糧。毎日少しずつ味わおう。', author: '今日の一言' }
+];
+
+export const BOOK_COLORS = [
+  '#c62828', '#1565c0', '#2e7d32', '#6a1b9a', '#e65100',
+  '#00695c', '#37474f', '#8d6e63', '#d84315', '#0277bd'
+];
+
+export const BUTTON_ANIMATIONS = {
+  morning: [
+    { icon: '📖', anim: 'page-flip', label: '本をめくって朝のスタート' },
+    { icon: '✨', anim: 'sparkle', label: '新しい1日を輝かせよう' },
+    { icon: '🌅', anim: 'float', label: '朝日と共に読書を' }
+  ],
+  afternoon: [
+    { icon: '📖', anim: 'bounce', label: '午後の読書タイム' },
+    { icon: '☀️', anim: 'wave', label: '昼下がりの一冊' },
+    { icon: '📚', anim: 'page-flip', label: '本の世界へ飛び込もう' }
+  ],
+  evening: [
+    { icon: '🌙', anim: 'relax', label: 'リラックスして読書を' },
+    { icon: '📖', anim: 'float', label: 'ゆったり読書タイム' },
+    { icon: '✨', anim: 'sparkle', label: '夜のひとときを本と共に' }
+  ],
+  night: [
+    { icon: '🌃', anim: 'relax', label: '静かな夜の読書' },
+    { icon: '📖', anim: 'float', label: 'ゆっくりと本の世界へ' },
+    { icon: '🌙', anim: 'relax', label: '穏やかな読書タイム' }
+  ],
+  streak: [
+    { icon: '🔥', anim: 'flame', label: '連続記録を伸ばそう！' },
+    { icon: '⚡', anim: 'sparkle', label: '勢いに乗って読書！' }
+  ]
+};
+
+export const READING_ANIMATIONS = [
+  { icon: '📖', anim: 'breath', label: '読書に集中しています' },
+  { icon: '🌙', anim: 'float', label: 'ゆったりと読書中' },
+  { icon: '☁️', anim: 'sway', label: '穏やかに読書中' },
+  { icon: '🍃', anim: 'zen', label: '静かに読書中' },
+  { icon: '✨', anim: 'breath', label: '本の世界に浸っています' },
+  { icon: '🌿', anim: 'float', label: 'リラックスして読書中' }
+];
+
+export const SAMPLE_BOOKS = [
+  { title: '人を動かす', link: 'https://www.amazon.co.jp/dp/442210098X' },
+  { title: '嫌われる勇気', link: 'https://www.amazon.co.jp/dp/4478025819' },
+  { title: '7つの習慣', link: 'https://www.amazon.co.jp/dp/4863940246' },
+  { title: '夜と霧', link: 'https://www.amazon.co.jp/dp/4622039702' },
+  { title: 'FACTFULNESS', link: 'https://www.amazon.co.jp/dp/4822289605' },
+  { title: '思考の整理学', link: 'https://www.amazon.co.jp/dp/4480020470' },
+  { title: 'サピエンス全史（上）', link: 'https://www.amazon.co.jp/dp/430922671X' },
+  { title: '影響力の武器', link: 'https://www.amazon.co.jp/dp/4414304229' },
+  { title: '金持ち父さん貧乏父さん', link: 'https://www.amazon.co.jp/dp/4480864245' },
+  { title: 'イシューからはじめよ', link: 'https://www.amazon.co.jp/dp/4862760856' },
+  { title: 'エッセンシャル思考', link: 'https://www.amazon.co.jp/dp/4761270438' },
+  { title: 'アウトプット大全', link: 'https://www.amazon.co.jp/dp/4801400558' },
+  { title: '1日1ページ、読むだけで身につく世界の教養365', link: 'https://www.amazon.co.jp/dp/4866510552' },
+  { title: 'DIE WITH ZERO', link: 'https://www.amazon.co.jp/dp/447810911X' },
+  { title: '限りある時間の使い方', link: 'https://www.amazon.co.jp/dp/4761276150' },
+  { title: 'チーズはどこへ消えた？', link: 'https://www.amazon.co.jp/dp/459403019X' },
+  { title: '君たちはどう生きるか', link: 'https://www.amazon.co.jp/dp/4003315812' },
+  { title: 'アトミック・ハビッツ', link: 'https://www.amazon.co.jp/dp/4833423057' },
+  { title: '1兆ドルコーチ', link: 'https://www.amazon.co.jp/dp/4478107246' },
+  { title: 'LIFE SHIFT', link: 'https://www.amazon.co.jp/dp/4492533877' }
+];
