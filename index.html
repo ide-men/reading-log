@@ -7,381 +7,1137 @@
   <title>読書ログ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-deep: #0a0a0f;
-      --bg-surface: #12121a;
-      --bg-elevated: #1a1a25;
-      --accent: #e8a87c;
-      --accent-glow: rgba(232, 168, 124, 0.25);
-      --accent-soft: rgba(232, 168, 124, 0.1);
-      --text-bright: #f5f5f7;
-      --text-normal: #c9c9d0;
-      --text-muted: #6b6b7a;
-      --text-dim: #45454f;
-      --border: rgba(255, 255, 255, 0.06);
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; overflow: hidden; }
-    body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg-deep); color: var(--text-normal); line-height: 1.6; }
-    .app { height: 100%; display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; position: relative; overflow: hidden; }
 
 ```
-/* Tabs */
-.tab { display: none; flex-direction: column; height: 100%; padding-bottom: 72px; overflow: hidden; }
-.tab.active { display: flex; }
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --elevated: #1a1a25;
+  --accent: #e8a87c;
+  --accent-glow: rgba(232, 168, 124, 0.25);
+  --text: #f5f5f7;
+  --text-dim: #6b6b7a;
+  --border: rgba(255, 255, 255, 0.06);
+}
 
-/* Nav */
-.nav { position: absolute; bottom: 0; left: 0; right: 0; display: flex; background: var(--bg-surface); border-top: 1px solid var(--border); padding: 8px 0; padding-bottom: max(8px, env(safe-area-inset-bottom)); z-index: 50; }
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px; background: none; border: none; cursor: pointer; }
-.nav-item span:first-child { font-size: 22px; }
-.nav-item span:last-child { font-size: 10px; color: var(--text-muted); }
-.nav-item.active span:last-child { color: var(--accent); font-weight: 500; }
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: #c9c9d0;
+}
 
-/* Header */
-.header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-.header-title { font-family: 'Noto Sans JP', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-bright); }
-.header-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; font-size: 16px; cursor: pointer; }
-.header-btn.primary { background: var(--accent); border: none; color: var(--bg-deep); font-size: 22px; font-weight: 300; }
+/* アプリコンテナ - 絶対配置で確実に */
+.app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 430px;
+  margin: 0 auto;
+}
 
-/* Main */
-.main { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 0 20px 20px; -webkit-overflow-scrolling: touch; }
-.main::-webkit-scrollbar { display: none; }
+/* ヘッダー */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--bg);
+}
 
-/* Progress */
-.progress { display: flex; flex-direction: column; align-items: center; padding: 16px 0; }
-.progress-wrapper { position: relative; width: 150px; height: 150px; }
-.progress-ring { width: 150px; height: 150px; transform: rotate(-90deg); }
-.progress-ring circle { fill: none; stroke-width: 7; }
-.progress-ring .bg { stroke: var(--bg-elevated); }
-.progress-ring .fill { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 414.69; stroke-dashoffset: 414.69; transition: stroke-dashoffset 0.5s; filter: drop-shadow(0 0 8px var(--accent-glow)); }
-.progress-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-.progress-level { font-family: 'DM Sans', sans-serif; font-size: 34px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.02em; }
-.progress-title { font-size: 12px; color: var(--accent); margin-top: 2px; }
-.progress-xp { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
-.progress-xp span { color: var(--accent); font-family: 'DM Sans', sans-serif; font-weight: 700; }
+.header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
 
-/* Stats */
-.stats { display: flex; justify-content: center; gap: 28px; margin-bottom: 16px; }
-.stat { text-align: center; }
-.stat-value { font-family: 'DM Sans', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.02em; }
-.stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.header-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-/* Action Button */
-.action-btn { width: 100%; padding: 16px; font-size: 16px; font-weight: 700; font-family: inherit; border: none; border-radius: var(--radius-lg); cursor: pointer; transition: transform 0.2s; white-space: nowrap; }
-.action-btn.start { background: linear-gradient(135deg, var(--accent), #d4956a); color: var(--bg-deep); box-shadow: 0 0 40px var(--accent-glow); }
-.action-btn.stop { background: var(--bg-elevated); color: var(--text-bright); border: 1px solid var(--border); }
-.action-btn:active { transform: scale(0.98); }
+.header-btn.primary {
+  background: var(--accent);
+  border: none;
+  color: var(--bg);
+  font-size: 22px;
+}
 
-/* Quote */
-.quote { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; margin-top: 14px; }
-.quote-text { font-size: 13px; font-style: italic; color: var(--text-normal); line-height: 1.7; }
-.quote-author { font-size: 11px; color: var(--text-muted); margin-top: 6px; text-align: right; }
+/* メインコンテンツ */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 20px 100px;
+  -webkit-overflow-scrolling: touch;
+}
 
-/* Books Tab */
-.bookshelf { padding: 20px 0; margin: 0 -20px 20px; background: linear-gradient(to bottom, #1a1410, #12121a 70%); position: relative; overflow: hidden; }
-.bookshelf::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Cpath d='M30 30m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0' fill='%23ffffff08'/%3E%3C/svg%3E"); opacity: 0.5; pointer-events: none; }
-.bookshelf-header { text-align: center; padding: 8px 20px 16px; position: relative; z-index: 1; }
-.bookshelf-title { font-size: 12px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
-.bookshelf-count { font-family: 'DM Sans', sans-serif; font-size: 36px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.02em; }
-.bookshelf-label { font-size: 13px; color: var(--text-muted); }
-.bookshelf-scroll { overflow-x: auto; overflow-y: visible; padding: 60px 20px 12px; scrollbar-width: none; -ms-overflow-style: none; position: relative; z-index: 1; }
-.bookshelf-scroll::-webkit-scrollbar { display: none; }
-.bookshelf-cabinet { display: inline-block; background: linear-gradient(to right, #2a1f1a, #3d2e24, #2a1f1a); border-radius: 8px; padding: 8px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3); }
-.bookshelf-row { display: flex; align-items: flex-end; gap: 2px; padding: 6px 10px 0; position: relative; min-height: 56px; }
-.bookshelf-row::after { content: ''; position: absolute; bottom: 0; left: 4px; right: 4px; height: 6px; background: linear-gradient(to bottom, #5d4037, #4e342e, #3e2723); border-radius: 1px; box-shadow: 0 2px 3px rgba(0,0,0,0.4); }
-.bookshelf-book { width: 12px; border-radius: 1px 2px 0 0; position: relative; z-index: 1; box-shadow: 1px 0 2px rgba(0,0,0,0.3); flex-shrink: 0; transition: transform 0.2s, margin 0.2s; cursor: pointer; }
-.bookshelf-book:hover { transform: translateY(-4px) scale(1.05); z-index: 10; margin: 0 2px; }
-.bookshelf-book::before { content: ''; position: absolute; left: 1px; right: 1px; top: 4px; height: 1px; background: rgba(255,255,255,0.2); }
-.bookshelf-book::after { content: ''; position: absolute; left: 1px; right: 2px; top: 8px; bottom: 8px; background: rgba(0,0,0,0.15); }
-.book-tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--text-bright); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 100; text-align: center; line-height: 1.5; }
-.book-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--bg-surface); }
-.bookshelf-book:hover .book-tooltip { opacity: 1; visibility: visible; pointer-events: auto; }
-.tooltip-link { display: block; margin-top: 6px; padding: 4px 10px; background: var(--accent); color: var(--bg-deep); border-radius: 4px; text-decoration: none; font-size: 11px; font-weight: 500; }
-.tooltip-link:hover { opacity: 0.9; }
-.bookshelf-hint { text-align: center; font-size: 11px; color: var(--text-dim); padding-top: 8px; position: relative; z-index: 1; }
-.bookshelf-empty { text-align: center; padding: 32px 20px; color: var(--text-muted); font-size: 14px; }
+/* タブ */
+.tab {
+  display: none;
+}
 
-.book-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-.book-item:last-child { border-bottom: none; }
-.book-cover { width: 40px; height: 54px; flex-shrink: 0; background: var(--bg-elevated); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-.book-info { flex: 1; min-width: 0; }
-.book-title { font-size: 14px; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.book-title a { color: inherit; text-decoration: none; }
-.book-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.book-xp { background: var(--accent-soft); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 6px; }
-.book-edit { background: none; border: none; color: var(--text-muted); font-size: 14px; padding: 8px; cursor: pointer; flex-shrink: 0; }
-.book-delete { background: none; border: none; color: var(--text-dim); font-size: 18px; padding: 8px; cursor: pointer; flex-shrink: 0; }
+.tab.active {
+  display: block;
+}
 
-.empty { text-align: center; padding: 40px; color: var(--text-muted); }
-.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+/* ナビゲーション */
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  max-width: 430px;
+  margin: 0 auto;
+}
 
-/* Stats Tab */
-.impact { background: linear-gradient(135deg, var(--accent), #d4956a); border-radius: var(--radius-lg); padding: 28px; text-align: center; color: var(--bg-deep); margin-bottom: 20px; }
-.impact-value { font-family: 'DM Sans', sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; }
-.impact-label { font-size: 14px; opacity: 0.8; }
-.impact-sub { font-size: 13px; opacity: 0.9; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.1); }
+.nav button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-.stats-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center; }
-.stats-card-value { font-family: 'DM Sans', sans-serif; font-size: 24px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.02em; }
-.stats-card-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.nav button span:first-child {
+  font-size: 22px;
+}
 
-.section-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+.nav button span:last-child {
+  font-size: 10px;
+  color: var(--text-dim);
+}
 
-.week-chart { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 12px 8px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 20px; overflow: hidden; }
-.week-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; min-width: 0; }
-.week-bar-fill { width: 100%; max-width: 28px; background: linear-gradient(to top, var(--accent), #f0c27b); border-radius: 4px 4px 0 0; min-height: 4px; }
-.week-bar-fill.empty { background: var(--bg-elevated); }
-.week-bar-fill.today { box-shadow: 0 0 8px var(--accent-glow); }
-.week-bar-label { font-size: 10px; color: var(--text-muted); margin-top: 6px; flex-shrink: 0; }
-.week-bar-label.today { color: var(--accent); font-weight: 500; }
+.nav button.active span:last-child {
+  color: var(--accent);
+  font-weight: 500;
+}
 
-.style-card { display: flex; align-items: center; gap: 14px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 10px; }
-.style-icon { font-size: 24px; flex-shrink: 0; }
-.style-value { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-bright); }
-.style-label { font-size: 11px; color: var(--text-muted); }
+/* プログレスリング */
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+}
 
-.tip { display: flex; align-items: center; gap: 10px; background: var(--accent-soft); border-radius: var(--radius-md); padding: 14px 16px; margin-top: 20px; }
-.tip-icon { font-size: 18px; flex-shrink: 0; }
-.tip-text { font-size: 13px; color: var(--text-normal); }
+.ring-wrapper {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
 
-/* Reading Screen */
-.reading { position: fixed; inset: 0; background: var(--bg-deep); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
-.reading.active { display: flex; }
-.flame { width: 140px; height: 140px; margin-bottom: 40px; position: relative; display: flex; align-items: flex-end; justify-content: center; }
-.flame-glow { position: absolute; bottom: 10%; width: 100px; height: 100px; background: radial-gradient(circle, var(--accent-glow), transparent 70%); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-.flame-shape { position: absolute; bottom: 20%; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; animation: flicker 0.4s ease-in-out infinite alternate; }
-.flame-outer { width: 44px; height: 60px; background: linear-gradient(to top, var(--accent), #f0c27b, #fff5e6); left: 50%; transform: translateX(-50%); }
-.flame-inner { width: 24px; height: 40px; background: linear-gradient(to top, #fff5e6, #fff); left: 50%; transform: translateX(-50%); bottom: 25%; }
-@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.15); opacity: 0.6; } }
-@keyframes flicker { 0% { transform: translateX(-50%) scaleY(1) scaleX(1); } 100% { transform: translateX(-50%) scaleY(1.06) scaleX(0.94); } }
-.reading-label { font-size: 15px; color: var(--text-muted); margin-bottom: 48px; }
-.reading-stop { padding: 14px 40px; font-size: 14px; font-family: inherit; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-bright); cursor: pointer; }
+.ring-wrapper svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
 
-/* Modal */
-.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
-.modal-bg.active { display: flex; }
-.modal { background: var(--bg-surface); border-radius: var(--radius-lg) var(--radius-lg) 0 0; width: 100%; max-width: 430px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal-bar { width: 36px; height: 4px; background: var(--text-dim); border-radius: 2px; margin: 12px auto; }
-.modal-header { padding: 8px 20px 16px; display: flex; justify-content: space-between; align-items: center; }
-.modal-title { font-family: 'Noto Sans JP', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-bright); }
-.modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-elevated); border: none; border-radius: 8px; color: var(--text-muted); font-size: 18px; cursor: pointer; flex-shrink: 0; }
-.modal-body { padding: 0 20px 28px; }
+.ring-wrapper circle {
+  fill: none;
+  stroke-width: 7;
+}
 
-/* Form */
-.form-group { margin-bottom: 16px; }
-.form-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-.form-input { width: 100%; padding: 14px; font-size: 16px; font-family: inherit; background: var(--bg-deep); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-bright); }
-.form-input:focus { outline: none; border-color: var(--accent); }
+.ring-bg {
+  stroke: var(--elevated);
+}
 
-.celebration { text-align: center; padding: 16px 0 20px; }
-.celebration-icon { font-size: 40px; }
-.celebration-text { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+.ring-fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: 414.69;
+  stroke-dashoffset: 414.69;
+  transition: stroke-dashoffset 0.5s;
+}
 
-.btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; font-family: inherit; border: none; border-radius: var(--radius-md); cursor: pointer; }
-.btn-primary { background: linear-gradient(135deg, var(--accent), #d4956a); color: var(--bg-deep); display: flex; align-items: center; justify-content: center; gap: 10px; }
-.btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-muted); margin-top: 10px; }
-.btn-danger { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
-.btn-badge { background: rgba(0,0,0,0.15); padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+.ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
-.link-toggle { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--text-muted); font-size: 12px; font-family: inherit; cursor: pointer; padding: 6px 0; }
-.link-toggle span:first-child { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; background: var(--bg-elevated); border-radius: 4px; font-size: 12px; }
-.link-fields { margin-top: 10px; display: none; }
-.link-fields.open { display: block; }
+.ring-level {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--text);
+}
 
-.input-with-btn { display: flex; gap: 8px; }
-.input-with-btn .form-input { flex: 1; min-width: 0; }
-.paste-btn { padding: 0 14px; font-size: 18px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; flex-shrink: 0; }
+.ring-title {
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 2px;
+}
 
-/* Overlays */
-.overlay { position: fixed; inset: 0; background: rgba(10,10,15,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 300; }
-.overlay.active { display: flex; }
-.overlay-content { text-align: center; animation: popIn 0.5s ease; padding: 20px; }
-@keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-.overlay-icon { font-size: 64px; margin-bottom: 20px; }
-.overlay-label { font-size: 13px; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 8px; }
-.overlay-value { font-family: 'DM Sans', sans-serif; font-size: 42px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.02em; }
-.overlay-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-.overlay-btn { margin-top: 40px; padding: 12px 28px; font-size: 13px; font-family: inherit; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-bright); cursor: pointer; }
+.xp-text {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
 
-.confirm { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 400; padding: 20px; }
-.confirm.active { display: flex; }
-.confirm-box { background: var(--bg-surface); border-radius: var(--radius-md); padding: 32px; max-width: 340px; width: 100%; text-align: center; }
-.confirm-icon { font-size: 42px; margin-bottom: 16px; }
-.confirm-title { font-size: 18px; font-weight: 700; color: var(--text-bright); margin-bottom: 10px; word-break: break-word; }
-.confirm-text { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
-.confirm-btns { display: flex; gap: 12px; }
-.confirm-btns button { flex: 1; padding: 14px; font-size: 15px; font-family: inherit; border-radius: var(--radius-sm); cursor: pointer; }
-.confirm-cancel { background: var(--bg-deep); border: 1px solid var(--border); color: var(--text-bright); }
-.confirm-ok { background: #dc2626; border: none; color: white; font-weight: 700; }
+.xp-text span {
+  color: var(--accent);
+  font-weight: 700;
+}
 
-.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 20px; font-size: 13px; color: var(--text-bright); z-index: 250; animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards; white-space: nowrap; }
-@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-@keyframes toastOut { to { opacity: 0; } }
+/* 統計 */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 16px;
+}
 
-.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 500; overflow: hidden; }
-.confetti i { position: absolute; width: 8px; height: 8px; animation: fall 3s ease-out forwards; }
-@keyframes fall { 0% { transform: translateY(-50px) rotate(0); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+.stat-item {
+  text-align: center;
+}
 
-.milestone { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--bg-surface); border: 2px solid var(--accent); border-radius: var(--radius-md); padding: 28px; text-align: center; z-index: 350; box-shadow: 0 0 40px var(--accent-glow); animation: popIn 0.4s ease; max-width: 90%; }
-.milestone-icon { font-size: 40px; margin-bottom: 12px; }
-.milestone-title { font-family: 'Noto Sans JP', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
-.milestone-text { font-size: 13px; color: var(--text-muted); }
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
 
-.settings-hint { font-size: 11px; color: var(--text-dim); margin-top: 8px; text-align: center; }
+.stat-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* ボタン */
+.main-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), #d4956a);
+  color: var(--bg);
+  box-shadow: 0 0 40px var(--accent-glow);
+}
+
+.main-btn:active {
+  transform: scale(0.98);
+}
+
+/* 引用 */
+.quote {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+
+.quote p:first-child {
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.quote p:last-child {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  text-align: right;
+}
+
+/* 本棚セクション */
+.bookshelf {
+  background: linear-gradient(to bottom, #1a1410, var(--surface) 70%);
+  margin: 0 -20px 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+.bookshelf-title {
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.bookshelf-count {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bookshelf-label {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.shelf-visual {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 3px;
+  margin-top: 20px;
+  min-height: 60px;
+  padding: 10px;
+  background: linear-gradient(to right, #2a1f1a, #3d2e24, #2a1f1a);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.mini-book {
+  width: 12px;
+  min-width: 12px;
+  border-radius: 2px 2px 0 0;
+  cursor: pointer;
+}
+
+.empty-shelf {
+  color: var(--text-dim);
+  font-size: 14px;
+  padding: 20px;
+}
+
+/* 本リスト */
+.book-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.book-icon {
+  width: 40px;
+  height: 54px;
+  background: var(--elevated);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.book-name {
+  font-size: 14px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.book-date {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.book-xp {
+  background: rgba(232, 168, 124, 0.1);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  margin-left: 6px;
+}
+
+.book-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.book-actions button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 16px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+/* 記録タブ */
+.impact-card {
+  background: linear-gradient(135deg, var(--accent), #d4956a);
+  border-radius: 24px;
+  padding: 28px;
+  text-align: center;
+  color: var(--bg);
+  margin-bottom: 20px;
+}
+
+.impact-value {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.impact-label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stats-card-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stats-card-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.section-title {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.week-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 100px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.week-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.week-bar-fill {
+  width: 100%;
+  max-width: 24px;
+  background: var(--accent);
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+}
+
+.week-bar-fill.empty {
+  background: var(--elevated);
+}
+
+.week-bar span {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.week-bar.today span {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.style-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.style-icon {
+  font-size: 24px;
+}
+
+.style-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.style-label {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.tip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(232, 168, 124, 0.1);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-top: 20px;
+}
+
+.tip span:first-child {
+  font-size: 18px;
+}
+
+.tip span:last-child {
+  font-size: 13px;
+}
+
+/* 読書画面 */
+.reading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.reading-screen.active {
+  display: flex;
+}
+
+.flame {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.flame-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.flame-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  animation: flicker 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+}
+
+@keyframes flicker {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.reading-label {
+  font-size: 15px;
+  color: var(--text-dim);
+  margin-bottom: 48px;
+}
+
+.reading-stop {
+  padding: 14px 40px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* モーダル */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 430px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-bar {
+  width: 36px;
+  height: 4px;
+  background: var(--text-dim);
+  border-radius: 2px;
+  margin: 12px auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px 16px;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--elevated);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 0 20px 28px;
+}
+
+.celebration {
+  text-align: center;
+  padding: 16px 0 20px;
+}
+
+.celebration-icon {
+  font-size: 40px;
+}
+
+.celebration-text {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-family: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #d4956a);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+.btn-danger {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.3);
+  color: #f87171;
+}
+
+.btn-badge {
+  background: rgba(0,0,0,0.15);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.link-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+.link-fields {
+  margin-top: 10px;
+  display: none;
+}
+
+.link-fields.open {
+  display: block;
+}
+
+.settings-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* 確認ダイアログ */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 20px;
+}
+
+.confirm-overlay.active {
+  display: flex;
+}
+
+.confirm-box {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+
+.confirm-icon {
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+.confirm-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.confirm-text {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.confirm-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.confirm-btns button {
+  flex: 1;
+  padding: 14px;
+  font-size: 15px;
+  font-family: inherit;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.confirm-cancel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.confirm-ok {
+  background: #dc2626;
+  border: none;
+  color: white;
+  font-weight: 700;
+}
+
+/* トースト */
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--text);
+  z-index: 250;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes toastOut {
+  to { opacity: 0; }
+}
+
+/* 紙吹雪 */
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+  overflow: hidden;
+}
+
+.confetti i {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  animation: fall 3s ease-out forwards;
+}
+
+@keyframes fall {
+  0% { transform: translateY(-50px) rotate(0); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* レベルアップ */
+.levelup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,15,0.95);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+}
+
+.levelup-overlay.active {
+  display: flex;
+}
+
+.levelup-content {
+  text-align: center;
+  animation: popIn 0.5s ease;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.levelup-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.levelup-label {
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+
+.levelup-value {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.levelup-sub {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.levelup-btn {
+  margin-top: 40px;
+  padding: 12px 28px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
 ```
 
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- Home Tab -->
-    <div class="tab active" id="tab-home">
-      <header class="header">
-        <h1 class="header-title">📖 Reading Log</h1>
-        <button class="header-btn" onclick="openSettings()">⚙️</button>
-      </header>
-      <main class="main">
-        <section class="progress">
-          <div class="progress-wrapper">
-            <svg class="progress-ring" viewBox="0 0 150 150">
-              <circle class="bg" cx="75" cy="75" r="66"/>
-              <circle class="fill" id="ring" cx="75" cy="75" r="66"/>
-            </svg>
-            <div class="progress-center">
-              <div class="progress-level" id="level">1</div>
-              <div class="progress-title" id="title">読書ビギナー</div>
-            </div>
-          </div>
-          <div class="progress-xp"><span id="xp">0</span> / 5 XP</div>
-        </section>
-        <div class="stats">
-          <div class="stat"><div class="stat-value" id="time">0:00</div><div class="stat-label">累計</div></div>
-          <div class="stat"><div class="stat-value" id="sessions">0</div><div class="stat-label">回数</div></div>
-          <div class="stat"><div class="stat-value" id="books">0</div><div class="stat-label">読了</div></div>
-        </div>
-        <button class="action-btn start" id="startBtn" onclick="toggleTimer()">読書をはじめる</button>
-        <div class="quote">
-          <p class="quote-text" id="quoteText">読書は心の旅路。一ページが新しい世界への扉となる。</p>
-          <p class="quote-author" id="quoteAuthor">— 今日の一言</p>
-        </div>
-      </main>
-    </div>
+    <header class="header">
+      <h1>📖 Reading Log</h1>
+      <button class="header-btn" id="settingsBtn">⚙️</button>
+    </header>
 
 ```
-<!-- Books Tab -->
-<div class="tab" id="tab-books">
-  <header class="header">
-    <h1 class="header-title">本棚</h1>
-    <button class="header-btn primary" onclick="openAddBook()">+</button>
-  </header>
-  <main class="main">
+<div class="content">
+  <!-- ホームタブ -->
+  <div class="tab active" id="tab-home">
+    <section class="progress">
+      <div class="ring-wrapper">
+        <svg viewBox="0 0 150 150">
+          <circle class="ring-bg" cx="75" cy="75" r="66"/>
+          <circle class="ring-fill" id="ring" cx="75" cy="75" r="66"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-level" id="level">1</div>
+          <div class="ring-title" id="title">読書ビギナー</div>
+        </div>
+      </div>
+      <div class="xp-text"><span id="xp">0</span> / 5 XP</div>
+    </section>
+    
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-value" id="time">0:00</div>
+        <div class="stat-label">累計</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="sessions">0</div>
+        <div class="stat-label">回数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="books">0</div>
+        <div class="stat-label">読了</div>
+      </div>
+    </div>
+    
+    <button class="main-btn" id="startBtn">読書をはじめる</button>
+    
+    <div class="quote">
+      <p id="quoteText">読書は心の旅路。一ページが新しい世界への扉となる。</p>
+      <p id="quoteAuthor">— 今日の一言</p>
+    </div>
+  </div>
+  
+  <!-- 本棚タブ -->
+  <div class="tab" id="tab-books">
     <div class="bookshelf">
-      <div class="bookshelf-header">
-        <div class="bookshelf-title">📚 My Library</div>
-        <div class="bookshelf-count" id="bookCount">0</div>
-        <div class="bookshelf-label">冊読了</div>
-      </div>
-      <div class="bookshelf-scroll">
-        <div class="bookshelf-cabinet" id="shelf"></div>
-      </div>
-      <div class="bookshelf-hint" id="shelfHint">← スワイプで書斎を探索 →</div>
+      <div class="bookshelf-title">📚 My Library</div>
+      <div class="bookshelf-count" id="bookCount">0</div>
+      <div class="bookshelf-label">冊読了</div>
+      <div class="shelf-visual" id="shelf"></div>
     </div>
     <div id="bookList"></div>
-  </main>
-</div>
-
-<!-- Stats Tab -->
-<div class="tab" id="tab-stats">
-  <header class="header">
-    <h1 class="header-title">読書の記録</h1>
-  </header>
-  <main class="main">
-    <div class="impact">
+  </div>
+  
+  <!-- 記録タブ -->
+  <div class="tab" id="tab-stats">
+    <div class="impact-card">
       <div class="impact-value" id="impactBooks">0冊</div>
       <div class="impact-label">読破した本</div>
-      <div class="impact-sub" id="impactSub"></div>
     </div>
+    
     <div class="stats-grid">
-      <div class="stats-card"><div class="stats-card-value" id="totalHours">0</div><div class="stats-card-label">時間</div></div>
-      <div class="stats-card"><div class="stats-card-value" id="totalSessions">0</div><div class="stats-card-label">セッション</div></div>
-      <div class="stats-card"><div class="stats-card-value" id="daysSince">1</div><div class="stats-card-label">日目</div></div>
+      <div class="stats-card">
+        <div class="stats-card-value" id="totalHours">0</div>
+        <div class="stats-card-label">時間</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-card-value" id="totalSessions">0</div>
+        <div class="stats-card-label">セッション</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-card-value" id="daysSince">1</div>
+        <div class="stats-card-label">日目</div>
+      </div>
     </div>
+    
     <h3 class="section-title">今週の読書</h3>
     <div class="week-chart" id="weekChart"></div>
+    
     <h3 class="section-title">あなたのスタイル</h3>
-    <div class="style-card"><span class="style-icon">🎯</span><div><div class="style-value" id="avgFocus">--</div><div class="style-label">平均の集中時間</div></div></div>
-    <div class="style-card"><span class="style-icon" id="timeIcon">🌙</span><div><div class="style-value" id="timeType">--</div><div class="style-label">よく読む時間帯</div></div></div>
-    <div class="tip"><span class="tip-icon">💡</span><span class="tip-text" id="tipText">読書を始めて記録を作ろう</span></div>
-  </main>
+    <div class="style-card">
+      <span class="style-icon">🎯</span>
+      <div>
+        <div class="style-value" id="avgFocus">--</div>
+        <div class="style-label">平均の集中時間</div>
+      </div>
+    </div>
+    <div class="style-card">
+      <span class="style-icon" id="timeIcon">🌙</span>
+      <div>
+        <div class="style-value" id="timeType">--</div>
+        <div class="style-label">よく読む時間帯</div>
+      </div>
+    </div>
+    
+    <div class="tip">
+      <span>💡</span>
+      <span id="tipText">読書を始めて記録を作ろう</span>
+    </div>
+  </div>
 </div>
 
-<!-- Nav -->
 <nav class="nav">
-  <button class="nav-item active" onclick="switchTab('home')"><span>🏠</span><span>ホーム</span></button>
-  <button class="nav-item" onclick="switchTab('books')"><span>📚</span><span>本棚</span></button>
-  <button class="nav-item" onclick="switchTab('stats')"><span>📊</span><span>記録</span></button>
+  <button class="active" data-tab="home"><span>🏠</span><span>ホーム</span></button>
+  <button data-tab="books"><span>📚</span><span>本棚</span></button>
+  <button data-tab="stats"><span>📊</span><span>記録</span></button>
 </nav>
 ```
 
   </div>
 
-  <!-- Reading Screen -->
+  <!-- 読書画面 -->
 
-  <div class="reading" id="reading">
+  <div class="reading-screen" id="readingScreen">
     <div class="flame">
       <div class="flame-glow"></div>
-      <div class="flame-shape flame-outer"></div>
-      <div class="flame-shape flame-inner"></div>
+      <div class="flame-icon">🔥</div>
     </div>
     <p class="reading-label">読書に集中しています</p>
-    <button class="reading-stop" onclick="stopReading()">読書をおわる</button>
+    <button class="reading-stop" id="stopBtn">読書をおわる</button>
   </div>
 
-  <!-- Add Book Modal -->
+  <!-- 本追加モーダル -->
 
-  <div class="modal-bg" id="addBookModal" onclick="closeAddBook(event)">
-    <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="addBookModal">
+    <div class="modal">
       <div class="modal-bar"></div>
       <div class="modal-header">
-        <h2 class="modal-title">読了を記録</h2>
-        <button class="modal-close" onclick="closeAddBook()">×</button>
+        <h2>読了を記録</h2>
+        <button class="modal-close" data-close="addBookModal">×</button>
       </div>
       <div class="modal-body">
-        <div class="celebration"><span class="celebration-icon">🎊</span><p class="celebration-text">1冊読み終えた自分を褒めよう</p></div>
+        <div class="celebration">
+          <div class="celebration-icon">🎊</div>
+          <p class="celebration-text">1冊読み終えた自分を褒めよう</p>
+        </div>
         <div class="form-group">
           <label class="form-label">タイトル</label>
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
         </div>
         <div class="form-group">
-          <button class="link-toggle" onclick="toggleLink()"><span id="linkIcon">+</span><span>リンクを追加</span></button>
+          <button class="link-toggle" id="linkToggle">
+            <span id="linkIcon">+</span>
+            <span>リンクを追加</span>
+          </button>
           <div class="link-fields" id="linkFields">
-            <div class="input-with-btn">
-              <input type="url" class="form-input" id="linkInput" placeholder="Amazonや書評へのリンク">
-              <button type="button" class="paste-btn" onclick="pasteLink('linkInput')">📋</button>
-            </div>
+            <input type="url" class="form-input" id="linkInput" placeholder="Amazonや書評へのリンク">
           </div>
         </div>
-        <button class="btn btn-primary" onclick="addBook(true)"><span>読了！</span><span class="btn-badge">+10 XP</span></button>
-        <button class="btn btn-secondary" onclick="addBook(false)">過去に読んだ本を追加</button>
+        <button class="btn btn-primary" id="addBookBtn">
+          <span>読了！</span>
+          <span class="btn-badge">+10 XP</span>
+        </button>
+        <button class="btn btn-secondary" id="addBookNoXpBtn">過去に読んだ本を追加</button>
       </div>
     </div>
   </div>
 
-  <!-- Edit Book Modal -->
+  <!-- 編集モーダル -->
 
-  <div class="modal-bg" id="editBookModal" onclick="closeEditBook(event)">
-    <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="editBookModal">
+    <div class="modal">
       <div class="modal-bar"></div>
       <div class="modal-header">
-        <h2 class="modal-title">本を編集</h2>
-        <button class="modal-close" onclick="closeEditBook()">×</button>
+        <h2>本を編集</h2>
+        <button class="modal-close" data-close="editBookModal">×</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -390,81 +1146,78 @@
         </div>
         <div class="form-group">
           <label class="form-label">リンク（任意）</label>
-          <div class="input-with-btn">
-            <input type="url" class="form-input" id="editBookLink" placeholder="Amazonや書評へのリンク">
-            <button type="button" class="paste-btn" onclick="pasteLink('editBookLink')">📋</button>
-          </div>
+          <input type="url" class="form-input" id="editBookLink" placeholder="Amazonや書評へのリンク">
         </div>
-        <button class="btn btn-primary" onclick="saveEditBook()">保存</button>
-        <button class="btn btn-secondary" onclick="closeEditBook()">キャンセル</button>
+        <button class="btn btn-primary" id="saveEditBtn">保存</button>
+        <button class="btn btn-secondary" data-close="editBookModal">キャンセル</button>
       </div>
     </div>
   </div>
 
-  <!-- Settings Modal -->
+  <!-- 設定モーダル -->
 
-  <div class="modal-bg" id="settingsModal" onclick="closeSettings(event)">
-    <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
       <div class="modal-bar"></div>
       <div class="modal-header">
-        <h2 class="modal-title">設定</h2>
-        <button class="modal-close" onclick="closeSettings()">×</button>
+        <h2>設定</h2>
+        <button class="modal-close" data-close="settingsModal">×</button>
       </div>
       <div class="modal-body">
-        <button class="btn btn-danger" onclick="confirmReset()">すべてのデータをリセット</button>
+        <button class="btn btn-danger" id="resetBtn">すべてのデータをリセット</button>
         <p class="settings-hint">読書記録・XP・登録した本がすべて削除されます</p>
       </div>
     </div>
   </div>
 
-  <!-- Level Up -->
+  <!-- リセット確認 -->
 
-  <div class="overlay" id="levelUp" onclick="closeLevelUp()">
-    <div class="overlay-content">
-      <div class="overlay-icon">⬆️</div>
-      <div class="overlay-label">LEVEL UP</div>
-      <div class="overlay-value" id="newLevel">Lv.2</div>
-      <button class="overlay-btn">タップして閉じる</button>
-    </div>
-  </div>
-
-  <!-- New Title -->
-
-  <div class="overlay" id="newTitle" onclick="closeNewTitle()">
-    <div class="overlay-content">
-      <div class="overlay-icon" id="newTitleIcon">📖</div>
-      <div class="overlay-label">NEW TITLE</div>
-      <div class="overlay-value" id="newTitleName">本の虫</div>
-      <div class="overlay-sub" id="newTitleSub">少しずつ習慣に</div>
-      <button class="overlay-btn">タップして閉じる</button>
-    </div>
-  </div>
-
-  <!-- Reset Confirm -->
-
-  <div class="confirm" id="resetConfirm">
+  <div class="confirm-overlay" id="resetConfirm">
     <div class="confirm-box">
       <div class="confirm-icon">⚠️</div>
       <div class="confirm-title">データをリセット</div>
       <div class="confirm-text">すべての記録が削除されます。この操作は取り消せません。</div>
       <div class="confirm-btns">
-        <button class="confirm-cancel" onclick="cancelReset()">いいえ</button>
-        <button class="confirm-ok" onclick="executeReset()">はい</button>
+        <button class="confirm-cancel" data-close="resetConfirm">いいえ</button>
+        <button class="confirm-ok" id="confirmResetBtn">はい</button>
       </div>
     </div>
   </div>
 
-  <!-- Delete Book Confirm -->
+  <!-- 本削除確認 -->
 
-  <div class="confirm" id="deleteBookConfirm">
+  <div class="confirm-overlay" id="deleteConfirm">
     <div class="confirm-box">
       <div class="confirm-icon">📕</div>
-      <div class="confirm-title">「<span id="deleteBookTitle"></span>」</div>
+      <div class="confirm-title" id="deleteBookTitle">「」</div>
       <div class="confirm-text">削除しますか？</div>
       <div class="confirm-btns">
-        <button class="confirm-cancel" onclick="cancelDeleteBook()">いいえ</button>
-        <button class="confirm-ok" onclick="executeDeleteBook()">はい</button>
+        <button class="confirm-cancel" data-close="deleteConfirm">いいえ</button>
+        <button class="confirm-ok" id="confirmDeleteBtn">はい</button>
       </div>
+    </div>
+  </div>
+
+  <!-- レベルアップ -->
+
+  <div class="levelup-overlay" id="levelupOverlay">
+    <div class="levelup-content">
+      <div class="levelup-icon">⬆️</div>
+      <div class="levelup-label">LEVEL UP</div>
+      <div class="levelup-value" id="newLevel">Lv.2</div>
+      <button class="levelup-btn" id="closeLevelup">タップして閉じる</button>
+    </div>
+  </div>
+
+  <!-- 称号獲得 -->
+
+  <div class="levelup-overlay" id="titleOverlay">
+    <div class="levelup-content">
+      <div class="levelup-icon" id="newTitleIcon">📖</div>
+      <div class="levelup-label">NEW TITLE</div>
+      <div class="levelup-value" id="newTitleName">本の虫</div>
+      <div class="levelup-sub" id="newTitleSub">少しずつ習慣に</div>
+      <button class="levelup-btn" id="closeTitle">タップして閉じる</button>
     </div>
   </div>
 
@@ -497,17 +1250,13 @@ const QUOTES = [
   { text: '本は心の糧。毎日少しずつ味わおう。', author: '今日の一言' }
 ];
 
-const MILESTONES = [10, 30, 60, 120, 300, 600, 1000, 1440];
-
 const BOOK_COLORS = [
-  ['#c62828', '#b71c1c'], ['#1565c0', '#0d47a1'], ['#2e7d32', '#1b5e20'],
-  ['#6a1b9a', '#4a148c'], ['#e65100', '#bf360c'], ['#00695c', '#004d40'],
-  ['#37474f', '#263238'], ['#8d6e63', '#5d4037'], ['#d84315', '#bf360c'],
-  ['#0277bd', '#01579b']
+  '#c62828', '#1565c0', '#2e7d32', '#6a1b9a', '#e65100',
+  '#00695c', '#37474f', '#8d6e63', '#d84315', '#0277bd'
 ];
 
 // ========================================
-// 状態管理
+// 状態
 // ========================================
 let state = loadState();
 let timer = null;
@@ -540,18 +1289,12 @@ function loadState() {
       }
       return parsed;
     }
-  } catch (e) {
-    console.error('Failed to load state:', e);
-  }
+  } catch (e) {}
   return createInitialState();
 }
 
 function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (e) {
-    console.error('Failed to save state:', e);
-  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 // ========================================
@@ -565,9 +1308,9 @@ function getTitle(level) {
 }
 
 function formatTime(minutes) {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${hours}:${mins.toString().padStart(2, '0')}`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${h}:${m.toString().padStart(2, '0')}`;
 }
 
 function escapeHtml(str) {
@@ -580,10 +1323,6 @@ function isValidUrl(str) {
   return str && /^https?:\/\//i.test(str);
 }
 
-function getRandomQuote() {
-  return QUOTES[Math.floor(Math.random() * QUOTES.length)];
-}
-
 // ========================================
 // UI更新
 // ========================================
@@ -593,17 +1332,16 @@ function updateUI() {
   document.getElementById('level').textContent = state.lv;
   document.getElementById('title').textContent = title.name;
   
-  const circumference = 414.69;
   const xpInLevel = state.xp % XP_PER_LEVEL;
   document.getElementById('xp').textContent = xpInLevel;
   const percent = (xpInLevel / XP_PER_LEVEL) * 100;
-  document.getElementById('ring').style.strokeDashoffset = circumference - (percent / 100 * circumference);
+  document.getElementById('ring').style.strokeDashoffset = 414.69 - (percent / 100 * 414.69);
   
   document.getElementById('time').textContent = formatTime(state.total);
   document.getElementById('sessions').textContent = state.sessions;
   document.getElementById('books').textContent = state.books.length;
   
-  const quote = getRandomQuote();
+  const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
   
@@ -614,13 +1352,11 @@ function updateUI() {
 // タブ切り替え
 // ========================================
 function switchTab(name) {
-  const tabs = ['home', 'books', 'stats'];
-  
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   
   document.getElementById(`tab-${name}`).classList.add('active');
-  document.querySelectorAll('.nav-item')[tabs.indexOf(name)].classList.add('active');
+  document.querySelector(`.nav button[data-tab="${name}"]`).classList.add('active');
   
   if (name === 'books') renderBooks();
   if (name === 'stats') renderStats();
@@ -629,27 +1365,17 @@ function switchTab(name) {
 // ========================================
 // タイマー
 // ========================================
-function toggleTimer() {
-  timer ? stopReading() : startReading();
-}
-
 function startReading() {
-  if (timer) return;
-  
   seconds = 0;
-  document.getElementById('reading').classList.add('active');
+  document.getElementById('readingScreen').classList.add('active');
   timer = setInterval(() => seconds++, 1000);
-  
-  const btn = document.getElementById('startBtn');
-  btn.textContent = '読書中...';
-  btn.classList.replace('start', 'stop');
+  document.getElementById('startBtn').textContent = '読書中...';
 }
 
 function stopReading() {
   clearInterval(timer);
   timer = null;
-  
-  document.getElementById('reading').classList.remove('active');
+  document.getElementById('readingScreen').classList.remove('active');
   
   const minutes = Math.floor(seconds / 60);
   state.total += minutes;
@@ -662,16 +1388,10 @@ function stopReading() {
       m: minutes,
       h: new Date().getHours()
     });
-    const bonusXP = Math.floor(minutes / 10);
-    addXP(1 + bonusXP);
+    addXP(1 + Math.floor(minutes / 10));
   }
   
-  checkMilestones();
-  
-  const btn = document.getElementById('startBtn');
-  btn.textContent = '読書をはじめる';
-  btn.classList.replace('stop', 'start');
-  
+  document.getElementById('startBtn').textContent = '読書をはじめる';
   seconds = 0;
   updateUI();
 }
@@ -685,145 +1405,65 @@ function addXP(amount) {
   state.lv = Math.floor(state.xp / XP_PER_LEVEL) + 1;
   
   if (state.lv > oldLevel) {
-    showLevelUp(state.lv);
+    document.getElementById('newLevel').textContent = `Lv.${state.lv}`;
+    document.getElementById('levelupOverlay').classList.add('active');
+    showConfetti();
+    
     const oldTitle = getTitle(oldLevel);
     const newTitle = getTitle(state.lv);
     if (newTitle.name !== oldTitle.name) {
-      setTimeout(() => showNewTitle(newTitle), 2000);
+      setTimeout(() => {
+        document.getElementById('newTitleIcon').textContent = newTitle.icon;
+        document.getElementById('newTitleName').textContent = newTitle.name;
+        document.getElementById('newTitleSub').textContent = newTitle.sub;
+        document.getElementById('titleOverlay').classList.add('active');
+      }, 2000);
     }
   }
-}
-
-function showLevelUp(level) {
-  document.getElementById('newLevel').textContent = `Lv.${level}`;
-  document.getElementById('levelUp').classList.add('active');
-  showConfetti();
-}
-
-function closeLevelUp() {
-  document.getElementById('levelUp').classList.remove('active');
-}
-
-function showNewTitle(title) {
-  document.getElementById('newTitleIcon').textContent = title.icon;
-  document.getElementById('newTitleName').textContent = title.name;
-  document.getElementById('newTitleSub').textContent = title.sub;
-  document.getElementById('newTitle').classList.add('active');
-}
-
-function closeNewTitle() {
-  document.getElementById('newTitle').classList.remove('active');
-}
-
-// ========================================
-// マイルストーン
-// ========================================
-function checkMilestones() {
-  for (const milestone of MILESTONES) {
-    if (state.total >= milestone && !state.milestones.includes(milestone)) {
-      state.milestones.push(milestone);
-      showMilestone(milestone);
-      break;
-    }
-  }
-}
-
-function showMilestone(minutes) {
-  const messages = [
-    `${Math.floor(minutes / 60)}時間達成！`,
-    `映画${Math.floor(minutes / 120)}本分！`,
-    `YouTube${Math.floor(minutes / 10)}本分！`
-  ];
-  const message = minutes >= 60 
-    ? messages[Math.floor(Math.random() * messages.length)] 
-    : `${minutes}分達成！`;
-  
-  const el = document.createElement('div');
-  el.className = 'milestone';
-  el.innerHTML = `
-    <div class="milestone-icon">🎉</div>
-    <div class="milestone-title">累計 ${minutes >= 60 ? Math.floor(minutes / 60) + '時間' : minutes + '分'}</div>
-    <div class="milestone-text">${message}</div>
-  `;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
 }
 
 // ========================================
 // 本棚
 // ========================================
 function renderBooks() {
-  const shelf = document.getElementById('shelf');
-  const hint = document.getElementById('shelfHint');
-  const bookList = document.getElementById('bookList');
-  
   document.getElementById('bookCount').textContent = state.books.length;
   
+  const shelf = document.getElementById('shelf');
+  const bookList = document.getElementById('bookList');
+  
   if (!state.books.length) {
-    shelf.innerHTML = '<div class="bookshelf-empty">まだ本がありません<br>読了した本を追加しよう</div>';
-    hint.style.display = 'none';
+    shelf.innerHTML = '<div class="empty-shelf">まだ本がありません</div>';
     bookList.innerHTML = '';
     return;
   }
   
-  let bookIndex = 0;
-  const booksHtml = state.books.map(book => {
-    const seed = ((book.id * 13) ^ (book.id >> 8)) + bookIndex * 137;
-    bookIndex++;
-    const colorIndex = Math.abs(seed) % BOOK_COLORS.length;
-    const color = BOOK_COLORS[colorIndex];
-    const height = 36 + Math.abs(seed * 7) % 18;
-    const hasLink = isValidUrl(book.link);
-    const linkBtn = hasLink 
-      ? `<a href="${escapeHtml(book.link)}" target="_blank" rel="noopener" class="tooltip-link">🔗 開く</a>` 
-      : '';
-    return `<div class="bookshelf-book" style="height:${height}px;background:linear-gradient(to right,${color[0]},${color[1]},${color[0]})">
-      <span class="book-tooltip">${escapeHtml(book.title)}${linkBtn}</span>
-    </div>`;
+  shelf.innerHTML = state.books.map((book, i) => {
+    const color = BOOK_COLORS[i % BOOK_COLORS.length];
+    const height = 36 + (i * 7) % 18;
+    return `<div class="mini-book" style="height:${height}px;background:${color}"></div>`;
   }).join('');
   
-  shelf.innerHTML = `<div class="bookshelf-row">${booksHtml}</div>`;
-  hint.style.display = state.books.length > 15 ? 'block' : 'none';
-  
   bookList.innerHTML = [...state.books].reverse().map(book => {
-    const safeLink = isValidUrl(book.link) ? escapeHtml(book.link) : null;
-    const titleHtml = safeLink 
-      ? `<a href="${safeLink}" target="_blank" rel="noopener">${escapeHtml(book.title)}</a>` 
+    const link = isValidUrl(book.link) ? escapeHtml(book.link) : null;
+    const titleHtml = link 
+      ? `<a href="${link}" target="_blank">${escapeHtml(book.title)}</a>` 
       : escapeHtml(book.title);
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
     
     return `
       <div class="book-item">
-        <div class="book-cover">📕</div>
+        <div class="book-icon">📕</div>
         <div class="book-info">
-          <div class="book-title">${titleHtml}</div>
-          <div class="book-meta">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
+          <div class="book-name">${titleHtml}</div>
+          <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
         </div>
-        <button class="book-edit" onclick="openEditBook(${book.id})">✏️</button>
-        <button class="book-delete" onclick="deleteBook(${book.id})">×</button>
+        <div class="book-actions">
+          <button onclick="editBook(${book.id})">✏️</button>
+          <button onclick="deleteBook(${book.id})">×</button>
+        </div>
       </div>
     `;
   }).join('');
-}
-
-function openAddBook() {
-  document.getElementById('addBookModal').classList.add('active');
-}
-
-function closeAddBook(e) {
-  if (!e || e.target === e.currentTarget) {
-    document.getElementById('addBookModal').classList.remove('active');
-    document.getElementById('bookInput').value = '';
-    document.getElementById('linkInput').value = '';
-    document.getElementById('linkFields').classList.remove('open');
-    document.getElementById('linkIcon').textContent = '+';
-  }
-}
-
-function toggleLink() {
-  const fields = document.getElementById('linkFields');
-  const isOpen = fields.classList.toggle('open');
-  document.getElementById('linkIcon').textContent = isOpen ? '−' : '+';
 }
 
 function addBook(withXP) {
@@ -852,24 +1492,49 @@ function addBook(withXP) {
   
   renderBooks();
   updateUI();
-  closeAddBook();
+  closeModal('addBookModal');
+  document.getElementById('bookInput').value = '';
+  document.getElementById('linkInput').value = '';
+}
+
+function editBook(id) {
+  const book = state.books.find(b => b.id === id);
+  if (!book) return;
+  
+  editingBookId = id;
+  document.getElementById('editBookTitle').value = book.title;
+  document.getElementById('editBookLink').value = book.link || '';
+  document.getElementById('editBookModal').classList.add('active');
+}
+
+function saveEditBook() {
+  const title = document.getElementById('editBookTitle').value.trim();
+  if (!title) {
+    showToast('タイトルを入力してください');
+    return;
+  }
+  
+  const book = state.books.find(b => b.id === editingBookId);
+  if (book) {
+    book.title = title;
+    book.link = document.getElementById('editBookLink').value.trim() || null;
+    saveState();
+    renderBooks();
+    showToast('保存しました');
+  }
+  closeModal('editBookModal');
 }
 
 function deleteBook(id) {
-  deletingBookId = id;
   const book = state.books.find(b => b.id === id);
-  if (book) {
-    document.getElementById('deleteBookTitle').textContent = book.title;
-    document.getElementById('deleteBookConfirm').classList.add('active');
-  }
+  if (!book) return;
+  
+  deletingBookId = id;
+  document.getElementById('deleteBookTitle').textContent = `「${book.title}」`;
+  document.getElementById('deleteConfirm').classList.add('active');
 }
 
-function cancelDeleteBook() {
-  document.getElementById('deleteBookConfirm').classList.remove('active');
-  deletingBookId = null;
-}
-
-function executeDeleteBook() {
+function confirmDeleteBook() {
   const book = state.books.find(b => b.id === deletingBookId);
   if (book?.xp) {
     state.xp = Math.max(0, state.xp - XP_PER_BOOK);
@@ -881,44 +1546,7 @@ function executeDeleteBook() {
   renderBooks();
   updateUI();
   showToast('削除しました');
-  cancelDeleteBook();
-}
-
-function openEditBook(id) {
-  const book = state.books.find(b => b.id === id);
-  if (!book) return;
-  
-  editingBookId = id;
-  document.getElementById('editBookTitle').value = book.title;
-  document.getElementById('editBookLink').value = book.link || '';
-  document.getElementById('editBookModal').classList.add('active');
-}
-
-function closeEditBook(e) {
-  if (!e || e.target === e.currentTarget) {
-    document.getElementById('editBookModal').classList.remove('active');
-    editingBookId = null;
-  }
-}
-
-function saveEditBook() {
-  const title = document.getElementById('editBookTitle').value.trim();
-  if (!title) {
-    showToast('タイトルを入力してください');
-    return;
-  }
-  
-  const link = document.getElementById('editBookLink').value.trim();
-  const book = state.books.find(b => b.id === editingBookId);
-  
-  if (book) {
-    book.title = title;
-    book.link = link || null;
-    saveState();
-    renderBooks();
-    showToast('保存しました');
-  }
-  closeEditBook();
+  closeModal('deleteConfirm');
 }
 
 // ========================================
@@ -926,16 +1554,6 @@ function saveEditBook() {
 // ========================================
 function renderStats() {
   document.getElementById('impactBooks').textContent = state.books.length + '冊';
-  
-  const impactSub = document.getElementById('impactSub');
-  if (state.total >= 60) {
-    impactSub.textContent = `${Math.floor(state.total / 60)}時間の読書で積み上げた成果`;
-  } else if (state.total > 0) {
-    impactSub.textContent = `${state.total}分の読書で積み上げた成果`;
-  } else {
-    impactSub.textContent = '';
-  }
-  
   document.getElementById('totalHours').textContent = Math.floor(state.total / 60);
   document.getElementById('totalSessions').textContent = state.sessions;
   
@@ -944,17 +1562,11 @@ function renderStats() {
     : 1;
   document.getElementById('daysSince').textContent = days;
   
-  renderWeekChart();
-  renderStyle();
-  renderTip();
-}
-
-function renderWeekChart() {
-  const el = document.getElementById('weekChart');
+  // 週間チャート
   const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
   const now = new Date();
   const data = [];
-  let max = 0;
+  let max = 30;
   
   for (let i = 6; i >= 0; i--) {
     const date = new Date(now);
@@ -971,29 +1583,21 @@ function renderWeekChart() {
     });
   }
   
-  max = Math.max(max, 30);
-  
-  el.innerHTML = data.map(d => {
+  document.getElementById('weekChart').innerHTML = data.map(d => {
     const height = d.minutes ? Math.max(8, Math.round(d.minutes / max * 60)) : 4;
-    const fillClass = `week-bar-fill${d.minutes ? '' : ' empty'}${d.isToday ? ' today' : ''}`;
-    const labelClass = `week-bar-label${d.isToday ? ' today' : ''}`;
-    return `<div class="week-bar">
-      <div class="${fillClass}" style="height:${height}px"></div>
-      <span class="${labelClass}">${d.label}</span>
-    </div>`;
+    return `
+      <div class="week-bar${d.isToday ? ' today' : ''}">
+        <div class="week-bar-fill${d.minutes ? '' : ' empty'}" style="height:${height}px"></div>
+        <span>${d.label}</span>
+      </div>
+    `;
   }).join('');
-}
-
-function renderStyle() {
-  const history = state.history;
   
-  const avgFocus = document.getElementById('avgFocus');
-  avgFocus.textContent = history.length 
+  // スタイル
+  const history = state.history;
+  document.getElementById('avgFocus').textContent = history.length 
     ? Math.round(history.reduce((sum, h) => sum + h.m, 0) / history.length) + '分' 
     : '--';
-  
-  const timeType = document.getElementById('timeType');
-  const timeIcon = document.getElementById('timeIcon');
   
   if (history.length >= 3) {
     const hours = history.map(h => h.h);
@@ -1004,70 +1608,29 @@ function renderStyle() {
       hours.filter(h => h >= 22 || h < 5).length
     ];
     const maxIndex = counts.indexOf(Math.max(...counts));
-    const types = [
-      ['朝型', '🌅'],
-      ['昼型', '☀️'],
-      ['夜型', '🌙'],
-      ['深夜型', '🌃']
-    ];
-    timeType.textContent = types[maxIndex][0];
-    timeIcon.textContent = types[maxIndex][1];
-  } else {
-    timeType.textContent = '--';
-    timeIcon.textContent = '🌙';
+    const types = [['朝型', '🌅'], ['昼型', '☀️'], ['夜型', '🌙'], ['深夜型', '🌃']];
+    document.getElementById('timeType').textContent = types[maxIndex][0];
+    document.getElementById('timeIcon').textContent = types[maxIndex][1];
   }
-}
-
-function renderTip() {
-  const tipEl = document.getElementById('tipText');
-  const tips = [];
   
+  // ヒント
+  const tips = [];
   if (state.books.length > 0 && state.total > 0) {
     tips.push(`平均1冊あたり${Math.round(state.total / state.books.length)}分`);
   }
-  if (state.total >= 60) {
-    tips.push(`合計${Math.floor(state.total / 60)}時間読書`);
-  }
-  if (state.total >= 120) {
-    tips.push(`映画${Math.floor(state.total / 120)}本分の時間`);
-  }
-  if (state.total > 0) {
-    tips.push(`YouTube${Math.floor(state.total / 10)}本分を読書に`);
-  }
+  if (state.total >= 60) tips.push(`合計${Math.floor(state.total / 60)}時間読書`);
+  if (state.total >= 120) tips.push(`映画${Math.floor(state.total / 120)}本分の時間`);
   
-  tipEl.textContent = tips.length 
+  document.getElementById('tipText').textContent = tips.length 
     ? tips[Math.floor(Math.random() * tips.length)] 
     : '読書を始めて記録を作ろう';
 }
 
 // ========================================
-// 設定
+// モーダル
 // ========================================
-function openSettings() {
-  document.getElementById('settingsModal').classList.add('active');
-}
-
-function closeSettings(e) {
-  if (!e || e.target === e.currentTarget) {
-    document.getElementById('settingsModal').classList.remove('active');
-  }
-}
-
-function confirmReset() {
-  document.getElementById('resetConfirm').classList.add('active');
-}
-
-function cancelReset() {
-  document.getElementById('resetConfirm').classList.remove('active');
-}
-
-function executeReset() {
-  localStorage.removeItem(STORAGE_KEY);
-  state = createInitialState();
-  updateUI();
-  document.getElementById('resetConfirm').classList.remove('active');
-  closeSettings();
-  showToast('リセットしました');
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
 }
 
 // ========================================
@@ -1101,22 +1664,98 @@ function showConfetti() {
   setTimeout(() => container.remove(), 3000);
 }
 
-async function pasteLink(inputId) {
-  const input = document.getElementById(inputId);
-  try {
-    const text = await navigator.clipboard.readText();
-    input.value = text;
-    input.focus();
-    showToast('ペーストしました');
-  } catch (e) {
-    input.focus();
-    showToast('入力欄を長押ししてペースト');
-  }
-}
+// ========================================
+// イベント設定
+// ========================================
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
 
-// ========================================
+document.getElementById('startBtn').addEventListener('click', () => {
+  timer ? stopReading() : startReading();
+});
+
+document.getElementById('stopBtn').addEventListener('click', stopReading);
+
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsModal').classList.add('active');
+});
+
+document.querySelector('.nav button[data-tab="books"]').addEventListener('click', () => {
+  // 本棚タブに切り替え時、ヘッダーに+ボタンを表示する代わりにモーダルを開くボタンを追加
+});
+
+// 本追加モーダル - 本棚タブのヘッダークリックで開く
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.header-btn.primary') || 
+      (e.target.closest('.header') && document.getElementById('tab-books').classList.contains('active'))) {
+    // 本棚タブでヘッダーをクリックした場合
+  }
+});
+
+// FABボタンを追加（本棚タブ用）
+const fab = document.createElement('button');
+fab.className = 'header-btn primary';
+fab.style.cssText = 'position:fixed;bottom:90px;right:20px;width:56px;height:56px;border-radius:50%;font-size:28px;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+fab.textContent = '+';
+fab.addEventListener('click', () => {
+  document.getElementById('addBookModal').classList.add('active');
+});
+document.body.appendChild(fab);
+
+// タブ切り替え時にFAB表示/非表示
+const originalSwitchTab = switchTab;
+switchTab = function(name) {
+  originalSwitchTab(name);
+  fab.style.display = name === 'books' ? 'flex' : 'none';
+};
+
+document.getElementById('linkToggle').addEventListener('click', () => {
+  const fields = document.getElementById('linkFields');
+  const isOpen = fields.classList.toggle('open');
+  document.getElementById('linkIcon').textContent = isOpen ? '−' : '+';
+});
+
+document.getElementById('addBookBtn').addEventListener('click', () => addBook(true));
+document.getElementById('addBookNoXpBtn').addEventListener('click', () => addBook(false));
+document.getElementById('saveEditBtn').addEventListener('click', saveEditBook);
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('resetConfirm').classList.add('active');
+});
+
+document.getElementById('confirmResetBtn').addEventListener('click', () => {
+  localStorage.removeItem(STORAGE_KEY);
+  state = createInitialState();
+  updateUI();
+  closeModal('resetConfirm');
+  closeModal('settingsModal');
+  showToast('リセットしました');
+});
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDeleteBook);
+
+document.getElementById('closeLevelup').addEventListener('click', () => {
+  document.getElementById('levelupOverlay').classList.remove('active');
+});
+
+document.getElementById('closeTitle').addEventListener('click', () => {
+  document.getElementById('titleOverlay').classList.remove('active');
+});
+
+// 閉じるボタン
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', () => closeModal(btn.dataset.close));
+});
+
+// モーダル背景クリックで閉じる
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
 // 初期化
-// ========================================
 updateUI();
 </script>
 
