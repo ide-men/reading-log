@@ -128,8 +128,13 @@ function migrateFromV4() {
 
   try {
     const parsed = JSON.parse(legacyData);
-    const firstSessionDate = parsed.history?.length > 0
-      ? parsed.history[0].d
+
+    // 配列データのバリデーション
+    const books = Array.isArray(parsed.books) ? parsed.books : [];
+    const history = Array.isArray(parsed.history) ? parsed.history : [];
+
+    const firstSessionDate = history.length > 0 && history[0].d
+      ? history[0].d
       : null;
 
     const newState = {
@@ -140,16 +145,16 @@ function migrateFromV4() {
         migratedFrom: 'V4'
       },
       stats: {
-        total: parsed.total || 0,
-        today: parsed.today || 0,
+        total: typeof parsed.total === 'number' ? parsed.total : 0,
+        today: typeof parsed.today === 'number' ? parsed.today : 0,
         date: parsed.date || new Date().toDateString(),
-        sessions: parsed.sessions || 0,
-        xp: parsed.xp || 0,
-        lv: parsed.lv || 1,
+        sessions: typeof parsed.sessions === 'number' ? parsed.sessions : 0,
+        xp: typeof parsed.xp === 'number' ? parsed.xp : 0,
+        lv: typeof parsed.lv === 'number' ? parsed.lv : 1,
         firstSessionDate
       },
-      books: parsed.books || [],
-      history: parsed.history || [],
+      books,
+      history,
       archivedHistory: {}
     };
 
@@ -327,21 +332,53 @@ function exportData() {
   showToast('バックアップをダウンロードしました');
 }
 
+function validateImportedStats(stats) {
+  if (typeof stats !== 'object' || stats === null) return false;
+  if (typeof stats.total !== 'number') return false;
+  if (typeof stats.sessions !== 'number') return false;
+  if (typeof stats.xp !== 'number') return false;
+  if (typeof stats.lv !== 'number') return false;
+  return true;
+}
+
 function importData(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
       const imported = JSON.parse(e.target.result);
 
-      // バリデーション
+      // バリデーション強化
       if (!imported.exportVersion || !imported.stats || !imported.books) {
         showToast('無効なバックアップファイルです', 4000);
         return;
       }
 
+      if (!validateImportedStats(imported.stats)) {
+        showToast('バックアップデータが破損しています', 4000);
+        return;
+      }
+
+      if (!Array.isArray(imported.books)) {
+        showToast('本のデータが不正です', 4000);
+        return;
+      }
+
+      if (imported.history && !Array.isArray(imported.history)) {
+        showToast('履歴データが不正です', 4000);
+        return;
+      }
+
       state = {
         meta: imported.meta || createInitialMeta(),
-        stats: imported.stats,
+        stats: {
+          total: imported.stats.total || 0,
+          today: imported.stats.today || 0,
+          date: imported.stats.date || new Date().toDateString(),
+          sessions: imported.stats.sessions || 0,
+          xp: imported.stats.xp || 0,
+          lv: imported.stats.lv || 1,
+          firstSessionDate: imported.stats.firstSessionDate || null
+        },
         books: imported.books || [],
         history: imported.history || [],
         archivedHistory: imported.archivedHistory || {}
@@ -384,6 +421,15 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function escapeAttr(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function adjustColor(hex, amount) {
@@ -468,7 +514,7 @@ function getNextTitleInfo(level, xp) {
   }
 
   const xpNeeded = (nextTitle.lv - 1) * CONFIG.xpPerLevel - xp;
-  const booksNeeded = Math.ceil(xpNeeded / CONFIG.xpPerBook);
+  const booksNeeded = Math.max(1, Math.ceil(xpNeeded / CONFIG.xpPerBook));
 
   return {
     text: nextTitle.name,
@@ -560,6 +606,7 @@ function switchTab(name) {
 // タイマー
 // ========================================
 function startReading() {
+  if (timer) return; // 二重起動を防止
   seconds = 0;
   applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
@@ -654,7 +701,7 @@ function renderBooks() {
     const tilt = ((i * 7) % 5) - 2;
     const hasLink = isValidUrl(book.link);
     const linkBtn = hasLink
-      ? `<button class="tooltip-btn" onclick="openLink('${escapeHtml(book.link)}', event)">リンクを開く</button>`
+      ? `<button class="tooltip-btn" data-link="${escapeAttr(book.link)}">リンクを開く</button>`
       : '';
     const darkerColor = adjustColor(color, -20);
     const lighterColor = adjustColor(color, 15);
@@ -679,9 +726,9 @@ function renderBooks() {
   }).join('');
 
   bookList.innerHTML = [...state.books].reverse().map(book => {
-    const link = isValidUrl(book.link) ? escapeHtml(book.link) : null;
+    const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
-    const linkBtn = link ? `<button onclick="openLink('${link}', event)">↗</button>` : '';
+    const linkBtn = link ? `<button data-link="${link}">↗</button>` : '';
 
     const coverHtml = book.coverUrl
       ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="book-icon-fallback">📕</div>`
@@ -696,8 +743,8 @@ function renderBooks() {
         </div>
         <div class="book-actions">
           ${linkBtn}
-          <button onclick="editBook(${book.id})">✏️</button>
-          <button onclick="deleteBook(${book.id})">×</button>
+          <button data-edit="${book.id}">✏️</button>
+          <button data-delete="${book.id}">×</button>
         </div>
       </div>
     `;
@@ -1038,16 +1085,17 @@ function initializeEventListeners() {
     });
   });
 
-  // 本棚ツールチップ位置調整
-  document.getElementById('shelf').addEventListener('mouseenter', (e) => {
-    if (!e.target.classList.contains('mini-book')) return;
+  // 本棚ツールチップ位置調整（mouseoverを使用してイベントデリゲーション対応）
+  document.getElementById('shelf').addEventListener('mouseover', (e) => {
+    const miniBook = e.target.closest('.mini-book');
+    if (!miniBook) return;
 
-    const tooltip = e.target.querySelector('.book-tooltip');
+    const tooltip = miniBook.querySelector('.book-tooltip');
     if (!tooltip) return;
 
     tooltip.classList.remove('tooltip-align-left', 'tooltip-align-right');
 
-    const bookRect = e.target.getBoundingClientRect();
+    const bookRect = miniBook.getBoundingClientRect();
     const bookCenter = bookRect.left + bookRect.width / 2;
     const screenCenter = window.innerWidth / 2;
     const threshold = window.innerWidth * 0.15;
@@ -1057,7 +1105,46 @@ function initializeEventListeners() {
     } else if (bookCenter > screenCenter + threshold) {
       tooltip.classList.add('tooltip-align-right');
     }
-  }, true);
+  });
+
+  // 本棚リンククリック（イベントデリゲーション）
+  document.getElementById('shelf').addEventListener('click', (e) => {
+    const linkBtn = e.target.closest('[data-link]');
+    if (linkBtn) {
+      e.preventDefault();
+      openLink(linkBtn.dataset.link);
+    }
+  });
+
+  // 本リストのボタン操作（イベントデリゲーション）
+  document.getElementById('bookList').addEventListener('click', (e) => {
+    const linkBtn = e.target.closest('[data-link]');
+    if (linkBtn) {
+      e.preventDefault();
+      openLink(linkBtn.dataset.link);
+      return;
+    }
+
+    const editBtn = e.target.closest('[data-edit]');
+    if (editBtn) {
+      editBook(Number(editBtn.dataset.edit));
+      return;
+    }
+
+    const deleteBtn = e.target.closest('[data-delete]');
+    if (deleteBtn) {
+      deleteBook(Number(deleteBtn.dataset.delete));
+    }
+  });
+
+  // 読書中にページを離れる際の警告
+  window.addEventListener('beforeunload', (e) => {
+    if (timer && seconds > 0) {
+      e.preventDefault();
+      e.returnValue = '読書中のデータが失われます。ページを離れますか？';
+      return e.returnValue;
+    }
+  });
 }
 
 // ========================================
