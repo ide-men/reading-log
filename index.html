@@ -234,6 +234,11 @@
           </div>
         </div>
         <div class="settings-section">
+          <h3 class="settings-section-title">🎮 デモ</h3>
+          <button class="btn btn-secondary" id="sampleDataBtn">📚 サンプルデータを読み込む</button>
+          <p class="settings-hint">紹介用のサンプルデータを読み込みます（既存データは上書きされます）</p>
+        </div>
+        <div class="settings-section">
           <h3 class="settings-section-title">⚠️ 危険な操作</h3>
           <button class="btn btn-danger" id="resetBtn">すべてのデータをリセット</button>
           <p class="settings-hint">読書記録・XP・登録した本がすべて削除されます</p>
@@ -251,6 +256,19 @@
       <div class="confirm-btns">
         <button class="confirm-cancel" data-close="resetConfirm">いいえ</button>
         <button class="confirm-ok" id="confirmResetBtn">はい</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- サンプルデータ確認 -->
+  <div class="confirm-overlay" id="sampleDataConfirm">
+    <div class="confirm-box">
+      <div class="confirm-icon">📚</div>
+      <div class="confirm-title">サンプルデータを読み込む</div>
+      <div class="confirm-text">既存のデータは上書きされます。紹介・デモ用にサンプルを読み込みますか？</div>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" data-close="sampleDataConfirm">キャンセル</button>
+        <button class="confirm-ok" id="confirmSampleBtn">読み込む</button>
       </div>
     </div>
   </div>

@@ -83,6 +83,18 @@ const READING_ANIMATIONS = [
   { icon: '🌿', anim: 'float', label: 'リラックスして読書中' }
 ];
 
+// サンプルデータ（デモ・紹介用）
+const SAMPLE_BOOKS = [
+  { title: '人を動かす', link: 'https://www.amazon.co.jp/dp/442210098X' },
+  { title: '嫌われる勇気', link: 'https://www.amazon.co.jp/dp/4478025819' },
+  { title: '7つの習慣', link: 'https://www.amazon.co.jp/dp/4863940246' },
+  { title: '夜と霧', link: 'https://www.amazon.co.jp/dp/4622039702' },
+  { title: 'FACTFULNESS', link: 'https://www.amazon.co.jp/dp/4822289605' },
+  { title: '思考の整理学', link: 'https://www.amazon.co.jp/dp/4480020470' },
+  { title: 'サピエンス全史（上）', link: 'https://www.amazon.co.jp/dp/430922671X' },
+  { title: '影響力の武器', link: 'https://www.amazon.co.jp/dp/4414304229' }
+];
+
 // ========================================
 // 状態管理
 // ========================================
@@ -368,6 +380,71 @@ function importData(file) {
     }
   };
   reader.readAsText(file);
+}
+
+function loadSampleData() {
+  const now = Date.now();
+  const dayMs = CONFIG.msPerDay;
+
+  // サンプルの本を作成（過去30日間に読了したことにする）
+  const books = SAMPLE_BOOKS.map((book, i) => {
+    const daysAgo = Math.floor((SAMPLE_BOOKS.length - 1 - i) * 4);
+    const id = now - (daysAgo * dayMs) - (i * 1000);
+    const asin = extractAsinFromUrl(book.link);
+    return {
+      id,
+      title: book.title,
+      link: book.link,
+      coverUrl: getAmazonImageUrl(asin),
+      xp: true
+    };
+  });
+
+  // サンプルの読書履歴（過去30日間でランダムに）
+  const history = [];
+  for (let i = 0; i < 25; i++) {
+    const daysAgo = Math.floor(Math.random() * 30);
+    const date = new Date(now - daysAgo * dayMs);
+    const hour = 6 + Math.floor(Math.random() * 16); // 6時〜22時
+    date.setHours(hour, Math.floor(Math.random() * 60), 0, 0);
+    history.push({
+      d: date.toISOString(),
+      m: 15 + Math.floor(Math.random() * 45), // 15〜60分
+      h: hour
+    });
+  }
+  history.sort((a, b) => new Date(a.d) - new Date(b.d));
+
+  // 統計を計算
+  const totalMinutes = history.reduce((sum, h) => sum + h.m, 0);
+  const xp = books.length * CONFIG.xpPerBook + history.length;
+  const lv = Math.floor(xp / CONFIG.xpPerLevel) + 1;
+
+  state = {
+    meta: {
+      schemaVersion: SCHEMA_VERSION,
+      createdAt: new Date(now - 30 * dayMs).toISOString(),
+      sampleDataLoaded: true
+    },
+    stats: {
+      total: totalMinutes,
+      today: history.filter(h => h.d.startsWith(new Date().toISOString().split('T')[0])).reduce((sum, h) => sum + h.m, 0),
+      date: new Date().toDateString(),
+      sessions: history.length,
+      xp,
+      lv,
+      firstSessionDate: history[0]?.d || null
+    },
+    books,
+    history,
+    archived: {}
+  };
+
+  saveState();
+  updateUI();
+  renderBooks();
+  renderStats();
+  showToast('サンプルデータを読み込みました');
 }
 
 // ========================================
@@ -1030,6 +1107,17 @@ function initializeEventListeners() {
     closeModal('resetConfirm');
     closeModal('settingsModal');
     showToast('リセットしました');
+  });
+
+  // サンプルデータ
+  document.getElementById('sampleDataBtn').addEventListener('click', () => {
+    document.getElementById('sampleDataConfirm').classList.add('active');
+  });
+
+  document.getElementById('confirmSampleBtn').addEventListener('click', () => {
+    loadSampleData();
+    closeModal('sampleDataConfirm');
+    closeModal('settingsModal');
   });
 
   // 削除確認
