@@ -431,6 +431,30 @@ html, body {
   pointer-events: none;
 }
 
+/* 左端の本用：右寄せ */
+.book-tooltip.tooltip-align-left {
+  left: 0;
+  transform: translateX(0);
+}
+
+.book-tooltip.tooltip-align-left::after {
+  left: 12px;
+  transform: translateX(0);
+}
+
+/* 右端の本用：左寄せ */
+.book-tooltip.tooltip-align-right {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}
+
+.book-tooltip.tooltip-align-right::after {
+  left: auto;
+  right: 12px;
+  transform: translateX(0);
+}
+
 .mini-book:hover .book-tooltip,
 .book-tooltip:hover {
   opacity: 1;
@@ -1646,9 +1670,7 @@ let pendingLink = null;
 
 function openLink(url, event) {
   if (event) event.preventDefault();
-  pendingLink = url;
-  document.getElementById('linkConfirmUrl').textContent = url;
-  document.getElementById('linkConfirm').classList.add('active');
+  window.open(url, '_blank');
 }
 
 function confirmOpenLink() {
@@ -2123,6 +2145,32 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     if (e.target === overlay) overlay.classList.remove('active');
   });
 });
+
+// ツールチップ位置調整（端で見切れないようにする）
+document.getElementById('shelf').addEventListener('mouseenter', (e) => {
+  if (!e.target.classList.contains('mini-book')) return;
+
+  const tooltip = e.target.querySelector('.book-tooltip');
+  if (!tooltip) return;
+
+  // 一旦クラスをリセット
+  tooltip.classList.remove('tooltip-align-left', 'tooltip-align-right');
+
+  // 本の中心位置と画面中央からの距離で判断
+  const bookRect = e.target.getBoundingClientRect();
+  const bookCenter = bookRect.left + bookRect.width / 2;
+  const screenCenter = window.innerWidth / 2;
+  const threshold = window.innerWidth * 0.15; // 中央から15%以上離れたら調整
+
+  // 画面中央より左にある場合 → ツールチップを右寄せ
+  if (bookCenter < screenCenter - threshold) {
+    tooltip.classList.add('tooltip-align-left');
+  }
+  // 画面中央より右にある場合 → ツールチップを左寄せ
+  else if (bookCenter > screenCenter + threshold) {
+    tooltip.classList.add('tooltip-align-right');
+  }
+}, true);
 
 // 初期化
 updateUI();
