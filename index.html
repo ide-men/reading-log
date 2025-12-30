@@ -314,14 +314,32 @@ html, body {
 
 .shelf-visual {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-end;
   gap: 4px;
   min-height: 80px;
   padding: 12px 8px 0;
-  overflow: visible;
-  flex-wrap: wrap;
+  overflow-x: auto;
+  overflow-y: visible;
+  flex-wrap: nowrap;
   position: relative;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--elevated);
+}
+
+.shelf-visual::-webkit-scrollbar {
+  height: 6px;
+}
+
+.shelf-visual::-webkit-scrollbar-track {
+  background: var(--elevated);
+  border-radius: 3px;
+}
+
+.shelf-visual::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
 }
 
 /* 棚板 */
