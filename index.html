@@ -216,30 +216,6 @@ html, body {
   font-weight: 700;
 }
 
-/* 統計 */
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 28px;
-  margin-bottom: 16px;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.stat-label {
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
-
 /* ボタン */
 .main-btn {
   width: 100%;
@@ -578,6 +554,69 @@ html, body {
 .impact-label {
   font-size: 14px;
   opacity: 0.8;
+}
+
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0,0,0,0.15);
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin-top: 12px;
+}
+
+.streak-fire {
+  font-size: 16px;
+}
+
+.streak-count {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.streak-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.prediction-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.prediction-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+}
+
+.prediction-item:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.prediction-icon {
+  font-size: 24px;
+}
+
+.prediction-content {
+  flex: 1;
+}
+
+.prediction-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.prediction-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
 }
 
 .stats-grid {
@@ -1158,21 +1197,6 @@ html, body {
       <div class="xp-text"><span id="xp">0</span> / 5 XP</div>
     </section>
     
-    <div class="stats-row">
-      <div class="stat-item">
-        <div class="stat-value" id="time">0:00</div>
-        <div class="stat-label">累計</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="sessions">0</div>
-        <div class="stat-label">回数</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="books">0</div>
-        <div class="stat-label">読了</div>
-      </div>
-    </div>
-    
     <button class="main-btn" id="startBtn">読書をはじめる</button>
     
     <div class="quote">
@@ -1201,8 +1225,13 @@ html, body {
     <div class="impact-card">
       <div class="impact-value" id="impactBooks">0冊</div>
       <div class="impact-label">読破した本</div>
+      <div class="streak-badge" id="streakBadge">
+        <span class="streak-fire">🔥</span>
+        <span class="streak-count" id="streakCount">0</span>
+        <span class="streak-label">日連続</span>
+      </div>
     </div>
-    
+
     <div class="stats-grid">
       <div class="stats-card">
         <div class="stats-card-value" id="totalHours">0</div>
@@ -1220,7 +1249,25 @@ html, body {
     
     <h3 class="section-title">今週の読書</h3>
     <div class="week-chart" id="weekChart"></div>
-    
+
+    <h3 class="section-title">未来予測</h3>
+    <div class="prediction-card">
+      <div class="prediction-item">
+        <span class="prediction-icon">📈</span>
+        <div class="prediction-content">
+          <div class="prediction-value" id="yearlyPrediction">--冊</div>
+          <div class="prediction-label">このペースで今年読める本</div>
+        </div>
+      </div>
+      <div class="prediction-item">
+        <span class="prediction-icon">⭐</span>
+        <div class="prediction-content">
+          <div class="prediction-value" id="nextTitle">--</div>
+          <div class="prediction-label" id="nextTitleLabel">次の称号まで</div>
+        </div>
+      </div>
+    </div>
+
     <h3 class="section-title">あなたのスタイル</h3>
     <div class="style-card">
       <span class="style-icon">🎯</span>
@@ -1514,6 +1561,70 @@ function adjustColor(hex, amount) {
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
 }
 
+function calculateStreak(history) {
+  if (!history.length) return 0;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 日付ごとにセッションがあるかチェック
+  const readingDays = new Set(
+    history.map(h => new Date(h.d).toDateString())
+  );
+
+  let streak = 0;
+  const checkDate = new Date(today);
+
+  // 今日読んでいない場合は昨日からカウント開始
+  if (!readingDays.has(today.toDateString())) {
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  while (readingDays.has(checkDate.toDateString())) {
+    streak++;
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  return streak;
+}
+
+function calculateYearlyPrediction(books, history) {
+  if (!books.length || !history.length) return '--冊';
+
+  const now = new Date();
+  const firstSession = new Date(history[0].d);
+  const daysSinceStart = Math.max(1, Math.ceil((now - firstSession) / 86400000));
+
+  // 1日あたりの読了ペース
+  const booksPerDay = books.length / daysSinceStart;
+
+  // 今年の残り日数
+  const endOfYear = new Date(now.getFullYear(), 11, 31);
+  const daysLeft = Math.ceil((endOfYear - now) / 86400000);
+
+  // 今年読める予測冊数
+  const prediction = books.length + Math.round(booksPerDay * daysLeft);
+
+  return prediction + '冊';
+}
+
+function getNextTitleInfo(level, xp) {
+  const currentTitle = getTitle(level);
+  const nextTitle = TITLES.find(t => t.lv > level);
+
+  if (!nextTitle) {
+    return { text: '最高位到達！', label: '全称号獲得済み' };
+  }
+
+  const xpNeeded = (nextTitle.lv - 1) * XP_PER_LEVEL - xp;
+  const booksNeeded = Math.ceil(xpNeeded / XP_PER_BOOK);
+
+  return {
+    text: nextTitle.name,
+    label: `あと${booksNeeded}冊で獲得`
+  };
+}
+
 // ========================================
 // リンク確認
 // ========================================
@@ -1547,10 +1658,6 @@ function updateUI() {
   document.getElementById('xp').textContent = xpInLevel;
   const percent = (xpInLevel / XP_PER_LEVEL) * 100;
   document.getElementById('ring').style.strokeDashoffset = 414.69 - (percent / 100 * 414.69);
-  
-  document.getElementById('time').textContent = formatTime(state.total);
-  document.getElementById('sessions').textContent = state.sessions;
-  document.getElementById('books').textContent = state.books.length;
   
   const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
@@ -1825,7 +1932,21 @@ function renderStats() {
       </div>
     `;
   }).join('');
-  
+
+  // ストリーク計算
+  const streak = calculateStreak(state.history);
+  document.getElementById('streakCount').textContent = streak;
+  document.getElementById('streakBadge').style.display = streak > 0 ? 'inline-flex' : 'none';
+
+  // 年間読書予測
+  const yearlyPrediction = calculateYearlyPrediction(state.books, state.history);
+  document.getElementById('yearlyPrediction').textContent = yearlyPrediction;
+
+  // 次の称号まで
+  const nextTitleInfo = getNextTitleInfo(state.lv, state.xp);
+  document.getElementById('nextTitle').textContent = nextTitleInfo.text;
+  document.getElementById('nextTitleLabel').textContent = nextTitleInfo.label;
+
   // スタイル
   const history = state.history;
   document.getElementById('avgFocus').textContent = history.length 
