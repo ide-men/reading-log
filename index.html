@@ -1822,19 +1822,20 @@ function renderBooks() {
   
   bookList.innerHTML = [...state.books].reverse().map(book => {
     const link = isValidUrl(book.link) ? escapeHtml(book.link) : null;
-    const titleHtml = link
-      ? `<a href="#" onclick="openLink('${link}', event)">${escapeHtml(book.title)}</a>`
-      : escapeHtml(book.title);
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
+    const linkBtn = link
+      ? `<button onclick="openLink('${link}', event)" title="リンクを開く">↗</button>`
+      : '';
 
     return `
       <div class="book-item">
         <div class="book-icon">📕</div>
         <div class="book-info">
-          <div class="book-name">${titleHtml}</div>
+          <div class="book-name">${escapeHtml(book.title)}</div>
           <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
         </div>
         <div class="book-actions">
+          ${linkBtn}
           <button onclick="editBook(${book.id})">✏️</button>
           <button onclick="deleteBook(${book.id})">×</button>
         </div>
