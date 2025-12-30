@@ -737,7 +737,18 @@ function checkCoverImages() {
     const url = el.dataset.coverUrl;
     const img = new Image();
     img.onload = () => el.classList.remove('cover-error');
-    img.onerror = () => el.classList.add('cover-error');
+    img.onerror = () => {
+      el.classList.add('cover-error');
+      // カバー画像エラー時は背景を戻す（リンクなし時と同じ表示）
+      const color = el.dataset.color;
+      if (color && el.classList.contains('mini-book')) {
+        // 本棚の本はグラデーション背景に戻す
+        const darkerColor = adjustColor(color, -20);
+        const lighterColor = adjustColor(color, 15);
+        el.style.backgroundImage = 'none';
+        el.style.background = `linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%)`;
+      }
+    };
     img.src = url;
   });
 }
@@ -787,7 +798,7 @@ function renderBooks() {
         width:${width}px;
         ${bgStyle}
         transform: rotate(${tilt}deg);
-      "${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}"` : ''}>
+      "${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}" data-color="${color}"` : ''}>
         <div class="book-tooltip">
           <div class="tooltip-title">${escapeHtml(book.title)}</div>
           ${linkBtn}
@@ -812,7 +823,7 @@ function renderBooks() {
 
     return `
       <div class="book-item">
-        <div class="book-icon${book.coverUrl ? ' has-cover' : ''}" style="background-color: ${color}"${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}"` : ''}>${coverHtml}</div>
+        <div class="book-icon${book.coverUrl ? ' has-cover' : ''}" style="background-color: ${color}"${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}" data-color="${color}"` : ''}>${coverHtml}</div>
         <div class="book-info">
           <div class="book-name">${escapeHtml(book.title)}</div>
           <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
