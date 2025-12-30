@@ -92,7 +92,19 @@ const SAMPLE_BOOKS = [
   { title: 'FACTFULNESS', link: 'https://www.amazon.co.jp/dp/4822289605' },
   { title: '思考の整理学', link: 'https://www.amazon.co.jp/dp/4480020470' },
   { title: 'サピエンス全史（上）', link: 'https://www.amazon.co.jp/dp/430922671X' },
-  { title: '影響力の武器', link: 'https://www.amazon.co.jp/dp/4414304229' }
+  { title: '影響力の武器', link: 'https://www.amazon.co.jp/dp/4414304229' },
+  { title: '金持ち父さん貧乏父さん', link: 'https://www.amazon.co.jp/dp/4480864245' },
+  { title: 'イシューからはじめよ', link: 'https://www.amazon.co.jp/dp/4862760856' },
+  { title: 'エッセンシャル思考', link: 'https://www.amazon.co.jp/dp/4761270438' },
+  { title: 'アウトプット大全', link: 'https://www.amazon.co.jp/dp/4801400558' },
+  { title: '1日1ページ、読むだけで身につく世界の教養365', link: 'https://www.amazon.co.jp/dp/4866510552' },
+  { title: 'DIE WITH ZERO', link: 'https://www.amazon.co.jp/dp/447810911X' },
+  { title: '限りある時間の使い方', link: 'https://www.amazon.co.jp/dp/4761276150' },
+  { title: 'チーズはどこへ消えた？', link: 'https://www.amazon.co.jp/dp/459403019X' },
+  { title: '君たちはどう生きるか', link: 'https://www.amazon.co.jp/dp/4003315812' },
+  { title: 'アトミック・ハビッツ', link: 'https://www.amazon.co.jp/dp/4833423057' },
+  { title: '1兆ドルコーチ', link: 'https://www.amazon.co.jp/dp/4478107246' },
+  { title: 'LIFE SHIFT', link: 'https://www.amazon.co.jp/dp/4492533877' }
 ];
 
 // ========================================
