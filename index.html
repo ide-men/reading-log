@@ -840,24 +840,55 @@ html, body {
 .prediction-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 20px;
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prediction-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.08;
+  transition: opacity 0.2s ease;
+}
+
+.prediction-card-yearly::before {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.prediction-card-title::before {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.prediction-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.prediction-card:hover::before {
+  opacity: 0.15;
 }
 
 .prediction-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 0;
-}
-
-.prediction-item:not(:last-child) {
-  border-bottom: 1px solid var(--border);
+  gap: 16px;
+  padding: 4px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .prediction-icon {
-  font-size: 24px;
+  font-size: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .prediction-content {
@@ -865,15 +896,23 @@ html, body {
 }
 
 .prediction-value {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text);
+  margin-bottom: 2px;
 }
 
 .prediction-label {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.prediction-hint {
   font-size: 11px;
   color: var(--text-dim);
-  margin-top: 2px;
+  opacity: 0.8;
 }
 
 .stats-grid {
@@ -1645,20 +1684,24 @@ html, body {
     <h3 class="section-title">今週の読書</h3>
     <div class="week-chart" id="weekChart"></div>
 
-    <h3 class="section-title">未来予測</h3>
-    <div class="prediction-card">
+    <h3 class="section-title">🔮 この先の読書ライフ</h3>
+    <div class="prediction-card prediction-card-yearly">
       <div class="prediction-item">
         <span class="prediction-icon">📈</span>
         <div class="prediction-content">
           <div class="prediction-value" id="yearlyPrediction">--冊</div>
-          <div class="prediction-label">このペースで今年読める本</div>
+          <div class="prediction-label">今年の読了予想</div>
+          <div class="prediction-hint">このペースで読み続けると…</div>
         </div>
       </div>
+    </div>
+    <div class="prediction-card prediction-card-title">
       <div class="prediction-item">
         <span class="prediction-icon">⭐</span>
         <div class="prediction-content">
           <div class="prediction-value" id="nextTitle">--</div>
-          <div class="prediction-label" id="nextTitleLabel">次の称号まで</div>
+          <div class="prediction-label">次に待っている称号</div>
+          <div class="prediction-hint" id="nextTitleLabel">次の称号まで</div>
         </div>
       </div>
     </div>
