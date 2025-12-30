@@ -1,13 +1,25 @@
 // ========================================
 // 定数・設定
 // ========================================
-const STORAGE_KEY = 'readingLogV4';
+const STORAGE_VERSION = 5;
+const LEGACY_STORAGE_KEY = 'readingLogV4';
+
+const STORAGE_KEYS = {
+  meta: 'rl_meta',
+  stats: 'rl_stats',
+  books: 'rl_books',
+  history: 'rl_history',
+  archivedHistory: 'rl_archived'
+};
 
 const CONFIG = {
   xpPerLevel: 5,
   xpPerBook: 10,
   minSessionMinutes: 10,
-  msPerDay: 86400000
+  msPerDay: 86400000,
+  historyRetentionDays: 90,
+  archiveRetentionDays: 365,
+  storageWarningPercent: 80
 };
 
 const TITLES = [
@@ -74,13 +86,20 @@ const READING_ANIMATIONS = [
 // ========================================
 // 状態管理
 // ========================================
-let state = loadState();
+let state = null;
 let timer = null;
 let seconds = 0;
 let deletingBookId = null;
 let editingBookId = null;
 
-function createInitialState() {
+function createInitialMeta() {
+  return {
+    version: STORAGE_VERSION,
+    createdAt: new Date().toISOString()
+  };
+}
+
+function createInitialStats() {
   return {
     total: 0,
     today: 0,
@@ -88,32 +107,259 @@ function createInitialState() {
     sessions: 0,
     xp: 0,
     lv: 1,
+    firstSessionDate: null
+  };
+}
+
+function createInitialState() {
+  return {
+    meta: createInitialMeta(),
+    stats: createInitialStats(),
     books: [],
     history: [],
-    milestones: []
+    archivedHistory: {}
   };
+}
+
+// V4からV5へのマイグレーション
+function migrateFromV4() {
+  const legacyData = localStorage.getItem(LEGACY_STORAGE_KEY);
+  if (!legacyData) return null;
+
+  try {
+    const parsed = JSON.parse(legacyData);
+    const firstSessionDate = parsed.history?.length > 0
+      ? parsed.history[0].d
+      : null;
+
+    const newState = {
+      meta: {
+        version: STORAGE_VERSION,
+        createdAt: firstSessionDate || new Date().toISOString(),
+        migratedAt: new Date().toISOString(),
+        migratedFrom: 'V4'
+      },
+      stats: {
+        total: parsed.total || 0,
+        today: parsed.today || 0,
+        date: parsed.date || new Date().toDateString(),
+        sessions: parsed.sessions || 0,
+        xp: parsed.xp || 0,
+        lv: parsed.lv || 1,
+        firstSessionDate
+      },
+      books: parsed.books || [],
+      history: parsed.history || [],
+      archivedHistory: {}
+    };
+
+    // 新形式で保存
+    saveStateToStorage(newState);
+
+    // 旧データをバックアップキーに移動（安全のため）
+    localStorage.setItem(LEGACY_STORAGE_KEY + '_backup', legacyData);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+
+    console.log('Migration from V4 completed successfully');
+    return newState;
+  } catch (e) {
+    console.error('Migration failed:', e);
+    return null;
+  }
 }
 
 function loadState() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const today = new Date().toDateString();
-      if (parsed.date !== today) {
-        parsed.today = 0;
-        parsed.date = today;
+    // まず新形式をチェック
+    const meta = localStorage.getItem(STORAGE_KEYS.meta);
+    if (meta) {
+      const parsedMeta = JSON.parse(meta);
+      if (parsedMeta.version === STORAGE_VERSION) {
+        const loadedState = {
+          meta: parsedMeta,
+          stats: JSON.parse(localStorage.getItem(STORAGE_KEYS.stats) || '{}'),
+          books: JSON.parse(localStorage.getItem(STORAGE_KEYS.books) || '[]'),
+          history: JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]'),
+          archivedHistory: JSON.parse(localStorage.getItem(STORAGE_KEYS.archivedHistory) || '{}')
+        };
+
+        // 日付リセット
+        const today = new Date().toDateString();
+        if (loadedState.stats.date !== today) {
+          loadedState.stats.today = 0;
+          loadedState.stats.date = today;
+        }
+
+        return loadedState;
       }
-      return parsed;
     }
+
+    // V4からのマイグレーションを試行
+    const migrated = migrateFromV4();
+    if (migrated) return migrated;
+
   } catch (e) {
     console.error('Failed to load state:', e);
   }
   return createInitialState();
 }
 
+function saveStateToStorage(s) {
+  localStorage.setItem(STORAGE_KEYS.meta, JSON.stringify(s.meta));
+  localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(s.stats));
+  localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(s.books));
+  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(s.history));
+  localStorage.setItem(STORAGE_KEYS.archivedHistory, JSON.stringify(s.archivedHistory));
+}
+
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  saveStateToStorage(state);
+}
+
+// ========================================
+// 履歴クリーンアップ
+// ========================================
+function cleanupHistory() {
+  const now = new Date();
+  const retentionCutoff = new Date(now - CONFIG.historyRetentionDays * CONFIG.msPerDay);
+  const archiveCutoff = new Date(now - CONFIG.archiveRetentionDays * CONFIG.msPerDay);
+
+  const recentHistory = [];
+  const toArchive = [];
+
+  for (const entry of state.history) {
+    const entryDate = new Date(entry.d);
+    if (entryDate >= retentionCutoff) {
+      recentHistory.push(entry);
+    } else {
+      toArchive.push(entry);
+    }
+  }
+
+  // 古い履歴を月別に集約
+  for (const entry of toArchive) {
+    const monthKey = entry.d.substring(0, 7); // "YYYY-MM"
+    if (!state.archivedHistory[monthKey]) {
+      state.archivedHistory[monthKey] = { sessions: 0, totalMinutes: 0 };
+    }
+    state.archivedHistory[monthKey].sessions++;
+    state.archivedHistory[monthKey].totalMinutes += entry.m;
+  }
+
+  // 1年以上前のアーカイブを削除
+  for (const monthKey of Object.keys(state.archivedHistory)) {
+    const monthDate = new Date(monthKey + '-01');
+    if (monthDate < archiveCutoff) {
+      delete state.archivedHistory[monthKey];
+    }
+  }
+
+  state.history = recentHistory;
+
+  if (toArchive.length > 0) {
+    console.log(`Archived ${toArchive.length} history entries`);
+  }
+}
+
+// ========================================
+// ストレージ容量管理
+// ========================================
+function getStorageUsage() {
+  let used = 0;
+  for (const key of Object.values(STORAGE_KEYS)) {
+    const item = localStorage.getItem(key);
+    if (item) used += item.length * 2; // UTF-16 = 2 bytes per char
+  }
+  const limit = 5 * 1024 * 1024;
+  return {
+    used,
+    limit,
+    percent: Math.round((used / limit) * 100 * 10) / 10,
+    usedKB: Math.round(used / 1024 * 10) / 10,
+    limitMB: 5
+  };
+}
+
+function checkStorageWarning() {
+  const usage = getStorageUsage();
+  if (usage.percent >= CONFIG.storageWarningPercent) {
+    console.warn(`Storage usage: ${usage.percent}%`);
+    return true;
+  }
+  return false;
+}
+
+function updateStorageDisplay() {
+  const usage = getStorageUsage();
+  const barFill = document.getElementById('storageBarFill');
+  const usedText = document.getElementById('storageUsed');
+
+  if (barFill) {
+    barFill.style.width = `${Math.min(usage.percent, 100)}%`;
+    barFill.classList.toggle('warning', usage.percent >= CONFIG.storageWarningPercent);
+  }
+  if (usedText) {
+    usedText.textContent = usage.usedKB;
+  }
+}
+
+// ========================================
+// バックアップ・復元
+// ========================================
+function exportData() {
+  const exportObj = {
+    exportVersion: STORAGE_VERSION,
+    exportDate: new Date().toISOString(),
+    meta: state.meta,
+    stats: state.stats,
+    books: state.books,
+    history: state.history,
+    archivedHistory: state.archivedHistory
+  };
+
+  const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `reading-log-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('バックアップをダウンロードしました');
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+
+      // バリデーション
+      if (!imported.exportVersion || !imported.stats || !imported.books) {
+        showToast('無効なバックアップファイルです', 4000);
+        return;
+      }
+
+      state = {
+        meta: imported.meta || createInitialMeta(),
+        stats: imported.stats,
+        books: imported.books || [],
+        history: imported.history || [],
+        archivedHistory: imported.archivedHistory || {}
+      };
+      state.meta.version = STORAGE_VERSION;
+      state.meta.importedAt = new Date().toISOString();
+
+      saveState();
+      updateUI();
+      renderBooks();
+      renderStats();
+      showToast('データを復元しました');
+    } catch (err) {
+      console.error('Import failed:', err);
+      showToast('インポートに失敗しました', 4000);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ========================================
@@ -178,13 +424,13 @@ function getAmazonImageUrl(asin) {
 // ========================================
 // 統計計算
 // ========================================
-function calculateStreak(history) {
-  if (!history.length) return 0;
+function calculateStreak() {
+  if (!state.history.length) return 0;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const readingDays = new Set(history.map(h => new Date(h.d).toDateString()));
+  const readingDays = new Set(state.history.map(h => new Date(h.d).toDateString()));
   let streak = 0;
   const checkDate = new Date(today);
 
@@ -243,7 +489,7 @@ function openLink(url, event) {
 // ========================================
 function getButtonAnimation() {
   const hour = new Date().getHours();
-  const streak = calculateStreak(state.history);
+  const streak = calculateStreak();
 
   if (streak >= 3 && Math.random() < 0.3) {
     return randomItem(BUTTON_ANIMATIONS.streak);
@@ -328,11 +574,14 @@ function stopReading() {
   document.getElementById('readingScreen').classList.remove('active');
 
   const minutes = Math.floor(seconds / 60);
-  state.total += minutes;
-  state.today += minutes;
+  state.stats.total += minutes;
+  state.stats.today += minutes;
 
   if (minutes >= CONFIG.minSessionMinutes) {
-    state.sessions++;
+    state.stats.sessions++;
+    if (!state.stats.firstSessionDate) {
+      state.stats.firstSessionDate = new Date().toISOString();
+    }
     state.history.push({
       d: new Date().toISOString(),
       m: minutes,
@@ -351,17 +600,17 @@ function stopReading() {
 // XP・レベルアップ
 // ========================================
 function addXP(amount) {
-  const oldLevel = state.lv;
-  state.xp += amount;
-  state.lv = Math.floor(state.xp / CONFIG.xpPerLevel) + 1;
+  const oldLevel = state.stats.lv;
+  state.stats.xp += amount;
+  state.stats.lv = Math.floor(state.stats.xp / CONFIG.xpPerLevel) + 1;
 
-  if (state.lv > oldLevel) {
-    document.getElementById('newLevel').textContent = `Lv.${state.lv}`;
+  if (state.stats.lv > oldLevel) {
+    document.getElementById('newLevel').textContent = `Lv.${state.stats.lv}`;
     document.getElementById('levelupOverlay').classList.add('active');
     showConfetti();
 
     const oldTitle = getTitle(oldLevel);
-    const newTitle = getTitle(state.lv);
+    const newTitle = getTitle(state.stats.lv);
     if (newTitle.name !== oldTitle.name) {
       setTimeout(() => {
         document.getElementById('newTitleIcon').textContent = newTitle.icon;
@@ -546,8 +795,8 @@ function deleteBook(id) {
 function confirmDeleteBook() {
   const book = state.books.find(b => b.id === deletingBookId);
   if (book?.xp) {
-    state.xp = Math.max(0, state.xp - CONFIG.xpPerBook);
-    state.lv = Math.floor(state.xp / CONFIG.xpPerLevel) + 1;
+    state.stats.xp = Math.max(0, state.stats.xp - CONFIG.xpPerBook);
+    state.stats.lv = Math.floor(state.stats.xp / CONFIG.xpPerLevel) + 1;
   }
   state.books = state.books.filter(b => b.id !== deletingBookId);
 
@@ -562,11 +811,11 @@ function confirmDeleteBook() {
 // 統計
 // ========================================
 function renderStats() {
-  const title = getTitle(state.lv);
-  document.getElementById('levelDisplay').textContent = `Lv.${state.lv}`;
+  const title = getTitle(state.stats.lv);
+  document.getElementById('levelDisplay').textContent = `Lv.${state.stats.lv}`;
   document.getElementById('titleDisplay').textContent = title.name;
 
-  const xpInLevel = state.xp % CONFIG.xpPerLevel;
+  const xpInLevel = state.stats.xp % CONFIG.xpPerLevel;
   document.getElementById('xpProgress').textContent = xpInLevel;
   document.getElementById('xpNeeded').textContent = CONFIG.xpPerLevel;
 
@@ -574,11 +823,13 @@ function renderStats() {
   const progress = xpInLevel / CONFIG.xpPerLevel;
   document.getElementById('xpRing').style.strokeDashoffset = circumference * (1 - progress);
 
-  document.getElementById('totalHours').textContent = Math.floor(state.total / 60);
-  document.getElementById('totalSessions').textContent = state.sessions;
+  document.getElementById('totalHours').textContent = Math.floor(state.stats.total / 60);
+  document.getElementById('totalSessions').textContent = state.stats.sessions;
 
-  const days = state.history.length
-    ? Math.max(1, Math.ceil((Date.now() - new Date(state.history[0].d)) / CONFIG.msPerDay))
+  // firstSessionDateを使って開始からの日数を計算
+  const startDate = state.stats.firstSessionDate || (state.history.length ? state.history[0].d : null);
+  const days = startDate
+    ? Math.max(1, Math.ceil((Date.now() - new Date(startDate)) / CONFIG.msPerDay))
     : 1;
   document.getElementById('daysSince').textContent = days;
 
@@ -642,11 +893,11 @@ function renderReadingInsights() {
   }
 
   const tips = [];
-  if (state.books.length > 0 && state.total > 0) {
-    tips.push(`平均1冊あたり${Math.round(state.total / state.books.length)}分`);
+  if (state.books.length > 0 && state.stats.total > 0) {
+    tips.push(`平均1冊あたり${Math.round(state.stats.total / state.books.length)}分`);
   }
-  if (state.total >= 60) tips.push(`合計${Math.floor(state.total / 60)}時間読書`);
-  if (state.total >= 120) tips.push(`映画${Math.floor(state.total / 120)}本分の時間`);
+  if (state.stats.total >= 60) tips.push(`合計${Math.floor(state.stats.total / 60)}時間読書`);
+  if (state.stats.total >= 120) tips.push(`映画${Math.floor(state.stats.total / 120)}本分の時間`);
 
   document.getElementById('tipText').textContent = tips.length
     ? randomItem(tips)
@@ -708,7 +959,20 @@ function initializeEventListeners() {
 
   // 設定
   document.getElementById('settingsBtn').addEventListener('click', () => {
+    updateStorageDisplay();
     document.getElementById('settingsModal').classList.add('active');
+  });
+
+  // バックアップ・復元
+  document.getElementById('exportBtn').addEventListener('click', exportData);
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFile').click();
+  });
+  document.getElementById('importFile').addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+      importData(e.target.files[0]);
+      e.target.value = '';
+    }
   });
 
   // FAB（本追加ボタン）
@@ -739,8 +1003,11 @@ function initializeEventListeners() {
   });
 
   document.getElementById('confirmResetBtn').addEventListener('click', () => {
-    localStorage.removeItem(STORAGE_KEY);
+    for (const key of Object.values(STORAGE_KEYS)) {
+      localStorage.removeItem(key);
+    }
     state = createInitialState();
+    saveState();
     updateUI();
     closeModal('resetConfirm');
     closeModal('settingsModal');
@@ -796,5 +1063,8 @@ function initializeEventListeners() {
 // ========================================
 // 初期化
 // ========================================
+state = loadState();
+cleanupHistory();
+saveState();
 initializeEventListeners();
 updateUI();
