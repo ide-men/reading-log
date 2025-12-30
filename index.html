@@ -444,26 +444,156 @@ html, body {
 .bookshelf {
   background: linear-gradient(to bottom, #1a1410, var(--surface) 70%);
   margin: 0 -20px 20px;
-  padding: 20px;
+  padding: 24px 20px 20px;
   text-align: center;
 }
 
-.bookshelf-title {
-  font-size: 12px;
-  color: var(--accent);
-  letter-spacing: 0.15em;
+.bookshelf-header {
+  margin-bottom: 16px;
+}
+
+.bookshelf-emoji {
+  font-size: 40px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.bookshelf-title-main {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
+.bookshelf-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  opacity: 0.8;
+}
+
+.bookshelf-stats {
+  margin-bottom: 16px;
+}
+
+.bookshelf-stat-main {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: rgba(232, 168, 124, 0.1);
+  border: 1px solid rgba(232, 168, 124, 0.2);
+  border-radius: 20px;
+  padding: 8px 20px;
+}
+
 .bookshelf-count {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
-  color: var(--text);
+  color: var(--accent);
 }
 
 .bookshelf-label {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* 本棚サマリーカード */
+.books-summary {
+  display: none;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.books-summary.has-books {
+  display: grid;
+}
+
+.books-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.books-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.08;
+  transition: opacity 0.2s ease;
+}
+
+.books-summary-card-recent::before {
+  background: linear-gradient(135deg, #e8a87c 0%, #f0c27b 100%);
+}
+
+.books-summary-card-xp::before {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.books-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.books-summary-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.books-summary-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.books-summary-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  position: relative;
+  z-index: 1;
+}
+
+/* 本リストヒント */
+.books-list-hint {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.books-list-hint.visible {
+  display: flex;
+}
+
+/* 本棚のヒント */
+.books-tip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232, 168, 124, 0.08);
+  border: 1px solid rgba(232, 168, 124, 0.15);
+  border-radius: 12px;
+  padding: 12px 16px;
   font-size: 13px;
   color: var(--text-dim);
+  margin-top: 20px;
 }
 
 /* 本棚フレーム */
@@ -698,10 +828,26 @@ html, body {
 
 .empty-shelf {
   color: var(--text-dim);
-  font-size: 13px;
+  font-size: 14px;
   padding: 30px 20px;
-  font-style: italic;
-  opacity: 0.7;
+  text-align: center;
+}
+
+.empty-shelf-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.empty-shelf-text {
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.empty-shelf-hint {
+  font-size: 12px;
+  opacity: 0.8;
 }
 
 /* 本リスト */
@@ -1642,16 +1788,37 @@ html, body {
   <!-- 本棚タブ -->
   <div class="tab" id="tab-books">
     <div class="bookshelf">
-      <div class="bookshelf-title">📚 My Library</div>
-      <div class="bookshelf-count" id="bookCount">0</div>
-      <div class="bookshelf-label">冊読了</div>
+      <div class="bookshelf-header">
+        <div class="bookshelf-emoji">📚</div>
+        <div class="bookshelf-title-main">あなたの本棚</div>
+        <div class="bookshelf-subtitle">読み終えた本がここに並びます</div>
+      </div>
+      <div class="bookshelf-stats">
+        <div class="bookshelf-stat-main">
+          <div class="bookshelf-count" id="bookCount">0</div>
+          <div class="bookshelf-label">冊読了</div>
+        </div>
+      </div>
       <div class="shelf-container">
         <div class="shelf-board">
           <div class="shelf-visual" id="shelf"></div>
         </div>
       </div>
     </div>
+
+    <div class="books-summary" id="booksSummary"></div>
+
+    <h3 class="section-title" id="booksListTitle">📖 読了リスト</h3>
+    <div class="books-list-hint" id="booksListHint">
+      <span>💡</span>
+      <span>本をタップすると編集できます</span>
+    </div>
     <div id="bookList"></div>
+
+    <div class="books-tip" id="booksTip">
+      <span>💡</span>
+      <span id="booksTipText">読書を記録して本棚を育てよう</span>
+    </div>
   </div>
   
   <!-- 記録タブ -->
@@ -2320,16 +2487,68 @@ function addXP(amount) {
 // 本棚
 // ========================================
 function renderBooks() {
-  document.getElementById('bookCount').textContent = state.books.length;
-  
+  const bookCount = state.books.length;
+  document.getElementById('bookCount').textContent = bookCount;
+
   const shelf = document.getElementById('shelf');
   const bookList = document.getElementById('bookList');
-  
-  if (!state.books.length) {
-    shelf.innerHTML = '<div class="empty-shelf">まだ本がありません</div>';
+  const booksSummary = document.getElementById('booksSummary');
+  const booksListTitle = document.getElementById('booksListTitle');
+  const booksListHint = document.getElementById('booksListHint');
+  const booksTip = document.getElementById('booksTip');
+  const booksTipText = document.getElementById('booksTipText');
+
+  if (!bookCount) {
+    shelf.innerHTML = `
+      <div class="empty-shelf">
+        <div class="empty-shelf-icon">📖</div>
+        <div class="empty-shelf-text">まだ本がありません</div>
+        <div class="empty-shelf-hint">読み終えた本を記録してみましょう</div>
+      </div>`;
     bookList.innerHTML = '';
+    booksSummary.classList.remove('has-books');
+    booksListTitle.style.display = 'none';
+    booksListHint.classList.remove('visible');
+    booksTipText.textContent = '右下の + ボタンから読了を記録できます';
     return;
   }
+
+  // 統計データの計算
+  const booksWithXP = state.books.filter(b => b.xp).length;
+  const recentBooks = state.books.filter(b => {
+    const bookDate = new Date(b.id);
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    return bookDate >= thirtyDaysAgo;
+  }).length;
+
+  // サマリーカードを表示
+  booksSummary.classList.add('has-books');
+  booksSummary.innerHTML = `
+    <div class="books-summary-card books-summary-card-recent">
+      <div class="books-summary-icon">📅</div>
+      <div class="books-summary-value">${recentBooks}冊</div>
+      <div class="books-summary-label">今月の読了</div>
+    </div>
+    <div class="books-summary-card books-summary-card-xp">
+      <div class="books-summary-icon">✨</div>
+      <div class="books-summary-value">+${booksWithXP * 10} XP</div>
+      <div class="books-summary-label">獲得したXP</div>
+    </div>
+  `;
+
+  // セクションタイトルとヒント表示
+  booksListTitle.style.display = 'block';
+  booksListHint.classList.add('visible');
+
+  // ヒントメッセージ
+  const tips = [
+    'Amazon URLを登録すると表紙が自動表示されます',
+    '本棚の本をタップすると詳細が見れます',
+    '読書を続けてレベルアップしよう',
+    'あなたの読書ペース、素晴らしいです'
+  ];
+  booksTipText.textContent = tips[bookCount % tips.length];
 
   shelf.innerHTML = state.books.map((book, i) => {
     const color = BOOK_COLORS[i % BOOK_COLORS.length];
