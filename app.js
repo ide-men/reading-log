@@ -736,24 +736,10 @@ function checkCoverImages() {
   document.querySelectorAll('[data-cover-url]').forEach(el => {
     const url = el.dataset.coverUrl;
     const img = new Image();
-    img.onload = () => el.classList.remove('cover-error');
+    img.onload = () => {};
     img.onerror = () => {
-      // カバー画像エラー時はリンクなしと同じデザインに
-      el.classList.remove('has-cover');
-      const color = el.dataset.color;
-      if (color && el.classList.contains('mini-book')) {
-        // 本棚の本はグラデーション背景に戻す
-        const darkerColor = adjustColor(color, -20);
-        const lighterColor = adjustColor(color, 15);
-        el.style.backgroundColor = '';
-        el.style.backgroundImage = '';
-        el.style.backgroundSize = '';
-        el.style.backgroundPosition = '';
-        el.style.background = `linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%)`;
-      } else {
-        // リストの本はcover-errorクラスを追加して絵文字を表示
-        el.classList.add('cover-error');
-      }
+      // カバー画像取得エラー（CSSには影響させない）
+      console.log('Cover image load failed:', url);
     };
     img.src = url;
   });
