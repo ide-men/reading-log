@@ -767,7 +767,7 @@ function renderBooks() {
     const lighterColor = adjustColor(color, 15);
 
     const bgStyle = book.coverUrl
-      ? `background-image: url('${escapeHtml(book.coverUrl)}'); background-size: cover; background-position: center;`
+      ? `background-color: ${color}; background-image: url('${escapeHtml(book.coverUrl)}'); background-size: cover; background-position: center;`
       : `background: linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%);`;
     const hasCoverClass = book.coverUrl ? 'has-cover' : '';
 
