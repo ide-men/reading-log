@@ -218,8 +218,26 @@
         <button class="modal-close" data-close="settingsModal">×</button>
       </div>
       <div class="modal-body">
-        <button class="btn btn-danger" id="resetBtn">すべてのデータをリセット</button>
-        <p class="settings-hint">読書記録・XP・登録した本がすべて削除されます</p>
+        <div class="settings-section">
+          <h3 class="settings-section-title">💾 データ管理</h3>
+          <div class="storage-info">
+            <div class="storage-label">ストレージ使用量</div>
+            <div class="storage-bar">
+              <div class="storage-bar-fill" id="storageBarFill"></div>
+            </div>
+            <div class="storage-text"><span id="storageUsed">0</span> KB / 5 MB</div>
+          </div>
+          <div class="settings-btns">
+            <button class="btn btn-secondary" id="exportBtn">📤 バックアップ</button>
+            <button class="btn btn-secondary" id="importBtn">📥 復元</button>
+            <input type="file" id="importFile" accept=".json" style="display:none">
+          </div>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-section-title">⚠️ 危険な操作</h3>
+          <button class="btn btn-danger" id="resetBtn">すべてのデータをリセット</button>
+          <p class="settings-hint">読書記録・XP・登録した本がすべて削除されます</p>
+        </div>
       </div>
     </div>
   </div>
