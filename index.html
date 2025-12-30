@@ -399,10 +399,14 @@ html, body {
 /* ホームタブ - スクロール無効・画面固定 */
 #tab-home {
   height: 100%;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   position: relative;
+}
+
+/* ホームタブがアクティブの時のみflexboxを適用 */
+#tab-home.active {
+  display: flex;
+  flex-direction: column;
 }
 
 /* ホーム画面 - 中央配置 */
