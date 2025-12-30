@@ -391,111 +391,37 @@ html, body {
   transform: scale(0.98) translateY(0);
 }
 
-/* ホームカード */
-.home-hero {
-  text-align: center;
-  padding: 32px 0 24px;
+/* ホーム画面 - シンプル */
+.home-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 20px 0;
 }
 
-.home-greeting {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-
-.home-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-
-.home-subtitle {
-  font-size: 13px;
-  color: var(--accent);
-}
-
-.home-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.home-stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.home-stat-card::before {
-  content: '';
+/* 引用 - 下部に控えめに */
+.quote-bottom {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), #d4956a);
+  bottom: 100px;
+  left: 20px;
+  right: 20px;
+  text-align: center;
   opacity: 0.6;
 }
 
-.home-stat-icon {
-  font-size: 20px;
-  margin-bottom: 6px;
-}
-
-.home-stat-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.home-stat-label {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
-
-.home-stat-card.streak .home-stat-value {
-  color: var(--accent);
-}
-
-.btn-wrapper {
-  margin-bottom: 20px;
-}
-
-.btn-hint {
-  text-align: center;
+.quote-bottom p:first-child {
   font-size: 12px;
-  color: var(--text-dim);
-  margin-top: 12px;
-  opacity: 0.8;
-}
-
-/* 引用 */
-.quote {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-top: 14px;
-}
-
-.quote p:first-child {
-  font-size: 13px;
   font-style: italic;
-  line-height: 1.7;
+  line-height: 1.6;
+  color: var(--text-dim);
 }
 
-.quote p:last-child {
-  font-size: 11px;
+.quote-bottom p:last-child {
+  font-size: 10px;
   color: var(--text-dim);
-  margin-top: 6px;
-  text-align: right;
+  margin-top: 4px;
 }
 
 /* 本棚セクション */
@@ -1075,38 +1001,133 @@ html, body {
   display: flex;
 }
 
-.flame {
-  width: 100px;
-  height: 100px;
+/* 読書中アニメーション - 落ち着いた系 */
+.reading-anim {
+  width: 120px;
+  height: 120px;
   margin-bottom: 40px;
   position: relative;
 }
 
-.flame-glow {
+.reading-glow {
   position: absolute;
-  inset: 0;
+  inset: -10px;
   background: radial-gradient(circle, var(--accent-glow), transparent 70%);
   border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
+  animation: reading-glow-pulse 6s ease-in-out infinite;
 }
 
-.flame-icon {
+.reading-icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 50px;
-  animation: flicker 0.5s ease-in-out infinite alternate;
+  font-size: 56px;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.15); opacity: 0.6; }
+/* 呼吸アニメーション（デフォルト） */
+.reading-anim.anim-breath .reading-icon {
+  animation: reading-breath 5s ease-in-out infinite;
 }
 
-@keyframes flicker {
-  0% { transform: translate(-50%, -50%) scale(1); }
-  100% { transform: translate(-50%, -50%) scale(1.05); }
+.reading-anim.anim-breath .reading-glow {
+  animation: reading-glow-breath 5s ease-in-out infinite;
+}
+
+@keyframes reading-breath {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes reading-glow-breath {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.5; }
+}
+
+/* ゆったり浮遊アニメーション */
+.reading-anim.anim-float .reading-icon {
+  animation: reading-float 6s ease-in-out infinite;
+}
+
+.reading-anim.anim-float .reading-glow {
+  animation: reading-glow-float 6s ease-in-out infinite;
+}
+
+@keyframes reading-float {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-8px);
+  }
+}
+
+@keyframes reading-glow-float {
+  0%, 100% { transform: scale(1) translateY(0); opacity: 0.35; }
+  50% { transform: scale(1.05) translateY(-4px); opacity: 0.45; }
+}
+
+/* 穏やかな揺らぎアニメーション */
+.reading-anim.anim-sway .reading-icon {
+  animation: reading-sway 7s ease-in-out infinite;
+}
+
+.reading-anim.anim-sway .reading-glow {
+  animation: reading-glow-sway 7s ease-in-out infinite;
+}
+
+@keyframes reading-sway {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(3deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(-3deg);
+  }
+}
+
+@keyframes reading-glow-sway {
+  0%, 100% { transform: scale(1); opacity: 0.35; }
+  50% { transform: scale(1.08); opacity: 0.45; }
+}
+
+/* 静かな瞑想アニメーション */
+.reading-anim.anim-zen .reading-icon {
+  animation: reading-zen 8s ease-in-out infinite;
+}
+
+.reading-anim.anim-zen .reading-glow {
+  animation: reading-glow-zen 8s ease-in-out infinite;
+}
+
+@keyframes reading-zen {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes reading-glow-zen {
+  0%, 100% { transform: scale(1); opacity: 0.25; }
+  50% { transform: scale(1.15); opacity: 0.4; }
+}
+
+/* 汎用の穏やかなグロー */
+@keyframes reading-glow-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.45; }
 }
 
 .reading-label {
@@ -1502,34 +1523,14 @@ html, body {
 <div class="content">
   <!-- ホームタブ -->
   <div class="tab active" id="tab-home">
-    <div class="home-hero">
-      <p class="home-greeting" id="homeGreeting">おかえりなさい</p>
-      <h2 class="home-title" id="homeTitle">今日も読書日和</h2>
-      <p class="home-subtitle" id="homeSubtitle">📚 読書の旅を続けよう</p>
-    </div>
-
-    <div class="home-stats">
-      <div class="home-stat-card">
-        <div class="home-stat-icon">📖</div>
-        <div class="home-stat-value" id="homeTodayMin">0</div>
-        <div class="home-stat-label">今日の読書（分）</div>
-      </div>
-      <div class="home-stat-card streak">
-        <div class="home-stat-icon">🔥</div>
-        <div class="home-stat-value" id="homeStreak">0</div>
-        <div class="home-stat-label">日連続</div>
-      </div>
-    </div>
-
-    <div class="btn-wrapper">
+    <div class="home-center">
       <button class="main-btn" id="startBtn">
         <span class="main-btn-icon">📖</span>
         <span>読書をはじめる</span>
       </button>
-      <p class="btn-hint" id="btnHint">タップして読書タイマーを開始</p>
     </div>
 
-    <div class="quote">
+    <div class="quote-bottom">
       <p id="quoteText">読書は心の旅路。一ページが新しい世界への扉となる。</p>
       <p id="quoteAuthor">— 今日の一言</p>
     </div>
@@ -1636,11 +1637,11 @@ html, body {
   <!-- 読書画面 -->
 
   <div class="reading-screen" id="readingScreen">
-    <div class="flame">
-      <div class="flame-glow"></div>
-      <div class="flame-icon">🔥</div>
+    <div class="reading-anim" id="readingAnim">
+      <div class="reading-glow"></div>
+      <div class="reading-icon" id="readingIcon">📖</div>
     </div>
-    <p class="reading-label">読書に集中しています</p>
+    <p class="reading-label" id="readingLabel">読書に集中しています</p>
     <button class="reading-stop" id="stopBtn">読書をおわる</button>
   </div>
 
@@ -2081,62 +2082,13 @@ function updateButtonAnimation() {
   // 新しいアニメーションクラスを追加
   btnIcon.classList.add(`anim-${config.anim}`);
 
-  // ヒントテキストを更新（オプション）
-  const hint = document.getElementById('btnHint');
-  if (hint && Math.random() < 0.5) {
-    hint.textContent = config.label;
-  }
 }
 
 function updateUI() {
+  // 引用を更新
   const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
-
-  // ホーム画面の統計を更新
-  document.getElementById('homeTodayMin').textContent = state.today;
-  const streak = calculateStreak(state.history);
-  document.getElementById('homeStreak').textContent = streak;
-
-  // 時間帯に応じた挨拶
-  const hour = new Date().getHours();
-  let greeting, title, subtitle;
-  if (hour >= 5 && hour < 12) {
-    greeting = 'おはようございます';
-    title = '朝の読書で1日をスタート';
-    subtitle = '🌅 素敵な朝を本と共に';
-  } else if (hour >= 12 && hour < 17) {
-    greeting = 'こんにちは';
-    title = 'ちょっと休憩に読書を';
-    subtitle = '☀️ 午後のひとときを本と共に';
-  } else if (hour >= 17 && hour < 21) {
-    greeting = 'おつかれさまです';
-    title = '夜の読書タイム';
-    subtitle = '🌙 リラックスして本の世界へ';
-  } else {
-    greeting = 'お疲れ様です';
-    title = '静かな夜の読書を';
-    subtitle = '🌃 深夜の読書は格別';
-  }
-
-  document.getElementById('homeGreeting').textContent = greeting;
-  document.getElementById('homeTitle').textContent = title;
-  document.getElementById('homeSubtitle').textContent = subtitle;
-
-  // ヒント文を動的に変更
-  const hints = [
-    'タップして読書タイマーを開始',
-    '10分以上の読書でXPゲット！',
-    '今日の読書を記録しよう',
-    '読書の習慣を続けよう'
-  ];
-  if (state.today > 0) {
-    hints.push(`今日は${state.today}分読書済み！`);
-  }
-  if (streak > 0) {
-    hints.push(`${streak}日連続記録中！`);
-  }
-  document.getElementById('btnHint').textContent = hints[Math.floor(Math.random() * hints.length)];
 
   // ボタンのアニメーションを更新
   updateButtonAnimation();
@@ -2159,10 +2111,46 @@ function switchTab(name) {
 }
 
 // ========================================
+// 読書中アニメーションパターン（落ち着いた系）
+// ========================================
+const READING_ANIMATIONS = [
+  { icon: '📖', anim: 'breath', label: '読書に集中しています' },
+  { icon: '🌙', anim: 'float', label: 'ゆったりと読書中' },
+  { icon: '☁️', anim: 'sway', label: '穏やかに読書中' },
+  { icon: '🍃', anim: 'zen', label: '静かに読書中' },
+  { icon: '✨', anim: 'breath', label: '本の世界に浸っています' },
+  { icon: '🌿', anim: 'float', label: 'リラックスして読書中' }
+];
+
+function getReadingAnimation() {
+  return READING_ANIMATIONS[Math.floor(Math.random() * READING_ANIMATIONS.length)];
+}
+
+function applyReadingAnimation() {
+  const config = getReadingAnimation();
+  const animEl = document.getElementById('readingAnim');
+  const iconEl = document.getElementById('readingIcon');
+  const labelEl = document.getElementById('readingLabel');
+
+  // アイコンを更新
+  iconEl.textContent = config.icon;
+
+  // 既存のアニメーションクラスを削除
+  animEl.className = 'reading-anim';
+
+  // 新しいアニメーションクラスを追加
+  animEl.classList.add(`anim-${config.anim}`);
+
+  // ラベルを更新
+  labelEl.textContent = config.label;
+}
+
+// ========================================
 // タイマー
 // ========================================
 function startReading() {
   seconds = 0;
+  applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
   timer = setInterval(() => seconds++, 1000);
   document.getElementById('startBtn').innerHTML = '<span class="main-btn-icon anim-relax">📖</span><span>読書中...</span>';
