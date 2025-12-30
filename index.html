@@ -312,6 +312,20 @@ html, body {
   border-radius: 4px;
 }
 
+/* 棚板 - スクロールコンテナ */
+.shelf-board {
+  position: relative;
+  margin-bottom: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.shelf-board::-webkit-scrollbar {
+  display: none;
+}
+
 .shelf-visual {
   display: flex;
   justify-content: flex-start;
@@ -319,38 +333,18 @@ html, body {
   gap: 4px;
   min-height: 80px;
   padding: 12px 8px 0;
-  overflow-x: auto;
-  overflow-y: clip;
-  flex-wrap: nowrap;
+  width: fit-content;
+  min-width: 100%;
   position: relative;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) var(--elevated);
 }
 
-.shelf-visual::-webkit-scrollbar {
-  height: 6px;
-}
-
-.shelf-visual::-webkit-scrollbar-track {
-  background: var(--elevated);
-  border-radius: 3px;
-}
-
-.shelf-visual::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 3px;
-}
-
-/* 棚板 */
-.shelf-board {
-  position: relative;
-  margin-bottom: 4px;
-}
-
-.shelf-board::after {
+/* 棚板の板部分 */
+.shelf-visual::after {
   content: '';
-  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 12px;
   background: linear-gradient(to bottom,
     #5a4a3a 0%,
@@ -361,7 +355,6 @@ html, body {
   box-shadow:
     0 4px 8px rgba(0,0,0,0.4),
     inset 0 2px 0 rgba(255,255,255,0.1);
-  margin-top: -2px;
 }
 
 /* 本のスタイル */
