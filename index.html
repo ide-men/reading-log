@@ -413,6 +413,20 @@ html, body {
     0 8px 16px rgba(0,0,0,0.4);
 }
 
+/* 表紙画像がある本は装飾を非表示 */
+.mini-book.has-cover::before,
+.mini-book.has-cover::after {
+  display: none;
+}
+
+.mini-book.has-cover {
+  border-radius: 2px 4px 0 0;
+  box-shadow:
+    2px 0 0 rgba(0,0,0,0.4),
+    -1px 0 0 rgba(255,255,255,0.1),
+    0 2px 4px rgba(0,0,0,0.3);
+}
+
 /* ツールチップ */
 .book-tooltip {
   position: absolute;
@@ -526,6 +540,31 @@ html, body {
   justify-content: center;
   font-size: 18px;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.book-icon-fallback {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-icon-emoji {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 .book-info {
@@ -1592,6 +1631,31 @@ function isValidUrl(str) {
   return str && /^https?:\/\//i.test(str);
 }
 
+function extractAsinFromUrl(url) {
+  if (!url) return null;
+  // Amazonの様々なURLパターンからASINを抽出
+  // /dp/ASIN, /gp/product/ASIN, /gp/aw/d/ASIN など
+  const patterns = [
+    /\/dp\/([A-Z0-9]{10})/i,
+    /\/gp\/product\/([A-Z0-9]{10})/i,
+    /\/gp\/aw\/d\/([A-Z0-9]{10})/i,
+    /\/ASIN\/([A-Z0-9]{10})/i,
+    /amazon\.[a-z.]+\/.*?\/([A-Z0-9]{10})(?:[/?]|$)/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function getAmazonImageUrl(asin) {
+  if (!asin) return null;
+  // Amazon Product Images API (公開されている画像URL形式)
+  return `https://images-na.ssl-images-amazon.com/images/P/${asin}.09.LZZZZZZZ.jpg`;
+}
+
 function adjustColor(hex, amount) {
   const num = parseInt(hex.slice(1), 16);
   const r = Math.min(255, Math.max(0, (num >> 16) + amount));
@@ -1796,7 +1860,7 @@ function renderBooks() {
     const color = BOOK_COLORS[i % BOOK_COLORS.length];
     // 本の高さと幅をバリエーション豊かに
     const height = 50 + ((i * 17) % 25);
-    const width = 14 + ((i * 3) % 8);
+    const width = book.coverUrl ? 18 + ((i * 2) % 6) : 14 + ((i * 3) % 8);
     // 少し傾きを加える
     const tilt = ((i * 7) % 5) - 2;
     const hasLink = isValidUrl(book.link);
@@ -1806,11 +1870,18 @@ function renderBooks() {
     // 本ごとに少し異なる色合いのグラデーション
     const darkerColor = adjustColor(color, -20);
     const lighterColor = adjustColor(color, 15);
+
+    // 表紙画像があれば背景に使用
+    const bgStyle = book.coverUrl
+      ? `background-image: url('${escapeHtml(book.coverUrl)}'); background-size: cover; background-position: center;`
+      : `background: linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%);`;
+    const hasCoverClass = book.coverUrl ? 'has-cover' : '';
+
     return `
-      <div class="mini-book" style="
+      <div class="mini-book ${hasCoverClass}" style="
         height:${height}px;
         width:${width}px;
-        background: linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%);
+        ${bgStyle}
         transform: rotate(${tilt}deg);
       ">
         <div class="book-tooltip">
@@ -1827,9 +1898,14 @@ function renderBooks() {
       ? `<button onclick="openLink('${link}', event)">↗</button>`
       : '';
 
+    // 表紙画像があれば表示、なければ絵文字アイコン
+    const coverHtml = book.coverUrl
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="book-icon-fallback">📕</div>`
+      : '<div class="book-icon-emoji">📕</div>';
+
     return `
       <div class="book-item">
-        <div class="book-icon">📕</div>
+        <div class="book-icon">${coverHtml}</div>
         <div class="book-info">
           <div class="book-name">${escapeHtml(book.title)}</div>
           <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
@@ -1850,13 +1926,21 @@ function addBook(withXP) {
     showToast('タイトルを入力してください');
     return;
   }
-  
+
   const link = document.getElementById('linkInput').value.trim();
-  
+
+  // Amazonリンクから表紙画像URLを自動生成
+  let coverUrl = null;
+  const asin = extractAsinFromUrl(link);
+  if (asin) {
+    coverUrl = getAmazonImageUrl(asin);
+  }
+
   state.books.push({
     id: Date.now(),
     title,
     link: link || null,
+    coverUrl: coverUrl,
     xp: withXP
   });
   
@@ -1891,11 +1975,19 @@ function saveEditBook() {
     showToast('タイトルを入力してください');
     return;
   }
-  
+
   const book = state.books.find(b => b.id === editingBookId);
   if (book) {
     book.title = title;
-    book.link = document.getElementById('editBookLink').value.trim() || null;
+    const newLink = document.getElementById('editBookLink').value.trim() || null;
+
+    // リンクが変わった場合、表紙画像を再取得
+    if (newLink !== book.link) {
+      book.link = newLink;
+      const asin = extractAsinFromUrl(newLink);
+      book.coverUrl = asin ? getAmazonImageUrl(asin) : null;
+    }
+
     saveState();
     renderBooks();
     showToast('保存しました');
