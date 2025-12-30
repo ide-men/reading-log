@@ -2158,17 +2158,18 @@ document.getElementById('shelf').addEventListener('mouseenter', (e) => {
   // 一旦クラスをリセット
   tooltip.classList.remove('tooltip-align-left', 'tooltip-align-right');
 
-  // 本の位置を取得
+  // 本の中心位置と画面中央からの距離で判断
   const bookRect = e.target.getBoundingClientRect();
-  const tooltipWidth = 200; // max-width
-  const margin = 10;
+  const bookCenter = bookRect.left + bookRect.width / 2;
+  const screenCenter = window.innerWidth / 2;
+  const threshold = window.innerWidth * 0.15; // 中央から15%以上離れたら調整
 
-  // 画面の左端に近い場合
-  if (bookRect.left < tooltipWidth / 2 + margin) {
+  // 画面中央より左にある場合 → ツールチップを右寄せ
+  if (bookCenter < screenCenter - threshold) {
     tooltip.classList.add('tooltip-align-left');
   }
-  // 画面の右端に近い場合
-  else if (window.innerWidth - bookRect.right < tooltipWidth / 2 + margin) {
+  // 画面中央より右にある場合 → ツールチップを左寄せ
+  else if (bookCenter > screenCenter + threshold) {
     tooltip.classList.add('tooltip-align-right');
   }
 }, true);
