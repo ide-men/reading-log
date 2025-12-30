@@ -743,9 +743,13 @@ function checkCoverImages() {
       const color = el.dataset.color;
       if (color && el.classList.contains('mini-book')) {
         // 本棚の本はグラデーション背景に戻す
+        // 個別に設定されたbackgroundプロパティをクリアしてから設定
         const darkerColor = adjustColor(color, -20);
         const lighterColor = adjustColor(color, 15);
-        el.style.backgroundImage = 'none';
+        el.style.backgroundColor = '';
+        el.style.backgroundImage = '';
+        el.style.backgroundSize = '';
+        el.style.backgroundPosition = '';
         el.style.background = `linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%)`;
       }
     };
@@ -818,8 +822,8 @@ function renderBooks() {
     const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
 
     const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.parentElement.classList.add('cover-error')">`
-      : '';
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover" onerror="this.parentElement.classList.add('cover-error')"><span class="book-icon-emoji">📕</span>`
+      : '<span class="book-icon-emoji">📕</span>';
 
     return `
       <div class="book-item">

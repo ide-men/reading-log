@@ -577,6 +577,21 @@ html, body {
 
 .mini-book.has-cover.cover-error::before {
   display: flex;
+  content: '!';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: rgba(248, 113, 113, 0.9);
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
 }
 
 .mini-book.has-cover {
@@ -753,27 +768,45 @@ html, body {
   border-radius: var(--radius-sm);
 }
 
+.book-icon-emoji {
+  font-size: 20px;
+  z-index: 1;
+}
+
 .book-icon.has-cover .book-cover {
   position: absolute;
   inset: 0;
+  z-index: 2;
+}
+
+.book-icon.has-cover .book-icon-emoji {
+  display: none;
 }
 
 .book-icon.cover-error .book-cover {
   display: none;
 }
 
+.book-icon.cover-error .book-icon-emoji {
+  display: block;
+}
+
 .book-icon.cover-error::after {
   content: '!';
+  position: absolute;
+  top: 2px;
+  right: 2px;
   display: flex;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   background: rgba(248, 113, 113, 0.9);
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   color: white;
   align-items: center;
   justify-content: center;
+  z-index: 3;
 }
 
 .book-info {
