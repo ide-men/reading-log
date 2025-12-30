@@ -956,27 +956,75 @@ html, body {
 .style-card {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.style-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.08;
+  transition: opacity 0.2s ease;
+}
+
+.style-card-focus::before {
+  background: linear-gradient(135deg, #e8a87c 0%, #f0c27b 100%);
+}
+
+.style-card-time::before {
+  background: linear-gradient(135deg, #6b5b95 0%, #a78bfa 100%);
+}
+
+.style-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.style-card:hover::before {
+  opacity: 0.15;
 }
 
 .style-icon {
-  font-size: 24px;
+  font-size: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.style-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .style-value {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text);
+  margin-bottom: 2px;
 }
 
 .style-label {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.style-hint {
   font-size: 11px;
   color: var(--text-dim);
+  opacity: 0.8;
 }
 
 .tip {
@@ -1615,19 +1663,21 @@ html, body {
       </div>
     </div>
 
-    <h3 class="section-title">あなたのスタイル</h3>
-    <div class="style-card">
+    <h3 class="section-title">📖 あなたらしい読書</h3>
+    <div class="style-card style-card-focus">
       <span class="style-icon">🎯</span>
-      <div>
+      <div class="style-content">
         <div class="style-value" id="avgFocus">--</div>
-        <div class="style-label">平均の集中時間</div>
+        <div class="style-label">いつもの集中タイム</div>
+        <div class="style-hint">1回の読書で集中している時間</div>
       </div>
     </div>
-    <div class="style-card">
+    <div class="style-card style-card-time">
       <span class="style-icon" id="timeIcon">🌙</span>
-      <div>
+      <div class="style-content">
         <div class="style-value" id="timeType">--</div>
-        <div class="style-label">よく読む時間帯</div>
+        <div class="style-label">読書のゴールデンタイム</div>
+        <div class="style-hint">あなたが本を開きやすい時間帯</div>
       </div>
     </div>
     
