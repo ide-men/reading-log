@@ -1261,20 +1261,16 @@ html, body {
 <div class="content">
   <!-- ホームタブ -->
   <div class="tab active" id="tab-home">
-    <section class="progress">
-      <div class="ring-wrapper">
-        <svg viewBox="0 0 150 150">
-          <circle class="ring-bg" cx="75" cy="75" r="66"/>
-          <circle class="ring-fill" id="ring" cx="75" cy="75" r="66"/>
-        </svg>
-        <div class="ring-center">
-          <div class="ring-level" id="level">1</div>
-          <div class="ring-title" id="title">読書ビギナー</div>
-        </div>
+    <div class="impact-card" style="margin-top: 20px;">
+      <div class="impact-value" id="homeBookCount">0冊</div>
+      <div class="impact-label">読破した本</div>
+      <div class="streak-badge" id="homeStreakBadge">
+        <span class="streak-fire">🔥</span>
+        <span class="streak-count" id="homeStreakCount">0</span>
+        <span class="streak-label">日連続</span>
       </div>
-      <div class="xp-text"><span id="xp">0</span> / 5 XP</div>
-    </section>
-    
+    </div>
+
     <button class="main-btn" id="startBtn">読書をはじめる</button>
     
     <div class="quote">
@@ -1300,16 +1296,6 @@ html, body {
   
   <!-- 記録タブ -->
   <div class="tab" id="tab-stats">
-    <div class="impact-card">
-      <div class="impact-value" id="impactBooks">0冊</div>
-      <div class="impact-label">読破した本</div>
-      <div class="streak-badge" id="streakBadge">
-        <span class="streak-fire">🔥</span>
-        <span class="streak-count" id="streakCount">0</span>
-        <span class="streak-label">日連続</span>
-      </div>
-    </div>
-
     <div class="stats-grid">
       <div class="stats-card">
         <div class="stats-card-value" id="totalHours">0</div>
@@ -1756,20 +1742,18 @@ function confirmOpenLink() {
 // UI更新
 // ========================================
 function updateUI() {
-  const title = getTitle(state.lv);
-  
-  document.getElementById('level').textContent = state.lv;
-  document.getElementById('title').textContent = title.name;
-  
-  const xpInLevel = state.xp % XP_PER_LEVEL;
-  document.getElementById('xp').textContent = xpInLevel;
-  const percent = (xpInLevel / XP_PER_LEVEL) * 100;
-  document.getElementById('ring').style.strokeDashoffset = 414.69 - (percent / 100 * 414.69);
-  
+  // ホーム画面の読破冊数を更新
+  document.getElementById('homeBookCount').textContent = state.books.length + '冊';
+
+  // ストリーク表示
+  const streak = calculateStreak(state.history);
+  document.getElementById('homeStreakCount').textContent = streak;
+  document.getElementById('homeStreakBadge').style.display = streak > 0 ? 'inline-flex' : 'none';
+
   const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
-  
+
   saveState();
 }
 
@@ -2037,7 +2021,6 @@ function confirmDeleteBook() {
 // 統計
 // ========================================
 function renderStats() {
-  document.getElementById('impactBooks').textContent = state.books.length + '冊';
   document.getElementById('totalHours').textContent = Math.floor(state.total / 60);
   document.getElementById('totalSessions').textContent = state.sessions;
   
@@ -2076,11 +2059,6 @@ function renderStats() {
       </div>
     `;
   }).join('');
-
-  // ストリーク計算
-  const streak = calculateStreak(state.history);
-  document.getElementById('streakCount').textContent = streak;
-  document.getElementById('streakBadge').style.display = streak > 0 ? 'inline-flex' : 'none';
 
   // 年間読書予測
   const yearlyPrediction = calculateYearlyPrediction(state.books, state.history);
