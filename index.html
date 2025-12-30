@@ -1824,7 +1824,7 @@ function renderBooks() {
     const link = isValidUrl(book.link) ? escapeHtml(book.link) : null;
     const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
     const linkBtn = link
-      ? `<button onclick="openLink('${link}', event)" title="リンクを開く">↗</button>`
+      ? `<button onclick="openLink('${link}', event)">↗</button>`
       : '';
 
     return `
