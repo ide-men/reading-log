@@ -1412,7 +1412,7 @@ html, body {
             <span>リンクを追加</span>
           </button>
           <div class="link-fields" id="linkFields">
-            <input type="url" class="form-input" id="linkInput" placeholder="Amazonや書評へのリンク">
+            <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
           </div>
         </div>
         <button class="btn btn-primary" id="addBookBtn">
@@ -1440,7 +1440,7 @@ html, body {
         </div>
         <div class="form-group">
           <label class="form-label">リンク（任意）</label>
-          <input type="url" class="form-input" id="editBookLink" placeholder="Amazonや書評へのリンク">
+          <input type="url" class="form-input" id="editBookLink" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
         </div>
         <button class="btn btn-primary" id="saveEditBtn">保存</button>
         <button class="btn btn-secondary" data-close="editBookModal">キャンセル</button>
@@ -1629,6 +1629,12 @@ function escapeHtml(str) {
 
 function isValidUrl(str) {
   return str && /^https?:\/\//i.test(str);
+}
+
+function isAmazonShortUrl(url) {
+  if (!url) return false;
+  // amzn.asia/d/XXX や amzn.to/XXX などの短縮URLを検出
+  return /^https?:\/\/(amzn\.asia|amzn\.to)\//i.test(url);
 }
 
 function extractAsinFromUrl(url) {
@@ -1934,6 +1940,9 @@ function addBook(withXP) {
   const asin = extractAsinFromUrl(link);
   if (asin) {
     coverUrl = getAmazonImageUrl(asin);
+  } else if (isAmazonShortUrl(link)) {
+    // 短縮URLの場合は警告を表示
+    showToast('短縮URL(amzn.asia等)では表紙画像を取得できません。amazon.co.jpのフルURLをお使いください', 4000);
   }
 
   state.books.push({
@@ -1986,6 +1995,11 @@ function saveEditBook() {
       book.link = newLink;
       const asin = extractAsinFromUrl(newLink);
       book.coverUrl = asin ? getAmazonImageUrl(asin) : null;
+
+      // 短縮URLの場合は警告を表示
+      if (!asin && isAmazonShortUrl(newLink)) {
+        showToast('短縮URL(amzn.asia等)では表紙画像を取得できません。amazon.co.jpのフルURLをお使いください', 4000);
+      }
     }
 
     saveState();
