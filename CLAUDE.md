@@ -19,6 +19,13 @@
 | `rl_v1_stats` | 統計（total, today, date, sessions, xp, lv, firstSessionDate） |
 | `rl_v1_books` | 本のデータ |
 | `rl_v1_history` | 読書履歴（90日以内） |
+| `rl_v1_archived` | 月別アーカイブ（90日〜1年） |
+
+### 履歴のライフサイクル
+
+1. **0〜90日**: `history` に詳細データ `{ d, m, h }` を保持
+2. **90日〜1年**: `archived` に月別サマリー `{ sessions, totalMinutes }` として集約
+3. **1年超**: 削除
 
 ### マイグレーションの仕組み
 
@@ -41,4 +48,3 @@ const migrations = {};
 
 - 既存プロパティの削除・リネーム・型変更をする場合はマイグレーション関数を用意
 - 新プロパティ追加時はデフォルト値を設定
-- 履歴は90日を超えると自動削除される

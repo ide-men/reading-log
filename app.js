@@ -8,7 +8,8 @@ const STORAGE_KEYS = {
   meta: 'rl_v1_meta',
   stats: 'rl_v1_stats',
   books: 'rl_v1_books',
-  history: 'rl_v1_history'
+  history: 'rl_v1_history',
+  archived: 'rl_v1_archived'
 };
 
 const CONFIG = {
@@ -17,6 +18,7 @@ const CONFIG = {
   minSessionMinutes: 10,
   msPerDay: 86400000,
   historyRetentionDays: 90,
+  archiveRetentionDays: 365,
   storageWarningPercent: 80
 };
 
@@ -114,7 +116,8 @@ function createInitialState() {
     meta: createInitialMeta(),
     stats: createInitialStats(),
     books: [],
-    history: []
+    history: [],
+    archived: {}
   };
 }
 
@@ -148,7 +151,8 @@ function loadState() {
         meta: parsedMeta,
         stats: JSON.parse(localStorage.getItem(STORAGE_KEYS.stats) || '{}'),
         books: JSON.parse(localStorage.getItem(STORAGE_KEYS.books) || '[]'),
-        history: JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]')
+        history: JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]'),
+        archived: JSON.parse(localStorage.getItem(STORAGE_KEYS.archived) || '{}')
       };
 
       // 日付リセット
@@ -179,6 +183,7 @@ function saveStateToStorage(s) {
   localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(s.stats));
   localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(s.books));
   localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(s.history));
+  localStorage.setItem(STORAGE_KEYS.archived, JSON.stringify(s.archived));
 }
 
 function saveState() {
@@ -190,14 +195,43 @@ function saveState() {
 // ========================================
 function cleanupHistory() {
   const now = new Date();
-  const cutoff = new Date(now - CONFIG.historyRetentionDays * CONFIG.msPerDay);
+  const retentionCutoff = new Date(now - CONFIG.historyRetentionDays * CONFIG.msPerDay);
+  const archiveCutoff = new Date(now - CONFIG.archiveRetentionDays * CONFIG.msPerDay);
 
-  const before = state.history.length;
-  state.history = state.history.filter(entry => new Date(entry.d) >= cutoff);
+  const recentHistory = [];
+  const toArchive = [];
 
-  const removed = before - state.history.length;
-  if (removed > 0) {
-    console.log(`Removed ${removed} old history entries`);
+  for (const entry of state.history) {
+    const entryDate = new Date(entry.d);
+    if (entryDate >= retentionCutoff) {
+      recentHistory.push(entry);
+    } else {
+      toArchive.push(entry);
+    }
+  }
+
+  // 古い履歴を月別に集約
+  for (const entry of toArchive) {
+    const monthKey = entry.d.substring(0, 7); // "YYYY-MM"
+    if (!state.archived[monthKey]) {
+      state.archived[monthKey] = { sessions: 0, totalMinutes: 0 };
+    }
+    state.archived[monthKey].sessions++;
+    state.archived[monthKey].totalMinutes += entry.m;
+  }
+
+  // 1年以上前のアーカイブを削除
+  for (const monthKey of Object.keys(state.archived)) {
+    const monthDate = new Date(monthKey + '-01');
+    if (monthDate < archiveCutoff) {
+      delete state.archived[monthKey];
+    }
+  }
+
+  state.history = recentHistory;
+
+  if (toArchive.length > 0) {
+    console.log(`Archived ${toArchive.length} history entries`);
   }
 }
 
@@ -253,7 +287,8 @@ function exportData() {
     meta: state.meta,
     stats: state.stats,
     books: state.books,
-    history: state.history
+    history: state.history,
+    archived: state.archived
   };
 
   const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
@@ -318,7 +353,8 @@ function importData(file) {
           firstSessionDate: imported.stats.firstSessionDate || null
         },
         books: imported.books || [],
-        history: imported.history || []
+        history: imported.history || [],
+        archived: imported.archived || {}
       };
 
       saveState();
