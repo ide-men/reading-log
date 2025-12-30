@@ -1261,17 +1261,9 @@ html, body {
 <div class="content">
   <!-- ホームタブ -->
   <div class="tab active" id="tab-home">
-    <div class="impact-card" style="margin-top: 20px;">
-      <div class="impact-value" id="homeBookCount">0冊</div>
-      <div class="impact-label">読破した本</div>
-      <div class="streak-badge" id="homeStreakBadge">
-        <span class="streak-fire">🔥</span>
-        <span class="streak-count" id="homeStreakCount">0</span>
-        <span class="streak-label">日連続</span>
-      </div>
+    <div style="padding-top: 20px;">
+      <button class="main-btn" id="startBtn">読書をはじめる</button>
     </div>
-
-    <button class="main-btn" id="startBtn">読書をはじめる</button>
     
     <div class="quote">
       <p id="quoteText">読書は心の旅路。一ページが新しい世界への扉となる。</p>
@@ -1296,6 +1288,20 @@ html, body {
   
   <!-- 記録タブ -->
   <div class="tab" id="tab-stats">
+    <div class="progress">
+      <div class="ring-wrapper">
+        <svg viewBox="0 0 140 140">
+          <circle class="ring-bg" cx="70" cy="70" r="66"/>
+          <circle class="ring-fill" id="xpRing" cx="70" cy="70" r="66"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-level" id="levelDisplay">Lv.1</div>
+          <div class="ring-title" id="titleDisplay">読書ビギナー</div>
+        </div>
+      </div>
+      <div class="xp-text">次のレベルまで <span id="xpProgress">0</span> / <span id="xpNeeded">5</span> XP</div>
+    </div>
+
     <div class="stats-grid">
       <div class="stats-card">
         <div class="stats-card-value" id="totalHours">0</div>
@@ -1742,14 +1748,6 @@ function confirmOpenLink() {
 // UI更新
 // ========================================
 function updateUI() {
-  // ホーム画面の読破冊数を更新
-  document.getElementById('homeBookCount').textContent = state.books.length + '冊';
-
-  // ストリーク表示
-  const streak = calculateStreak(state.history);
-  document.getElementById('homeStreakCount').textContent = streak;
-  document.getElementById('homeStreakBadge').style.display = streak > 0 ? 'inline-flex' : 'none';
-
   const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   document.getElementById('quoteText').textContent = quote.text;
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
@@ -2021,6 +2019,21 @@ function confirmDeleteBook() {
 // 統計
 // ========================================
 function renderStats() {
+  // 経験値プログレスサークル
+  const title = getTitle(state.lv);
+  document.getElementById('levelDisplay').textContent = `Lv.${state.lv}`;
+  document.getElementById('titleDisplay').textContent = title.name;
+
+  const xpInLevel = state.xp % XP_PER_LEVEL;
+  document.getElementById('xpProgress').textContent = xpInLevel;
+  document.getElementById('xpNeeded').textContent = XP_PER_LEVEL;
+
+  // リングの進捗を更新（円周は2πr ≈ 414.69）
+  const circumference = 414.69;
+  const progress = xpInLevel / XP_PER_LEVEL;
+  const offset = circumference * (1 - progress);
+  document.getElementById('xpRing').style.strokeDashoffset = offset;
+
   document.getElementById('totalHours').textContent = Math.floor(state.total / 60);
   document.getElementById('totalSessions').textContent = state.sessions;
   
