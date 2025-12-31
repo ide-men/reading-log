@@ -5,8 +5,6 @@ import { CONFIG } from './constants.js';
 import { stateManager } from './state.js';
 import { saveState } from './storage.js';
 import { applyReadingAnimation } from './animations.js';
-import { getTitle } from './utils.js';
-import { showConfetti } from './ui.js';
 
 // タイマー状態
 let timer = null;
@@ -31,7 +29,7 @@ export function startReading() {
     '<span class="main-btn-icon anim-relax">📖</span><span>読書中...</span>';
 }
 
-export function stopReading({ onLevelUp, onTitleUp, onComplete }) {
+export function stopReading(onComplete) {
   clearInterval(timer);
   timer = null;
   document.getElementById('readingScreen').classList.remove('active');
@@ -60,20 +58,6 @@ export function stopReading({ onLevelUp, onTitleUp, onComplete }) {
       m: minutes,
       h: new Date().getHours()
     });
-
-    const xpAmount = 1 + Math.floor(minutes / 10);
-    const { oldLevel, newLevel, leveledUp } = stateManager.addXP(xpAmount);
-
-    if (leveledUp) {
-      onLevelUp(newLevel);
-      showConfetti();
-
-      const oldTitle = getTitle(oldLevel);
-      const newTitle = getTitle(newLevel);
-      if (newTitle.name !== oldTitle.name) {
-        setTimeout(() => onTitleUp(newTitle), 2000);
-      }
-    }
   }
 
   document.getElementById('startBtn').innerHTML =

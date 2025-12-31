@@ -1,9 +1,9 @@
 // ========================================
 // 統計計算・表示
 // ========================================
-import { CONFIG, TITLES } from './constants.js';
+import { CONFIG } from './constants.js';
 import { stateManager } from './state.js';
-import { getTitle, randomItem } from './utils.js';
+import { randomItem } from './utils.js';
 
 // ========================================
 // 統計計算
@@ -45,39 +45,11 @@ export function calculateYearlyPrediction(books, history) {
   return (books.length + Math.round(booksPerDay * daysLeft)) + '冊';
 }
 
-export function getNextTitleInfo(level, xp) {
-  const nextTitle = TITLES.find(t => t.lv > level);
-
-  if (!nextTitle) {
-    return { text: '最高位到達！', label: '全称号獲得済み' };
-  }
-
-  const xpNeeded = (nextTitle.lv - 1) * CONFIG.xpPerLevel - xp;
-  const booksNeeded = Math.max(1, Math.ceil(xpNeeded / CONFIG.xpPerBook));
-
-  return {
-    text: nextTitle.name,
-    label: `あと${booksNeeded}冊で獲得`
-  };
-}
-
 // ========================================
 // 統計レンダリング
 // ========================================
 export function renderStats() {
   const state = stateManager.getState();
-  const title = getTitle(state.stats.lv);
-
-  document.getElementById('levelDisplay').textContent = `Lv.${state.stats.lv}`;
-  document.getElementById('titleDisplay').textContent = title.name;
-
-  const xpInLevel = state.stats.xp % CONFIG.xpPerLevel;
-  document.getElementById('xpProgress').textContent = xpInLevel;
-  document.getElementById('xpNeeded').textContent = CONFIG.xpPerLevel;
-
-  const circumference = 414.69;
-  const progress = xpInLevel / CONFIG.xpPerLevel;
-  document.getElementById('xpRing').style.strokeDashoffset = circumference * (1 - progress);
 
   document.getElementById('totalHours').textContent = Math.floor(state.stats.total / 60);
   document.getElementById('totalSessions').textContent = state.stats.sessions;
