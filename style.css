@@ -468,6 +468,7 @@ html, body {
     var(--shadow-xl);
   position: relative;
   overflow: visible;
+  touch-action: pan-x;
 }
 
 .shelf-container::before {
@@ -495,6 +496,8 @@ html, body {
   padding-top: 80px;
   margin-top: -80px;
   touch-action: pan-x;
+  overscroll-behavior: contain;
+  overscroll-behavior-y: none;
 }
 
 .shelf-board::-webkit-scrollbar {
