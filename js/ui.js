@@ -67,22 +67,6 @@ export function openModal(id) {
 }
 
 // ========================================
-// レベルアップ・称号表示
-// ========================================
-export function showLevelUp(level) {
-  document.getElementById('newLevel').textContent = `Lv.${level}`;
-  document.getElementById('levelupOverlay').classList.add('active');
-  showConfetti();
-}
-
-export function showTitleUp(title) {
-  document.getElementById('newTitleIcon').textContent = title.icon;
-  document.getElementById('newTitleName').textContent = title.name;
-  document.getElementById('newTitleSub').textContent = title.sub;
-  document.getElementById('titleOverlay').classList.add('active');
-}
-
-// ========================================
 // エフェクト
 // ========================================
 export function showToast(message, duration = 3000) {
@@ -91,24 +75,4 @@ export function showToast(message, duration = 3000) {
   toast.textContent = message;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), duration);
-}
-
-export function showConfetti() {
-  const container = document.createElement('div');
-  container.className = 'confetti';
-  const colors = ['#e8a87c', '#f0c27b', '#7dd3a8', '#6b5b95', '#f87171'];
-
-  for (let i = 0; i < 40; i++) {
-    const piece = document.createElement('i');
-    piece.style.cssText = `
-      left: ${Math.random() * 100}%;
-      background: ${colors[i % 5]};
-      animation-delay: ${Math.random() * 0.4}s;
-      animation-duration: ${2 + Math.random()}s;
-    `;
-    container.appendChild(piece);
-  }
-
-  document.body.appendChild(container);
-  setTimeout(() => container.remove(), 3000);
 }

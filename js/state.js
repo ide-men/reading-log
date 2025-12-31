@@ -1,7 +1,7 @@
 // ========================================
 // State Manager
 // ========================================
-import { SCHEMA_VERSION, CONFIG } from './constants.js';
+import { SCHEMA_VERSION } from './constants.js';
 
 // 初期状態を作成する関数
 export function createInitialMeta() {
@@ -17,8 +17,6 @@ export function createInitialStats() {
     today: 0,
     date: new Date().toDateString(),
     sessions: 0,
-    xp: 0,
-    lv: 1,
     firstSessionDate: null
   };
 }
@@ -121,26 +119,6 @@ class StateManager {
   // アーカイブを削除
   removeArchived(monthKey) {
     delete this._state.archived[monthKey];
-  }
-
-  // XPを追加してレベルを再計算
-  addXP(amount) {
-    const oldLevel = this._state.stats.lv;
-    this._state.stats.xp += amount;
-    this._state.stats.lv = Math.floor(this._state.stats.xp / CONFIG.xpPerLevel) + 1;
-    this._notifyListeners();
-    return {
-      oldLevel,
-      newLevel: this._state.stats.lv,
-      leveledUp: this._state.stats.lv > oldLevel
-    };
-  }
-
-  // XPを減らす（本削除時など）
-  removeXP(amount) {
-    this._state.stats.xp = Math.max(0, this._state.stats.xp - amount);
-    this._state.stats.lv = Math.floor(this._state.stats.xp / CONFIG.xpPerLevel) + 1;
-    this._notifyListeners();
   }
 
   // リスナーを登録

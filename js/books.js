@@ -1,7 +1,7 @@
 // ========================================
 // 本の管理・レンダリング
 // ========================================
-import { CONFIG, BOOK_COLORS } from './constants.js';
+import { BOOK_COLORS } from './constants.js';
 import { stateManager } from './state.js';
 import { saveState } from './storage.js';
 import {
@@ -13,8 +13,7 @@ import {
   getAmazonImageUrl,
   adjustColor
 } from './utils.js';
-import { showToast, showConfetti, closeModal } from './ui.js';
-import { getTitle } from './utils.js';
+import { showToast, closeModal } from './ui.js';
 
 // 編集・削除中の本ID
 let deletingBookId = null;
@@ -87,7 +86,6 @@ export function renderBooks() {
 
   bookList.innerHTML = [...state.books].reverse().map((book, i) => {
     const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
-    const xpBadge = book.xp ? '<span class="book-xp">+10 XP</span>' : '';
     const linkBtn = link ? `<button data-link="${link}">↗</button>` : '';
 
     const colorIndex = state.books.length - 1 - i;
@@ -102,7 +100,7 @@ export function renderBooks() {
         <div class="book-icon${book.coverUrl ? ' has-cover' : ''}" style="background-color: ${color}"${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}" data-color="${color}"` : ''}>${coverHtml}</div>
         <div class="book-info">
           <div class="book-name">${escapeHtml(book.title)}</div>
-          <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}${xpBadge}</div>
+          <div class="book-date">${new Date(book.id).toLocaleDateString('ja-JP')}</div>
         </div>
         <div class="book-actions">
           ${linkBtn}
@@ -117,7 +115,7 @@ export function renderBooks() {
 // ========================================
 // 本の追加
 // ========================================
-export function addBook(withXP, { onLevelUp, onTitleUp }) {
+export function addBook() {
   const title = document.getElementById('bookInput').value.trim();
   if (!title) {
     showToast('タイトルを入力してください');
@@ -138,29 +136,10 @@ export function addBook(withXP, { onLevelUp, onTitleUp }) {
     id: Date.now(),
     title,
     link: link || null,
-    coverUrl,
-    xp: withXP
+    coverUrl
   });
 
-  if (withXP) {
-    const state = stateManager.getState();
-    const oldLevel = state.stats.lv;
-    const oldTitle = getTitle(oldLevel);
-
-    const { newLevel, leveledUp } = stateManager.addXP(CONFIG.xpPerBook);
-    showConfetti();
-    showToast('1冊読破！+10 XP');
-
-    if (leveledUp) {
-      onLevelUp(newLevel);
-      const newTitle = getTitle(newLevel);
-      if (newTitle.name !== oldTitle.name) {
-        setTimeout(() => onTitleUp(newTitle), 2000);
-      }
-    }
-  } else {
-    showToast('本を登録しました');
-  }
+  showToast('本を登録しました');
 
   saveState();
   renderBooks();
@@ -225,10 +204,6 @@ export function deleteBook(id) {
 }
 
 export function confirmDeleteBook(updateUI) {
-  const book = stateManager.getBook(deletingBookId);
-  if (book?.xp) {
-    stateManager.removeXP(CONFIG.xpPerBook);
-  }
   stateManager.removeBook(deletingBookId);
 
   saveState();

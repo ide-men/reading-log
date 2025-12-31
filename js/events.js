@@ -18,8 +18,6 @@ import {
   closeModal,
   openModal,
   showToast,
-  showLevelUp,
-  showTitleUp,
   setFab,
   getFab,
   setTabCallbacks
@@ -41,22 +39,14 @@ export function initializeEventListeners() {
   // タイマー
   document.getElementById('startBtn').addEventListener('click', () => {
     if (isTimerRunning()) {
-      stopReading({
-        onLevelUp: showLevelUp,
-        onTitleUp: showTitleUp,
-        onComplete: updateUI
-      });
+      stopReading(updateUI);
     } else {
       startReading();
     }
   });
 
   document.getElementById('stopBtn').addEventListener('click', () => {
-    stopReading({
-      onLevelUp: showLevelUp,
-      onTitleUp: showTitleUp,
-      onComplete: updateUI
-    });
+    stopReading(updateUI);
   });
 
   // 設定
@@ -105,18 +95,7 @@ export function initializeEventListeners() {
   });
 
   // 本の追加・編集
-  const bookCallbacks = {
-    onLevelUp: showLevelUp,
-    onTitleUp: showTitleUp
-  };
-
-  document.getElementById('addBookBtn').addEventListener('click', () => {
-    addBook(true, bookCallbacks);
-  });
-
-  document.getElementById('addBookNoXpBtn').addEventListener('click', () => {
-    addBook(false, bookCallbacks);
-  });
+  document.getElementById('addBookBtn').addEventListener('click', addBook);
 
   document.getElementById('saveEditBtn').addEventListener('click', saveEditBook);
 
@@ -157,15 +136,6 @@ export function initializeEventListeners() {
   // 削除確認
   document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
     confirmDeleteBook(updateUI);
-  });
-
-  // レベルアップ・称号オーバーレイ
-  document.getElementById('closeLevelup').addEventListener('click', () => {
-    closeModal('levelupOverlay');
-  });
-
-  document.getElementById('closeTitle').addEventListener('click', () => {
-    closeModal('titleOverlay');
   });
 
   // data-close属性を持つボタン

@@ -240,73 +240,6 @@ html, body {
   padding: var(--space-xl);
 }
 
-.progress {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--space-xl) 0;
-}
-
-.ring-wrapper {
-  position: relative;
-  width: 150px;
-  height: 150px;
-}
-
-.ring-wrapper svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.ring-wrapper circle {
-  fill: none;
-  stroke-width: 7;
-}
-
-.ring-bg {
-  stroke: var(--elevated);
-}
-
-.ring-fill {
-  stroke: var(--accent);
-  stroke-linecap: round;
-  stroke-dasharray: 414.69;
-  stroke-dashoffset: 414.69;
-  transition: stroke-dashoffset 0.5s;
-}
-
-.ring-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.ring-level {
-  font-size: 34px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.ring-title {
-  font-size: 12px;
-  color: var(--accent);
-  margin-top: 2px;
-}
-
-.xp-text {
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-top: 10px;
-}
-
-.xp-text span {
-  color: var(--accent);
-  font-weight: 700;
-}
-
 /* ==========================================================================
    7. Home Tab - Main Button
    ========================================================================== */
@@ -779,15 +712,6 @@ html, body {
   margin-top: 2px;
 }
 
-.book-xp {
-  background: rgba(232, 168, 124, 0.1);
-  color: var(--accent);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  font-size: 10px;
-  margin-left: 6px;
-}
-
 .book-actions {
   display: flex;
   gap: var(--space-xs);
@@ -1238,8 +1162,7 @@ html, body {
 
 /* Base Overlay */
 .modal-overlay,
-.confirm-overlay,
-.levelup-overlay {
+.confirm-overlay {
   position: fixed;
   inset: 0;
   display: none;
@@ -1247,8 +1170,7 @@ html, body {
 }
 
 .modal-overlay.active,
-.confirm-overlay.active,
-.levelup-overlay.active {
+.confirm-overlay.active {
   display: flex;
 }
 
@@ -1264,14 +1186,6 @@ html, body {
   justify-content: center;
   z-index: 300;
   padding: var(--space-xl);
-}
-
-.levelup-overlay {
-  background: rgba(10, 10, 15, 0.95);
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 400;
 }
 
 /* Modal */
@@ -1401,48 +1315,6 @@ html, body {
   color: var(--bg);
 }
 
-/* Level Up */
-.levelup-content {
-  text-align: center;
-  animation: popIn 0.5s ease;
-}
-
-.levelup-icon {
-  font-size: 64px;
-  margin-bottom: var(--space-xl);
-}
-
-.levelup-label {
-  font-size: 13px;
-  color: var(--accent);
-  letter-spacing: 0.15em;
-  margin-bottom: var(--space-sm);
-}
-
-.levelup-value {
-  font-size: 42px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.levelup-sub {
-  font-size: 14px;
-  color: var(--text-dim);
-  margin-top: var(--space-xs);
-}
-
-.levelup-btn {
-  margin-top: 40px;
-  padding: var(--space-md) 28px;
-  font-size: 13px;
-  font-family: inherit;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  color: var(--text);
-  cursor: pointer;
-}
-
 /* Reading Screen */
 .reading-screen {
   position: fixed;
@@ -1518,21 +1390,6 @@ html, body {
   animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
 }
 
-.confetti {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 500;
-  overflow: hidden;
-}
-
-.confetti i {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  animation: fall 3s ease-out forwards;
-}
-
 /* ==========================================================================
    17. Animations
    ========================================================================== */
@@ -1543,11 +1400,6 @@ html, body {
   to { transform: translateY(0); }
 }
 
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
-}
-
 @keyframes toastIn {
   from { opacity: 0; transform: translateX(-50%) translateY(10px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -1555,11 +1407,6 @@ html, body {
 
 @keyframes toastOut {
   to { opacity: 0; }
-}
-
-@keyframes fall {
-  0% { transform: translateY(-50px) rotate(0); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
 /* Keyframes - Main Button */

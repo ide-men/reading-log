@@ -64,20 +64,6 @@
 
   <!-- 記録タブ -->
   <div class="tab" id="tab-stats">
-    <div class="progress">
-      <div class="ring-wrapper">
-        <svg viewBox="0 0 140 140">
-          <circle class="ring-bg" cx="70" cy="70" r="66"/>
-          <circle class="ring-fill" id="xpRing" cx="70" cy="70" r="66"/>
-        </svg>
-        <div class="ring-center">
-          <div class="ring-level" id="levelDisplay">Lv.1</div>
-          <div class="ring-title" id="titleDisplay">読書ビギナー</div>
-        </div>
-      </div>
-      <div class="xp-text">次のレベルまで <span id="xpProgress">0</span> / <span id="xpNeeded">5</span> XP</div>
-    </div>
-
     <div class="stats-grid">
       <div class="stats-card">
         <div class="stats-card-value" id="totalHours">0</div>
@@ -177,11 +163,7 @@
             <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
           </div>
         </div>
-        <button class="btn btn-primary" id="addBookBtn">
-          <span>読了！</span>
-          <span class="btn-badge">+10 XP</span>
-        </button>
-        <button class="btn btn-secondary" id="addBookNoXpBtn">過去に読んだ本を追加</button>
+        <button class="btn btn-primary" id="addBookBtn">登録</button>
       </div>
     </div>
   </div>
@@ -241,7 +223,7 @@
         <div class="settings-section">
           <h3 class="settings-section-title">⚠️ 危険な操作</h3>
           <button class="btn btn-danger" id="resetBtn">すべてのデータをリセット</button>
-          <p class="settings-hint">読書記録・XP・登録した本がすべて削除されます</p>
+          <p class="settings-hint">読書記録・登録した本がすべて削除されます</p>
         </div>
       </div>
     </div>
@@ -296,27 +278,6 @@
         <button class="confirm-cancel" data-close="linkConfirm">キャンセル</button>
         <button class="confirm-ok link" id="confirmLinkBtn">開く</button>
       </div>
-    </div>
-  </div>
-
-  <!-- レベルアップ -->
-  <div class="levelup-overlay" id="levelupOverlay">
-    <div class="levelup-content">
-      <div class="levelup-icon">⬆️</div>
-      <div class="levelup-label">LEVEL UP</div>
-      <div class="levelup-value" id="newLevel">Lv.2</div>
-      <button class="levelup-btn" id="closeLevelup">タップして閉じる</button>
-    </div>
-  </div>
-
-  <!-- 称号獲得 -->
-  <div class="levelup-overlay" id="titleOverlay">
-    <div class="levelup-content">
-      <div class="levelup-icon" id="newTitleIcon">📖</div>
-      <div class="levelup-label">NEW TITLE</div>
-      <div class="levelup-value" id="newTitleName">本の虫</div>
-      <div class="levelup-sub" id="newTitleSub">少しずつ習慣に</div>
-      <button class="levelup-btn" id="closeTitle">タップして閉じる</button>
     </div>
   </div>
 

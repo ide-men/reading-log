@@ -13,26 +13,12 @@ export const STORAGE_KEYS = {
 };
 
 export const CONFIG = {
-  xpPerLevel: 5,
-  xpPerBook: 10,
   minSessionMinutes: 10,
   msPerDay: 86400000,
   historyRetentionDays: 90,
   archiveRetentionDays: 365,
   storageWarningPercent: 80
 };
-
-export const TITLES = [
-  { lv: 1, name: '読書ビギナー', sub: '読書の旅が始まる', icon: '🌱' },
-  { lv: 3, name: '本の虫', sub: '少しずつ習慣に', icon: '🐛' },
-  { lv: 5, name: '読書家', sub: '読書が日常になった', icon: '📖' },
-  { lv: 10, name: '読書マニア', sub: '本なしでは生きられない', icon: '📚' },
-  { lv: 20, name: '読書マスター', sub: '知識の探求者', icon: '🎓' },
-  { lv: 35, name: '読書の達人', sub: '本と共に生きる', icon: '⚔️' },
-  { lv: 50, name: '読書王', sub: '書物の王国の主', icon: '👑' },
-  { lv: 75, name: '読書の賢者', sub: '無限の知恵', icon: '🧙' },
-  { lv: 100, name: '読書神', sub: '神の領域へ', icon: '✨' }
-];
 
 export const QUOTES = [
   { text: '読書は心の旅路。一ページが新しい世界への扉となる。', author: '今日の一言' },
