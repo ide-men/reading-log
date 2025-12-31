@@ -535,6 +535,7 @@ html, body {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.2s ease;
+  transform: rotate(var(--tilt, 0deg));
   box-shadow:
     2px 0 0 rgba(0, 0, 0, 0.3),
     -1px 0 0 rgba(255, 255, 255, 0.1);
@@ -570,7 +571,7 @@ html, body {
 }
 
 .mini-book:hover {
-  transform: translateY(-6px) scale(1.05) !important;
+  transform: translateY(-6px) scale(1.05) rotate(var(--tilt, 0deg));
   z-index: 10;
   box-shadow:
     2px 0 0 rgba(0, 0, 0, 0.3),

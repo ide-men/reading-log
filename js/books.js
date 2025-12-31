@@ -76,7 +76,7 @@ export function renderBooks() {
         height:${height}px;
         width:${width}px;
         ${bgStyle}
-        transform: rotate(${tilt}deg);
+        --tilt: ${tilt}deg;
       "${book.coverUrl ? ` data-cover-url="${escapeAttr(book.coverUrl)}" data-color="${color}"` : ''}>
         <div class="book-tooltip">
           <div class="tooltip-title">${escapeHtml(book.title)}</div>
