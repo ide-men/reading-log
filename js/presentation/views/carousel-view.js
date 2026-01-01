@@ -171,3 +171,46 @@ export function selectBook(id) {
 
   updateSelectedBookInfo();
 }
+
+// ========================================
+// 中央に最も近い本を選択
+// ========================================
+let scrollEndTimer = null;
+
+export function selectCenteredBook() {
+  const carousel = document.getElementById('bookCarousel');
+  if (!carousel) return;
+
+  const books = carousel.querySelectorAll('.carousel-book');
+  if (books.length <= 1) return;
+
+  // スクロール終了を待ってから選択を更新（debounce）
+  clearTimeout(scrollEndTimer);
+  scrollEndTimer = setTimeout(() => {
+    const carouselRect = carousel.getBoundingClientRect();
+    const centerX = carouselRect.left + carouselRect.width / 2;
+
+    let closestBook = null;
+    let closestDistance = Infinity;
+
+    books.forEach(book => {
+      const bookRect = book.getBoundingClientRect();
+      const bookCenterX = bookRect.left + bookRect.width / 2;
+      const distance = Math.abs(bookCenterX - centerX);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestBook = book;
+      }
+    });
+
+    if (closestBook) {
+      const bookId = Number(closestBook.dataset.id);
+      const currentSelectedId = bookRepository.getSelectedBookId();
+
+      if (bookId !== currentSelectedId) {
+        selectBook(bookId);
+      }
+    }
+  }, 100);
+}

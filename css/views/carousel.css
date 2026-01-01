@@ -97,6 +97,11 @@
   perspective: 800px;
 }
 
+/* 1冊のみの場合は中央配置 */
+.book-carousel:has(.carousel-book:only-child) {
+  justify-content: center;
+}
+
 .book-carousel::-webkit-scrollbar {
   display: none;
 }
