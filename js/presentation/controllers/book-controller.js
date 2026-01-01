@@ -157,10 +157,16 @@ export function startReadingBook(id) {
 // reading → completed（読み終わった！）
 export function completeBook(id) {
   const result = bookService.completeBook(id);
-  if (result.success) {
+  if (!result.success) return;
+
+  showAcquireCelebration(result.book, result.destination, () => {
+    showToast('読了おめでとうございます！');
+  });
+
+  setTimeout(() => {
+    result.applyUpdate();
     renderBooks();
-    showToast(result.message);
-  }
+  }, CELEBRATION_CONFIG.statusUpdateDelay);
 }
 
 // reading → dropped（中断）

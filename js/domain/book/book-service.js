@@ -217,25 +217,27 @@ export function startReadingBook(id) {
 /**
  * reading → completed（読み終わった！）
  * @param {number} id - 本のID
- * @returns {{ success: boolean, message: string }}
+ * @returns {{ success: boolean, book?: Book, destination: string }}
  */
 export function completeBook(id) {
   const book = bookRepository.getBookById(id);
   if (!book) {
-    return { success: false, message: '本が見つかりません' };
+    return { success: false };
   }
 
   const today = new Date().toISOString().split('T')[0];
 
-  bookRepository.updateBook(id, {
-    status: BOOK_STATUS.COMPLETED,
-    completedAt: today
-  });
-  eventBus.emit(Events.BOOK_STATUS_CHANGED, { id, from: book.status, to: BOOK_STATUS.COMPLETED });
-
   return {
     success: true,
-    message: '読了おめでとうございます！'
+    book,
+    destination: '読了',
+    applyUpdate: () => {
+      bookRepository.updateBook(id, {
+        status: BOOK_STATUS.COMPLETED,
+        completedAt: today
+      });
+      eventBus.emit(Events.BOOK_STATUS_CHANGED, { id, from: book.status, to: BOOK_STATUS.COMPLETED });
+    }
   };
 }
 
