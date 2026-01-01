@@ -756,7 +756,8 @@
 
 /* Detail View Theme Modifiers */
 .detail-view--study {
-  background: var(--card);
+  background: linear-gradient(135deg, #1f1a16 0%, #2a2319 100%);
+  border-color: rgba(139, 90, 43, 0.2);
 }
 
 .detail-view--study .detail-view__action--primary {

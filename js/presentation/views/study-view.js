@@ -3,14 +3,15 @@
 // ========================================
 import { BOOK_STATUS } from '../../shared/constants.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
+import * as uiState from '../state/ui-state.js';
 import { renderShelfContent } from './shared.js';
 
 // ========================================
 // 書斎のレンダリング
 // ========================================
 export function renderStudyBooks() {
-  const currentStudyStatus = bookRepository.getCurrentStudyStatus();
-  const studySelectedBookId = bookRepository.getStudySelectedBookId();
+  const currentStudyStatus = uiState.getCurrentStudyStatus();
+  const studySelectedBookId = uiState.getStudySelectedBookId();
 
   // カウント更新
   const completedBooks = bookRepository.getBooksByStatus(BOOK_STATUS.COMPLETED);

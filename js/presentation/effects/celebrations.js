@@ -4,6 +4,9 @@
 import { CELEBRATION_CONFIG } from '../../shared/constants.js';
 import { escapeHtml } from '../../shared/utils.js';
 
+// 現在のクリーンアップ関数を保持
+let currentCleanup = null;
+
 // ========================================
 // 本を手に入れた時のセレブレーション
 // ========================================
@@ -14,6 +17,12 @@ export function showAcquireCelebration(book, destination = '書斎', onComplete 
   const particles = document.getElementById('acquireParticles');
 
   if (!celebration) return;
+
+  // 前回のセレブレーションをクリーンアップ
+  if (currentCleanup) {
+    currentCleanup();
+    currentCleanup = null;
+  }
 
   // 本のビジュアルを設定
   if (book.coverUrl) {
@@ -41,19 +50,30 @@ export function showAcquireCelebration(book, destination = '書斎', onComplete 
   // 表示
   celebration.classList.add('active');
 
-  // 自動で閉じる
-  setTimeout(() => {
-    celebration.classList.remove('active');
-    if (onComplete) onComplete();
-  }, CELEBRATION_CONFIG.displayDuration);
-
-  // クリックで早めに閉じる
-  const closeHandler = () => {
+  // 完了フラグ（重複実行防止）
+  let completed = false;
+  const complete = () => {
+    if (completed) return;
+    completed = true;
     celebration.classList.remove('active');
     celebration.removeEventListener('click', closeHandler);
+    currentCleanup = null;
     if (onComplete) onComplete();
   };
+
+  // クリックで早めに閉じる
+  const closeHandler = () => complete();
   celebration.addEventListener('click', closeHandler);
+
+  // 自動で閉じる
+  const timeoutId = setTimeout(complete, CELEBRATION_CONFIG.displayDuration);
+
+  // クリーンアップ関数を保存
+  currentCleanup = () => {
+    clearTimeout(timeoutId);
+    celebration.removeEventListener('click', closeHandler);
+    celebration.classList.remove('active');
+  };
 }
 
 // ========================================

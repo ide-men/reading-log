@@ -3,13 +3,14 @@
 // ========================================
 import { BOOK_STATUS } from '../../shared/constants.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
+import * as uiState from '../state/ui-state.js';
 import { renderShelfContent } from './shared.js';
 
 // ========================================
 // 本屋（ウィッシュリスト）のレンダリング
 // ========================================
 export function renderStoreBooks() {
-  const storeSelectedBookId = bookRepository.getStoreSelectedBookId();
+  const storeSelectedBookId = uiState.getStoreSelectedBookId();
   const books = bookRepository.getBooksByStatus(BOOK_STATUS.WISHLIST);
   const shelf = document.getElementById('storeShelf');
   const container = document.getElementById('storeBookList');

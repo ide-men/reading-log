@@ -87,12 +87,30 @@ export function openLink(url, event) {
 // DOM要素キャッシング
 // ========================================
 const elementCache = new Map();
+const MAX_CACHE_SIZE = 100;
 
 export function getElement(id) {
-  if (!elementCache.has(id)) {
-    elementCache.set(id, document.getElementById(id));
+  const cached = elementCache.get(id);
+
+  // キャッシュがあり、まだDOMに存在する場合は返す
+  if (cached && document.body.contains(cached)) {
+    return cached;
   }
-  return elementCache.get(id);
+
+  // キャッシュサイズ制限を超えたら古いエントリを削除
+  if (elementCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = elementCache.keys().next().value;
+    elementCache.delete(firstKey);
+  }
+
+  const element = document.getElementById(id);
+  if (element) {
+    elementCache.set(id, element);
+  } else {
+    // 存在しない要素はキャッシュから削除
+    elementCache.delete(id);
+  }
+  return element;
 }
 
 export function clearElementCache() {

@@ -4,6 +4,7 @@
 import { BOOK_STATUS, UI_CONFIG } from '../../shared/constants.js';
 import { escapeHtml } from '../../shared/utils.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
+import * as uiState from '../state/ui-state.js';
 import { getRelativeDate } from '../../domain/book/book-entity.js';
 
 // ========================================
@@ -21,7 +22,7 @@ export function renderReadingBooks() {
 
   if (!carousel) return;
 
-  let selectedBookId = bookRepository.getSelectedBookId();
+  let selectedBookId = uiState.getSelectedBookId();
 
   if (books.length === 0) {
     carousel.innerHTML = `
@@ -35,7 +36,7 @@ export function renderReadingBooks() {
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を追加してください</span>';
     completeBtn.disabled = true;
     dropBtn.disabled = true;
-    bookRepository.setSelectedBookId(null);
+    uiState.setSelectedBookId(null);
     if (dotsContainer) {
       dotsContainer.innerHTML = '';
       dotsContainer.classList.remove('visible');
@@ -49,7 +50,7 @@ export function renderReadingBooks() {
   // 選択中の本が削除されていたら最初の本を選択
   if (!selectedBookId || !books.find(b => b.id === selectedBookId)) {
     selectedBookId = books[0].id;
-    bookRepository.setSelectedBookId(selectedBookId);
+    uiState.setSelectedBookId(selectedBookId);
   }
 
   // カルーセルをレンダリング
@@ -121,7 +122,7 @@ export function updateCarouselScrollState() {
 // 選択中の本の情報を更新
 // ========================================
 export function updateSelectedBookInfo() {
-  const selectedBookId = bookRepository.getSelectedBookId();
+  const selectedBookId = uiState.getSelectedBookId();
   const infoContainer = document.getElementById('selectedBookInfo');
   const startBtn = document.getElementById('startBtn');
   const completeBtn = document.getElementById('completeSelectedBtn');
@@ -157,7 +158,7 @@ export function updateSelectedBookInfo() {
 // カルーセルで本を選択
 // ========================================
 export function selectBook(id) {
-  bookRepository.setSelectedBookId(id);
+  uiState.setSelectedBookId(id);
 
   // UIを更新
   const books = document.querySelectorAll('.carousel-book');
@@ -206,7 +207,7 @@ export function selectCenteredBook() {
 
     if (closestBook) {
       const bookId = Number(closestBook.dataset.id);
-      const currentSelectedId = bookRepository.getSelectedBookId();
+      const currentSelectedId = uiState.getSelectedBookId();
 
       if (bookId !== currentSelectedId) {
         selectBook(bookId);

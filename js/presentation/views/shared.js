@@ -4,6 +4,7 @@
 import { BOOK_STATUS } from '../../shared/constants.js';
 import { escapeHtml, escapeAttr, isValidUrl } from '../../shared/utils.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
+import * as uiState from '../state/ui-state.js';
 import {
   getBookDateText,
   getBookColorByIndex,
@@ -177,7 +178,7 @@ export function openBookDetail(id) {
   const book = bookRepository.getBookById(id);
   if (!book) return;
 
-  bookRepository.setDetailBookId(id);
+  uiState.setDetailBookId(id);
 
   // カバー画像
   const coverEl = document.getElementById('bookDetailCover');
