@@ -1,15 +1,17 @@
 /* ==========================================================================
    Reading Log - CSS
    ==========================================================================
-   1. Reset & Variables
-   2. Base Layout
-   3. Header
-   4. Navigation
-   5. Tabs & Content
-   6. Home Tab - Progress Ring
-   7. Home Tab - Main Button
-   8. Home Tab - Quote
-   9. Bookshelf
+
+   ## 構成
+   1.  Reset & Variables
+   2.  Base Layout
+   3.  Header
+   4.  Navigation
+   5.  Tabs & Content
+   6.  Home Tab - Progress Ring
+   7.  Home Tab - Main Button
+   8.  Home Tab - Quote
+   9.  Page Headers (共通)
    10. Book List Items
    11. Stats & Charts
    12. Cards (Stats, Prediction, Style)
@@ -18,6 +20,18 @@
    15. Modals & Overlays
    16. Toast & Notifications
    17. Animations
+   18. Book Carousel (カバン画面)
+   19. Acquire Celebration
+   20. Study Grid Layout (書斎)
+   21. Book Detail Modal
+   22. FAB (Floating Action Button)
+
+   ## 共通コンポーネント
+   - Page Headers: .page-header, .page-header__emoji, etc.
+   - Mini Books: .mini-book, .store-mini-book
+   - Empty States: .empty-state, .empty-state__icon, etc.
+   - Detail Views: .detail-view, .detail-view__*, etc.
+
    ========================================================================== */
 
 /* ==========================================================================
@@ -301,72 +315,65 @@ html, body {
 }
 
 /* ==========================================================================
-   9. Page Headers (Bag, Study, Store)
+   9. Page Headers (共通)
    ========================================================================== */
 
-/* Bag Header (カバン) */
-.bag-header {
-  text-align: center;
-  padding: var(--space-xl) 0;
-}
-
-.bag-emoji {
-  font-size: 48px;
-  margin-bottom: var(--space-sm);
-}
-
-.bag-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.bag-subtitle {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-top: var(--space-xs);
-}
-
-/* Study Header (書斎) */
-.study-header {
+/* 共通ページヘッダー */
+.page-header {
   text-align: center;
   padding: var(--space-xl) 0 var(--space-lg);
 }
 
-.study-emoji {
+.page-header--compact {
+  padding-bottom: 0;
+}
+
+.page-header__emoji {
   font-size: 48px;
   margin-bottom: var(--space-sm);
 }
 
-.study-title {
+.page-header__title {
   font-size: 22px;
   font-weight: 700;
   color: var(--text);
 }
 
-.study-subtitle {
+.page-header__subtitle {
   font-size: 13px;
   color: var(--text-dim);
   margin-top: var(--space-xs);
 }
 
-/* Store Header (本屋) - 書斎と同様のデザイン */
+/* 後方互換性のためのエイリアス */
+.bag-header,
+.study-header,
 .store-header {
   text-align: center;
   padding: var(--space-xl) 0 var(--space-lg);
 }
 
+.bag-header {
+  padding-bottom: 0;
+}
+
+.bag-emoji,
+.study-emoji,
 .store-emoji {
   font-size: 48px;
   margin-bottom: var(--space-sm);
 }
 
+.bag-title,
+.study-title,
 .store-title {
   font-size: 22px;
   font-weight: 700;
   color: var(--text);
 }
 
+.bag-subtitle,
+.study-subtitle,
 .store-subtitle {
   font-size: 13px;
   color: var(--text-dim);
@@ -477,78 +484,8 @@ html, body {
     inset 0 2px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Store Mini Book */
-.store-mini-book {
-  min-width: 14px;
-  border-radius: 2px 3px 0 0;
-  cursor: pointer;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.2s ease;
-  box-shadow:
-    2px 0 0 rgba(0, 0, 0, 0.3),
-    -1px 0 0 rgba(255, 255, 255, 0.1);
-}
-
-.store-mini-book::before {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 2px;
-  right: 2px;
-  bottom: 4px;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.15) 0%,
-    transparent 30%,
-    transparent 70%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
-  border-radius: 1px;
-}
-
-.store-mini-book::after {
-  content: '';
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 1px;
-}
-
-.store-mini-book:hover {
-  transform: translateY(-6px) scale(1.05) !important;
-  z-index: 10;
-  box-shadow:
-    2px 0 0 rgba(0, 0, 0, 0.3),
-    -1px 0 0 rgba(255, 255, 255, 0.1),
-    var(--shadow-lg);
-}
-
-.store-mini-book.has-cover::before,
-.store-mini-book.has-cover::after {
-  display: none;
-}
-
-.store-mini-book.has-cover {
-  border-radius: 2px 4px 0 0;
-  box-shadow:
-    2px 0 0 rgba(0, 0, 0, 0.4),
-    -1px 0 0 rgba(255, 255, 255, 0.1),
-    var(--shadow-sm);
-}
-
-.store-mini-book.selected {
-  transform: translateY(-10px) scale(1.1) !important;
-  z-index: 20;
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.4),
-    0 0 0 2px #f59e0b,
-    0 0 12px rgba(245, 158, 11, 0.5);
-}
+/* Store Mini Book - mini-book と共通スタイルを使用 */
+/* 注: .store-mini-book は .mini-book と共通化済み（後方互換用に保持） */
 
 /* Store Grid Layout */
 .store-grid {
@@ -722,29 +659,18 @@ html, body {
   color: #fbbf24;
 }
 
-/* Empty Store State */
+/* Empty Store State - グリッド用追加スタイル */
 .empty-store {
   grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
-  color: var(--text-dim);
 }
 
 .empty-store-icon {
   font-size: 64px;
-  margin-bottom: var(--space-lg);
   opacity: 0.4;
 }
 
 .empty-store-text {
   font-size: 16px;
-  color: var(--text);
-  margin-bottom: var(--space-sm);
-}
-
-.empty-store-hint {
-  font-size: 13px;
-  opacity: 0.8;
 }
 
 /* ==========================================================================
@@ -906,27 +832,7 @@ html, body {
   background: var(--border);
 }
 
-.empty-reading {
-  text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
-  color: var(--text-dim);
-}
-
-.empty-reading-icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
-  opacity: 0.5;
-}
-
-.empty-reading-text {
-  font-size: 15px;
-  color: var(--text);
-  margin-bottom: var(--space-xs);
-}
-
-.empty-reading-hint {
-  font-size: 13px;
-}
+/* empty-reading - 共通空状態スタイルを使用 */
 
 /* Home Actions */
 .home-actions {
@@ -1023,8 +929,9 @@ html, body {
     inset 0 2px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Mini Book */
-.mini-book {
+/* Mini Book (書斎・本屋共通) */
+.mini-book,
+.store-mini-book {
   min-width: 14px;
   border-radius: 2px 3px 0 0;
   cursor: pointer;
@@ -1036,7 +943,8 @@ html, body {
     -1px 0 0 rgba(255, 255, 255, 0.1);
 }
 
-.mini-book::before {
+.mini-book::before,
+.store-mini-book::before {
   content: '';
   position: absolute;
   top: 4px;
@@ -1053,7 +961,8 @@ html, body {
   border-radius: 1px;
 }
 
-.mini-book::after {
+.mini-book::after,
+.store-mini-book::after {
   content: '';
   position: absolute;
   top: 6px;
@@ -1065,7 +974,8 @@ html, body {
   border-radius: 1px;
 }
 
-.mini-book:hover {
+.mini-book:hover,
+.store-mini-book:hover {
   transform: translateY(-6px) scale(1.05) !important;
   z-index: 10;
   box-shadow:
@@ -1075,11 +985,14 @@ html, body {
 }
 
 .mini-book.has-cover::before,
-.mini-book.has-cover::after {
+.mini-book.has-cover::after,
+.store-mini-book.has-cover::before,
+.store-mini-book.has-cover::after {
   display: none;
 }
 
-.mini-book.has-cover {
+.mini-book.has-cover,
+.store-mini-book.has-cover {
   border-radius: 2px 4px 0 0;
   box-shadow:
     2px 0 0 rgba(0, 0, 0, 0.4),
@@ -1087,30 +1000,116 @@ html, body {
     var(--shadow-sm);
 }
 
-/* Empty Shelf */
-.empty-shelf {
-  color: var(--text-dim);
-  font-size: 14px;
-  padding: 30px var(--space-xl);
+/* Mini Book Selected States */
+.mini-book.selected,
+.store-mini-book.selected {
+  transform: translateY(-10px) scale(1.1) !important;
+  z-index: 20;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 2px #f59e0b,
+    0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+/* ==========================================================================
+   Empty State (共通)
+   ========================================================================== */
+
+/* 共通空状態スタイル */
+.empty-state {
   text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
   width: 100%;
+}
+
+.empty-state__icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-state__text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.empty-state__hint {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* 小サイズバリアント */
+.empty-state--small .empty-state__icon {
+  font-size: 36px;
+}
+
+.empty-state--small {
+  padding: 30px var(--space-xl);
+}
+
+/* 後方互換性のためのエイリアス */
+.empty-shelf,
+.empty-store,
+.empty-reading,
+.empty-carousel,
+.empty-study,
+.empty-study-grid {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+  width: 100%;
+}
+
+.empty-shelf {
+  padding: 30px var(--space-xl);
+  font-size: 14px;
+}
+
+.empty-shelf-icon,
+.empty-store-icon,
+.empty-reading-icon,
+.empty-carousel-icon,
+.empty-study-icon,
+.empty-study-grid-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
 }
 
 .empty-shelf-icon {
   font-size: 36px;
-  margin-bottom: var(--space-md);
   opacity: 0.6;
 }
 
-.empty-shelf-text {
+.empty-shelf-text,
+.empty-store-text,
+.empty-reading-text,
+.empty-carousel-text,
+.empty-study-text,
+.empty-study-grid-text {
+  font-size: 15px;
   color: var(--text);
-  font-weight: 500;
   margin-bottom: var(--space-xs);
+}
+
+.empty-shelf-text {
+  font-weight: 500;
+}
+
+.empty-shelf-hint,
+.empty-store-hint,
+.empty-reading-hint,
+.empty-carousel-hint,
+.empty-study-hint,
+.empty-study-grid-hint {
+  font-size: 13px;
+  opacity: 0.8;
 }
 
 .empty-shelf-hint {
   font-size: 12px;
-  opacity: 0.8;
 }
 
 /* ==========================================================================
@@ -1246,57 +1245,15 @@ html, body {
   border-bottom: none;
 }
 
-.empty-store {
-  text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
-  color: var(--text-dim);
-}
-
-.empty-store-icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
-  opacity: 0.5;
-}
-
-.empty-store-text {
-  font-size: 15px;
-  color: var(--text);
-  margin-bottom: var(--space-xs);
-}
-
-.empty-store-hint {
-  font-size: 13px;
-}
-
-/* Empty Shelf for Study */
-.empty-study {
-  text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
-  color: var(--text-dim);
-  width: 100%;
-}
+/* empty-store, empty-study - 共通空状態スタイルを使用 */
 
 /* 書斎・本屋のシェルフにemptyメッセージがある場合、中央配置 */
 .shelf-visual:has(.empty-study),
-.store-shelf-visual:has(.empty-study) {
+.store-shelf-visual:has(.empty-study),
+.shelf-visual:has(.empty-state),
+.store-shelf-visual:has(.empty-state) {
   justify-content: center;
   align-items: center;
-}
-
-.empty-study-icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
-  opacity: 0.5;
-}
-
-.empty-study-text {
-  font-size: 15px;
-  color: var(--text);
-  margin-bottom: var(--space-xs);
-}
-
-.empty-study-hint {
-  font-size: 13px;
 }
 
 /* ==========================================================================
@@ -2424,29 +2381,7 @@ select.form-input {
   object-fit: cover;
 }
 
-/* Empty Carousel */
-.empty-carousel {
-  text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
-  color: var(--text-dim);
-  width: 100%;
-}
-
-.empty-carousel-icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
-  opacity: 0.5;
-}
-
-.empty-carousel-text {
-  font-size: 15px;
-  color: var(--text);
-  margin-bottom: var(--space-xs);
-}
-
-.empty-carousel-hint {
-  font-size: 13px;
-}
+/* empty-carousel - 共通空状態スタイルを使用 */
 
 /* Selected Book Info */
 .selected-book-info {
@@ -2829,49 +2764,29 @@ select.form-input {
   transform: scale(0.98);
 }
 
-/* Empty Study Grid State */
+/* Empty Study Grid State - グリッド用追加スタイル */
 .empty-study-grid {
   grid-column: 1 / -1;
-  text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
-  color: var(--text-dim);
 }
 
 .empty-study-grid-icon {
   font-size: 64px;
-  margin-bottom: var(--space-lg);
   opacity: 0.4;
 }
 
 .empty-study-grid-text {
   font-size: 16px;
-  color: var(--text);
-  margin-bottom: var(--space-sm);
 }
 
-.empty-study-grid-hint {
-  font-size: 13px;
-  opacity: 0.8;
-}
+/* mini-book.selected - 共通Mini Bookスタイルを使用 */
 
-/* Mini Book Selected State */
-.mini-book.selected {
-  transform: translateY(-10px) scale(1.1) !important;
-  z-index: 20;
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.4),
-    0 0 0 2px var(--amber),
-    0 0 12px rgba(245, 158, 11, 0.5);
-}
+/* ==========================================================================
+   Detail View (共通 - 書斎・本屋)
+   ========================================================================== */
 
-.mini-book {
-  cursor: pointer;
-}
-
-/* Study Detail View (インライン詳細表示) */
-.study-detail-view {
+/* 共通詳細ビュースタイル */
+.detail-view {
   position: relative;
-  background: var(--card);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
   margin-top: var(--space-lg);
@@ -2891,7 +2806,7 @@ select.form-input {
   }
 }
 
-.study-detail-close {
+.detail-view__close {
   position: absolute;
   top: var(--space-md);
   right: var(--space-md);
@@ -2909,17 +2824,17 @@ select.form-input {
   transition: all 0.2s;
 }
 
-.study-detail-close:hover {
+.detail-view__close:hover {
   background: var(--border);
   color: var(--text);
 }
 
-.study-detail-content {
+.detail-view__content {
   display: flex;
   gap: var(--space-xl);
 }
 
-.study-detail-cover {
+.detail-view__cover {
   width: 120px;
   height: 170px;
   border-radius: var(--radius-md);
@@ -2931,17 +2846,17 @@ select.form-input {
   box-shadow: var(--shadow-md);
 }
 
-.study-detail-cover img {
+.detail-view__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.study-detail-cover .book-placeholder {
+.detail-view__cover .book-placeholder {
   font-size: 48px;
 }
 
-.study-detail-info {
+.detail-view__info {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -2949,19 +2864,19 @@ select.form-input {
   gap: var(--space-sm);
 }
 
-.study-detail-title {
+.detail-view__title {
   font-size: 18px;
   font-weight: 600;
   color: var(--text);
   line-height: 1.4;
 }
 
-.study-detail-date {
+.detail-view__date {
   font-size: 13px;
   color: var(--text-dim);
 }
 
-.study-detail-note {
+.detail-view__note {
   font-size: 14px;
   color: var(--text);
   line-height: 1.6;
@@ -2972,14 +2887,14 @@ select.form-input {
   white-space: pre-wrap;
 }
 
-.study-detail-actions {
+.detail-view__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
   margin-top: var(--space-md);
 }
 
-.study-detail-action {
+.detail-view__action {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
@@ -2993,7 +2908,158 @@ select.form-input {
   transition: all 0.2s;
 }
 
-.study-detail-action:hover {
+.detail-view__action:hover {
+  background: var(--border);
+}
+
+.detail-view__action--primary {
+  color: white;
+}
+
+.detail-view__action--primary:hover {
+  transform: scale(1.02);
+}
+
+.detail-view__action--danger {
+  color: #ef4444;
+}
+
+.detail-view__action--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* 後方互換性のためのエイリアス - Study Detail */
+.study-detail-view {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-top: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: slideUp 0.3s ease;
+}
+
+.study-detail-close,
+.store-detail-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+
+.study-detail-close:hover,
+.store-detail-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.study-detail-content,
+.store-detail-content {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.study-detail-cover,
+.store-detail-cover {
+  width: 120px;
+  height: 170px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.study-detail-cover img,
+.store-detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.study-detail-cover .book-placeholder,
+.store-detail-cover .book-placeholder {
+  font-size: 48px;
+}
+
+.study-detail-info,
+.store-detail-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.study-detail-title,
+.store-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.study-detail-date,
+.store-detail-date {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.store-detail-date {
+  color: #9a9aaa;
+}
+
+.study-detail-note,
+.store-detail-note {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: var(--space-md);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+  white-space: pre-wrap;
+}
+
+.study-detail-actions,
+.store-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.study-detail-action,
+.store-detail-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.study-detail-action:hover,
+.store-detail-action:hover {
   background: var(--border);
 }
 
@@ -3007,11 +3073,23 @@ select.form-input {
   box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
 }
 
-.study-detail-action.danger {
+.store-detail-action.primary {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1a1a25;
+}
+
+.store-detail-action.primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.study-detail-action.danger,
+.store-detail-action.danger {
   color: #ef4444;
 }
 
-.study-detail-action.danger:hover {
+.study-detail-action.danger:hover,
+.store-detail-action.danger:hover {
   background: rgba(239, 68, 68, 0.1);
 }
 
@@ -3157,143 +3235,11 @@ select.form-input {
   display: none;
 }
 
-/* ==========================================================================
-   23. Store Detail View (本屋詳細ビュー)
-   ========================================================================== */
+/* store-detail-view - Detail View (共通) セクションに統合済み */
 
-/* Store Detail View (インライン詳細表示) */
+/* Store Detail View 固有スタイル（背景・ボーダーのみ） */
 .store-detail-view {
-  position: relative;
   background: linear-gradient(135deg, #1a1a25 0%, #252535 100%);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  margin-top: var(--space-lg);
-  box-shadow: var(--shadow-lg);
   border: 1px solid rgba(245, 158, 11, 0.2);
-  animation: slideUp 0.3s ease;
-}
-
-.store-detail-close {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: var(--bg);
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--text-dim);
-  transition: all 0.2s;
-}
-
-.store-detail-close:hover {
-  background: var(--border);
-  color: var(--text);
-}
-
-.store-detail-content {
-  display: flex;
-  gap: var(--space-xl);
-}
-
-.store-detail-cover {
-  width: 120px;
-  height: 170px;
-  border-radius: var(--radius-md);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-
-.store-detail-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.store-detail-cover .book-placeholder {
-  font-size: 48px;
-}
-
-.store-detail-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.store-detail-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.4;
-}
-
-.store-detail-date {
-  font-size: 13px;
-  color: #9a9aaa;
-}
-
-.store-detail-note {
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.6;
-  padding: var(--space-md);
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  margin-top: var(--space-sm);
-  white-space: pre-wrap;
-}
-
-.store-detail-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  margin-top: var(--space-md);
-}
-
-.store-detail-action {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.store-detail-action:hover {
-  background: var(--border);
-}
-
-.store-detail-action.primary {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  color: #1a1a25;
-}
-
-.store-detail-action.primary:hover {
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-}
-
-.store-detail-action.danger {
-  color: #ef4444;
-}
-
-.store-detail-action.danger:hover {
-  background: rgba(239, 68, 68, 0.1);
 }
 
