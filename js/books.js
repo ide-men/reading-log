@@ -157,11 +157,9 @@ export function addBook(isPastBook = false) {
   // 通知を表示
   showToast(isPastBook ? '過去の本を追加しました' : '本を追加しました');
 
-  // 続けて追加がONならモーダルを開いたまま、OFFなら閉じる
+  // 続けて追加がOFFならモーダルを閉じる
   const continueAdd = document.getElementById('continueAddCheckbox').checked;
-  if (continueAdd) {
-    document.getElementById('bookInput').focus();
-  } else {
+  if (!continueAdd) {
     closeModal('addBookModal');
   }
 }
