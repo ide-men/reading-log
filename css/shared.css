@@ -287,6 +287,8 @@
 .shelf__visual:has(.empty-state) {
   justify-content: center;
   align-items: center;
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
 }
 
 /* ==========================================================================
