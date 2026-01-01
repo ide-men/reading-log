@@ -1041,6 +1041,23 @@ html, body {
   display: block;
 }
 
+.continue-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.continue-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 .past-book-link {
   text-align: center;
   margin-top: var(--space-lg);
@@ -1268,15 +1285,6 @@ html, body {
 
 .modal-body {
   padding: 0 var(--space-xl) 28px;
-}
-
-.modal-buttons {
-  display: flex;
-  gap: var(--space-sm);
-}
-
-.modal-buttons .btn {
-  flex: 1;
 }
 
 /* Celebration (in modal) */
