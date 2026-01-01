@@ -112,6 +112,8 @@ function getRelativeDate(dateStr) {
 export function renderReadingBooks() {
   const books = getBooksByStatus(BOOK_STATUS.READING);
   const carousel = document.getElementById('bookCarousel');
+  const wrapper = document.getElementById('bookCarouselWrapper');
+  const dotsContainer = document.getElementById('carouselDots');
   const infoContainer = document.getElementById('selectedBookInfo');
   const startBtn = document.getElementById('startBtn');
   const completeBtn = document.getElementById('completeSelectedBtn');
@@ -132,6 +134,14 @@ export function renderReadingBooks() {
     completeBtn.disabled = true;
     dropBtn.disabled = true;
     selectedBookId = null;
+    // ドットとフェードをクリア
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      dotsContainer.classList.remove('visible');
+    }
+    if (wrapper) {
+      wrapper.classList.remove('can-scroll-left', 'can-scroll-right');
+    }
     return;
   }
 
@@ -154,8 +164,53 @@ export function renderReadingBooks() {
       </div>`;
   }).join('');
 
+  // ドットインジケーターを生成（4冊以上の場合のみ表示）
+  if (dotsContainer && books.length >= 4) {
+    dotsContainer.innerHTML = books.map((book, i) => {
+      const isActive = book.id === selectedBookId;
+      return `<div class="carousel-dot${isActive ? ' active' : ''}" data-index="${i}"></div>`;
+    }).join('');
+    dotsContainer.classList.add('visible');
+  } else if (dotsContainer) {
+    dotsContainer.innerHTML = '';
+    dotsContainer.classList.remove('visible');
+  }
+
+  // スクロール状態を更新（DOM更新後に実行）
+  requestAnimationFrame(() => {
+    updateCarouselScrollState();
+  });
+
   // 選択中の本の情報を表示
   updateSelectedBookInfo();
+}
+
+// カルーセルのスクロール状態を更新
+export function updateCarouselScrollState() {
+  const carousel = document.getElementById('bookCarousel');
+  const wrapper = document.getElementById('bookCarouselWrapper');
+  const dotsContainer = document.getElementById('carouselDots');
+
+  if (!carousel || !wrapper) return;
+
+  const canScrollLeft = carousel.scrollLeft > 5;
+  const canScrollRight = carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth - 5;
+
+  wrapper.classList.toggle('can-scroll-left', canScrollLeft);
+  wrapper.classList.toggle('can-scroll-right', canScrollRight);
+
+  // 現在表示されている本に基づいてドットを更新
+  if (dotsContainer) {
+    const selectedBook = carousel.querySelector('.carousel-book.selected');
+    if (selectedBook) {
+      const bookElements = Array.from(carousel.querySelectorAll('.carousel-book'));
+      const selectedIndex = bookElements.indexOf(selectedBook);
+      const dots = dotsContainer.querySelectorAll('.carousel-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === selectedIndex);
+      });
+    }
+  }
 }
 
 // 選択中の本の情報を更新

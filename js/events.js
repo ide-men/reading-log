@@ -37,7 +37,8 @@ import {
   clearStudySelection,
   setStoreSelectedBookId,
   getStoreSelectedBookId,
-  clearStoreSelection
+  clearStoreSelection,
+  updateCarouselScrollState
 } from './books.js';
 import { renderStats } from './stats.js';
 import {
@@ -240,6 +241,30 @@ export function initializeEventListeners() {
     const book = e.target.closest('.carousel-book');
     if (book && book.dataset.id) {
       selectBook(Number(book.dataset.id));
+      updateCarouselScrollState();
+    }
+  });
+
+  // カルーセルのスクロールイベント（フェード・ドット更新）
+  document.getElementById('bookCarousel').addEventListener('scroll', () => {
+    updateCarouselScrollState();
+  });
+
+  // ドットインジケーターのクリックイベント
+  document.getElementById('carouselDots').addEventListener('click', (e) => {
+    const dot = e.target.closest('.carousel-dot');
+    if (!dot) return;
+
+    const index = Number(dot.dataset.index);
+    const carousel = document.getElementById('bookCarousel');
+    const books = carousel.querySelectorAll('.carousel-book');
+
+    if (books[index]) {
+      const bookId = Number(books[index].dataset.id);
+      selectBook(bookId);
+      // 選択した本をスクロールして表示
+      books[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      updateCarouselScrollState();
     }
   });
 
