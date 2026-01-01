@@ -128,6 +128,111 @@ export function getWeekChartData() {
 }
 
 /**
+ * 月間カレンダーデータを取得（草カレンダー用）
+ * @returns {Object} { days: Array, maxMinutes: number }
+ */
+export function getMonthCalendarData() {
+  const state = stateManager.getState();
+  const now = new Date();
+
+  // 日付ごとの合計時間をマップ化
+  const minutesByDate = {};
+  for (const h of state.history) {
+    const dateStr = h.d.split('T')[0];
+    minutesByDate[dateStr] = (minutesByDate[dateStr] || 0) + h.m;
+  }
+
+  // 過去1ヶ月のデータを生成
+  const days = [];
+  let maxMinutes = 30; // 最小スケール
+
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    const minutes = minutesByDate[dateStr] || 0;
+    maxMinutes = Math.max(maxMinutes, minutes);
+
+    days.push({
+      date: dateStr,
+      dayOfMonth: date.getDate(),
+      dayOfWeek: date.getDay(),
+      minutes,
+      isToday: i === 0
+    });
+  }
+
+  // レベル計算（0-4の5段階）
+  return {
+    days: days.map(d => ({
+      ...d,
+      level: d.minutes === 0 ? 0 : Math.min(4, Math.ceil(d.minutes / maxMinutes * 4))
+    })),
+    maxMinutes
+  };
+}
+
+/**
+ * 読書リズムヒートマップデータを取得
+ * @returns {Object} { grid: number[][], insight: string }
+ */
+export function getReadingRhythmData() {
+  const state = stateManager.getState();
+
+  // 時間帯×曜日のグリッド（4時間帯 × 7曜日）
+  // 時間帯: 朝(5-11), 昼(11-17), 夜(17-23), 深夜(23-5)
+  const grid = Array.from({ length: 4 }, () => Array(7).fill(0));
+
+  for (const { h, d } of state.history) {
+    const dayOfWeek = new Date(d).getDay();
+    const slotIndex = getTimeSlotIndex(h);
+    grid[slotIndex][dayOfWeek]++;
+  }
+
+  // 最大値を求める
+  let maxCount = 1;
+  for (const row of grid) {
+    for (const count of row) {
+      maxCount = Math.max(maxCount, count);
+    }
+  }
+
+  // レベル（0-4）に変換
+  const levelGrid = grid.map(row =>
+    row.map(count => count === 0 ? 0 : Math.min(4, Math.ceil(count / maxCount * 4)))
+  );
+
+  // インサイト生成
+  let insight = '';
+  if (state.history.length >= 5) {
+    const weekdayCounts = [0, 0]; // [平日, 休日]
+    const slotCounts = [0, 0, 0, 0]; // [朝, 昼, 夜, 深夜]
+
+    for (let slot = 0; slot < 4; slot++) {
+      for (let day = 0; day < 7; day++) {
+        const count = grid[slot][day];
+        weekdayCounts[day === 0 || day === 6 ? 1 : 0] += count;
+        slotCounts[slot] += count;
+      }
+    }
+
+    const weekdayType = weekdayCounts[0] > weekdayCounts[1] * 1.5 ? '平日' :
+                        weekdayCounts[1] > weekdayCounts[0] * 1.5 ? '休日' : '';
+    const slotNames = ['朝', '昼', '夜', '深夜'];
+    const maxSlotIndex = slotCounts.indexOf(Math.max(...slotCounts));
+    const slotType = slotNames[maxSlotIndex];
+
+    if (weekdayType) {
+      insight = `${weekdayType}の${slotType}によく読書していますね`;
+    } else {
+      insight = `${slotType}の時間帯がお気に入りのようです`;
+    }
+  }
+
+  return { grid: levelGrid, insight, rawGrid: grid };
+}
+
+/**
  * 読書インサイトを取得
  * @returns {Object}
  */
