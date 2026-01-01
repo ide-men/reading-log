@@ -87,7 +87,7 @@
 .book-carousel {
   display: flex;
   gap: var(--space-xl);
-  padding: var(--space-xl) 60px;
+  padding: var(--space-xl) calc(50% - 55px);
   overflow-x: auto;
   overflow-y: visible;
   scroll-snap-type: x mandatory;
