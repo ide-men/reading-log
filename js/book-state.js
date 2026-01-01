@@ -10,8 +10,8 @@ let editingBookId = null;
 // カルーセルで選択中の本ID
 let selectedBookId = null;
 
-// 書斎の現在選択中のステータス
-let currentStudyStatus = BOOK_STATUS.COMPLETED;
+// 書斎の現在選択中のステータス（デフォルトは積読 - 最も閲覧頻度が高い）
+let currentStudyStatus = BOOK_STATUS.UNREAD;
 
 // 書斎で選択中の本ID
 let studySelectedBookId = null;
