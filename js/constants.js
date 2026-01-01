@@ -61,12 +61,9 @@ export const BUTTON_ANIMATIONS = {
 };
 
 export const READING_ANIMATIONS = [
-  { icon: '📖', anim: 'breath', label: '読書に集中しています' },
-  { icon: '🌙', anim: 'float', label: 'ゆったりと読書中' },
-  { icon: '☁️', anim: 'sway', label: '穏やかに読書中' },
-  { icon: '🍃', anim: 'zen', label: '静かに読書中' },
-  { icon: '✨', anim: 'breath', label: '本の世界に浸っています' },
-  { icon: '🌿', anim: 'float', label: 'リラックスして読書中' }
+  { icon: '📖', anim: 'page-turn', label: 'ページをめくっています' },
+  { icon: '📖', anim: 'page-rustle', label: '静かに読書中' },
+  { icon: '📖', anim: 'gentle-read', label: '本の世界に浸っています' }
 ];
 
 export const SAMPLE_BOOKS = [

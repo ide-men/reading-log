@@ -1502,78 +1502,68 @@ html, body {
   75% { transform: rotate(-10deg); }
 }
 
-/* Keyframes - Reading Screen */
-.reading-anim.anim-breath .reading-icon {
-  animation: reading-breath 5s ease-in-out infinite;
+/* Keyframes - Reading Screen (Page Turn Animations) */
+
+/* page-turn: ゆっくりとしたページめくり */
+.reading-anim.anim-page-turn .reading-icon {
+  animation: reading-page-turn 4s ease-in-out infinite;
+  transform-origin: left center;
 }
 
-.reading-anim.anim-breath .reading-glow {
-  animation: reading-glow-breath 5s ease-in-out infinite;
+.reading-anim.anim-page-turn .reading-glow {
+  animation: reading-glow-page-turn 4s ease-in-out infinite;
 }
 
-@keyframes reading-breath {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
-  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+@keyframes reading-page-turn {
+  0%, 100% { transform: translate(-50%, -50%) rotateY(0deg); }
+  40% { transform: translate(-50%, -50%) rotateY(-15deg); }
+  60% { transform: translate(-50%, -50%) rotateY(-15deg); }
+  80% { transform: translate(-50%, -50%) rotateY(0deg); }
 }
 
-@keyframes reading-glow-breath {
-  0%, 100% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.1); opacity: 0.5; }
-}
-
-.reading-anim.anim-float .reading-icon {
-  animation: reading-float 6s ease-in-out infinite;
-}
-
-.reading-anim.anim-float .reading-glow {
-  animation: reading-glow-float 6s ease-in-out infinite;
-}
-
-@keyframes reading-float {
-  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-  50% { transform: translate(-50%, -50%) translateY(-8px); }
-}
-
-@keyframes reading-glow-float {
-  0%, 100% { transform: scale(1) translateY(0); opacity: 0.35; }
-  50% { transform: scale(1.05) translateY(-4px); opacity: 0.45; }
-}
-
-.reading-anim.anim-sway .reading-icon {
-  animation: reading-sway 7s ease-in-out infinite;
-}
-
-.reading-anim.anim-sway .reading-glow {
-  animation: reading-glow-sway 7s ease-in-out infinite;
-}
-
-@keyframes reading-sway {
-  0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
-  25% { transform: translate(-50%, -50%) rotate(3deg); }
-  75% { transform: translate(-50%, -50%) rotate(-3deg); }
-}
-
-@keyframes reading-glow-sway {
-  0%, 100% { transform: scale(1); opacity: 0.35; }
-  50% { transform: scale(1.08); opacity: 0.45; }
-}
-
-.reading-anim.anim-zen .reading-icon {
-  animation: reading-zen 8s ease-in-out infinite;
-}
-
-.reading-anim.anim-zen .reading-glow {
-  animation: reading-glow-zen 8s ease-in-out infinite;
-}
-
-@keyframes reading-zen {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); filter: brightness(1); }
-  50% { transform: translate(-50%, -50%) scale(1.05); filter: brightness(1.1); }
-}
-
-@keyframes reading-glow-zen {
+@keyframes reading-glow-page-turn {
   0%, 100% { transform: scale(1); opacity: 0.25; }
-  50% { transform: scale(1.15); opacity: 0.4; }
+  50% { transform: scale(1.05); opacity: 0.35; }
+}
+
+/* page-rustle: ページがふわっと持ち上がる */
+.reading-anim.anim-page-rustle .reading-icon {
+  animation: reading-page-rustle 5s ease-in-out infinite;
+}
+
+.reading-anim.anim-page-rustle .reading-glow {
+  animation: reading-glow-page-rustle 5s ease-in-out infinite;
+}
+
+@keyframes reading-page-rustle {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); }
+  30% { transform: translate(-50%, -50%) translateY(-3px) rotate(1deg); }
+  50% { transform: translate(-50%, -50%) translateY(-5px) rotate(0deg); }
+  70% { transform: translate(-50%, -50%) translateY(-3px) rotate(-1deg); }
+}
+
+@keyframes reading-glow-page-rustle {
+  0%, 100% { transform: scale(1); opacity: 0.2; }
+  50% { transform: scale(1.03); opacity: 0.3; }
+}
+
+/* gentle-read: 静かに本を読んでいる呼吸のような動き */
+.reading-anim.anim-gentle-read .reading-icon {
+  animation: reading-gentle-read 6s ease-in-out infinite;
+}
+
+.reading-anim.anim-gentle-read .reading-glow {
+  animation: reading-glow-gentle-read 6s ease-in-out infinite;
+}
+
+@keyframes reading-gentle-read {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.03); }
+}
+
+@keyframes reading-glow-gentle-read {
+  0%, 100% { transform: scale(1); opacity: 0.2; }
+  50% { transform: scale(1.08); opacity: 0.3; }
 }
 
 @keyframes reading-glow-pulse {
