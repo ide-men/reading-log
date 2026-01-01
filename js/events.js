@@ -10,7 +10,7 @@ import {
   updateStorageDisplay
 } from './storage.js';
 import { isTimerRunning, getSeconds, startReading, stopReading } from './timer.js';
-import { addBook, editBook, saveEditBook, deleteBook, confirmDeleteBook, renderBooks } from './books.js';
+import { addBook, editBook, saveEditBook, deleteBook, confirmDeleteBook, renderBooks, resetContinueAddCount } from './books.js';
 import { renderStats } from './stats.js';
 import {
   switchTab,
@@ -83,7 +83,10 @@ export function initializeEventListeners() {
   fab.className = 'header-btn primary';
   fab.style.cssText = 'position:fixed;bottom:90px;right:20px;width:56px;height:56px;border-radius:50%;font-size:28px;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
   fab.textContent = '+';
-  fab.addEventListener('click', () => openModal('addBookModal'));
+  fab.addEventListener('click', () => {
+    resetContinueAddCount();
+    openModal('addBookModal');
+  });
   document.body.appendChild(fab);
   setFab(fab);
 
@@ -141,13 +144,25 @@ export function initializeEventListeners() {
 
   // data-close属性を持つボタン
   document.querySelectorAll('[data-close]').forEach(btn => {
-    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+    btn.addEventListener('click', () => {
+      closeModal(btn.dataset.close);
+      // 本追加モーダルの場合はカウンターをリセット
+      if (btn.dataset.close === 'addBookModal') {
+        resetContinueAddCount();
+      }
+    });
   });
 
   // モーダルオーバーレイクリックで閉じる
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.classList.remove('active');
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+        // 本追加モーダルの場合はカウンターをリセット
+        if (overlay.id === 'addBookModal') {
+          resetContinueAddCount();
+        }
+      }
     });
   });
 

@@ -140,7 +140,6 @@
   <!-- 本追加モーダル -->
   <div class="modal-overlay" id="addBookModal">
     <div class="modal">
-      <div class="modal-bar"></div>
       <div class="modal-header">
         <h2>読んだ本を追加</h2>
         <button class="modal-close" data-close="addBookModal">×</button>
@@ -167,10 +166,12 @@
           <input type="checkbox" id="continueAddCheckbox">
           <span>続けて追加</span>
         </label>
-        <button class="btn btn-primary" id="addBookBtn">読み終えた！</button>
-        <div class="past-book-link">
-          <button type="button" id="addPastBookBtn">過去に読んだ本を登録</button>
+        <div class="add-book-feedback" id="addBookFeedback">
+          <div class="feedback-check">✓</div>
+          <div class="feedback-count" id="feedbackCount">1冊追加しました</div>
         </div>
+        <button class="btn btn-primary" id="addBookBtn">読み終えた！</button>
+        <button class="btn btn-text" id="addPastBookBtn">📖 過去に読んだ本を追加</button>
       </div>
     </div>
   </div>
@@ -178,7 +179,6 @@
   <!-- 編集モーダル -->
   <div class="modal-overlay" id="editBookModal">
     <div class="modal">
-      <div class="modal-bar"></div>
       <div class="modal-header">
         <h2>本を編集</h2>
         <button class="modal-close" data-close="editBookModal">×</button>
@@ -201,7 +201,6 @@
   <!-- 設定モーダル -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal">
-      <div class="modal-bar"></div>
       <div class="modal-header">
         <h2>設定</h2>
         <button class="modal-close" data-close="settingsModal">×</button>

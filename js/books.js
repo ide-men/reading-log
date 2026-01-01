@@ -19,6 +19,9 @@ import { showToast, closeModal } from './ui.js';
 let deletingBookId = null;
 let editingBookId = null;
 
+// 続けて追加のカウンター
+let continueAddCount = 0;
+
 export function getEditingBookId() {
   return editingBookId;
 }
@@ -145,8 +148,6 @@ export function addBook(isPastBook = false) {
 
   stateManager.addBook(bookData);
 
-  showToast(isPastBook ? '過去の本を登録しました' : '本を登録しました');
-
   saveState();
   renderBooks();
 
@@ -159,9 +160,35 @@ export function addBook(isPastBook = false) {
   // 続けて追加がONならモーダルを開いたまま、OFFなら閉じる
   const continueAdd = document.getElementById('continueAddCheckbox').checked;
   if (continueAdd) {
+    // カウンターを更新してフィードバック表示
+    continueAddCount++;
+    showAddBookFeedback(continueAddCount);
     document.getElementById('bookInput').focus();
   } else {
+    showToast(isPastBook ? '過去の本を追加しました' : '本を追加しました');
     closeModal('addBookModal');
+  }
+}
+
+// 続けて追加時のフィードバック表示
+function showAddBookFeedback(count) {
+  const feedback = document.getElementById('addBookFeedback');
+  const countEl = document.getElementById('feedbackCount');
+
+  countEl.textContent = `${count}冊追加しました`;
+
+  // アニメーションをリセットして再表示
+  feedback.classList.remove('show');
+  void feedback.offsetWidth; // reflow
+  feedback.classList.add('show');
+}
+
+// 続けて追加カウンターをリセット
+export function resetContinueAddCount() {
+  continueAddCount = 0;
+  const feedback = document.getElementById('addBookFeedback');
+  if (feedback) {
+    feedback.classList.remove('show');
   }
 }
 
