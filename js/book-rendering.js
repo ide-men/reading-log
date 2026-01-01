@@ -19,7 +19,7 @@ import {
   getBookColor,
   getBookColorByIndex,
   createBookCoverHtml,
-  getMiniBookStyle
+  renderMiniBookShelf
 } from './book-helpers.js';
 
 // ========================================
@@ -237,18 +237,7 @@ export function renderStudyBooks() {
   }
 
   // 本棚表示
-  shelf.innerHTML = books.map((book, i) => {
-    const style = getMiniBookStyle(book, i);
-    const selectedClass = studySelectedBookId === book.id ? 'selected' : '';
-
-    return `
-      <div class="mini-book ${style.hasCover ? 'has-cover' : ''} ${selectedClass}" data-book-id="${book.id}" style="
-        height:${style.height}px;
-        width:${style.width}px;
-        ${style.bgStyle}
-        transform: rotate(${style.tilt}deg);
-      "></div>`;
-  }).join('');
+  shelf.innerHTML = renderMiniBookShelf(books, studySelectedBookId, 'mini-book');
 
   // 選択中の本がある場合は詳細ビューを表示
   const selectedBook = studySelectedBookId ? books.find(b => b.id === studySelectedBookId) : null;
@@ -312,18 +301,7 @@ export function renderStoreBooks() {
   }
 
   // 本棚表示
-  shelf.innerHTML = books.map((book, i) => {
-    const style = getMiniBookStyle(book, i);
-    const selectedClass = storeSelectedBookId === book.id ? 'selected' : '';
-
-    return `
-      <div class="store-mini-book ${style.hasCover ? 'has-cover' : ''} ${selectedClass}" data-book-id="${book.id}" style="
-        height:${style.height}px;
-        width:${style.width}px;
-        ${style.bgStyle}
-        transform: rotate(${style.tilt}deg);
-      "></div>`;
-  }).join('');
+  shelf.innerHTML = renderMiniBookShelf(books, storeSelectedBookId, 'store-mini-book');
 
   // 選択中の本がある場合は詳細ビューを表示
   const selectedBook = storeSelectedBookId ? books.find(b => b.id === storeSelectedBookId) : null;

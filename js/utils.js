@@ -63,6 +63,18 @@ export function getAmazonImageUrl(asin) {
   return asin ? `https://images-na.ssl-images-amazon.com/images/P/${asin}.09.LZZZZZZZ.jpg` : null;
 }
 
+export function getCoverUrlFromLink(link, onShortUrl = null) {
+  if (!link) return null;
+  const asin = extractAsinFromUrl(link);
+  if (asin) {
+    return getAmazonImageUrl(asin);
+  }
+  if (isAmazonShortUrl(link) && onShortUrl) {
+    onShortUrl();
+  }
+  return null;
+}
+
 // ========================================
 // リンク操作
 // ========================================

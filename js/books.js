@@ -32,7 +32,8 @@ export {
   getBookColor,
   getBookColorByIndex,
   createBookCoverHtml,
-  getMiniBookStyle
+  getMiniBookStyle,
+  renderMiniBookShelf
 } from './book-helpers.js';
 
 // レンダリング

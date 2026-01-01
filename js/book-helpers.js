@@ -101,3 +101,21 @@ export function getMiniBookStyle(book, index) {
     hasCover: !!book.coverUrl
   };
 }
+
+// ========================================
+// ミニ本棚のHTML生成
+// ========================================
+export function renderMiniBookShelf(books, selectedBookId, className = 'mini-book') {
+  return books.map((book, i) => {
+    const style = getMiniBookStyle(book, i);
+    const selectedClass = selectedBookId === book.id ? 'selected' : '';
+
+    return `
+      <div class="${className} ${style.hasCover ? 'has-cover' : ''} ${selectedClass}" data-book-id="${book.id}" style="
+        height:${style.height}px;
+        width:${style.width}px;
+        ${style.bgStyle}
+        transform: rotate(${style.tilt}deg);
+      "></div>`;
+  }).join('');
+}
