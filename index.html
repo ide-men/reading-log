@@ -102,21 +102,34 @@
   <!-- 本屋タブ -->
   <div class="tab" id="tab-store">
     <div class="store-header">
-      <div class="store-emoji">🏪</div>
-      <div class="store-title">本屋</div>
+      <div class="store-emoji">📚</div>
+      <div class="store-title">Book Store</div>
       <div class="store-subtitle">気になっている本</div>
     </div>
 
     <div class="store-stats">
       <span class="store-count" id="wishlistCount">0</span>
-      <span class="store-label">冊気になる</span>
+      <span class="store-label">冊の本が待っています</span>
     </div>
 
-    <div id="storeBookList"></div>
+    <div class="store-grid" id="storeBookList"></div>
 
     <button class="btn btn-secondary add-book-btn" id="addStoreBookBtn">
       <span>＋ 本を追加</span>
     </button>
+  </div>
+
+  <!-- 本を手に入れた時のセレブレーション -->
+  <div class="acquire-celebration" id="acquireCelebration">
+    <div class="acquire-particles" id="acquireParticles"></div>
+    <div class="acquire-content">
+      <div class="acquire-book-visual" id="acquireBookVisual"></div>
+      <div class="acquire-message">
+        <div class="acquire-title">🎉 手に入れた！</div>
+        <div class="acquire-book-name" id="acquireBookName"></div>
+        <div class="acquire-hint">書斎の積読に追加されました</div>
+      </div>
+    </div>
   </div>
 
   <!-- 記録タブ -->
