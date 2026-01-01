@@ -321,8 +321,8 @@ export function renderStudyBooks() {
         actionBtn = `
           <div class="study-book-actions">
             <button class="study-action-btn" data-start="${book.id}">
-              <span>📖</span>
-              <span>読み始める！</span>
+              <span>🎒</span>
+              <span>カバンに入れる</span>
             </button>
           </div>`;
       }
@@ -382,8 +382,8 @@ function renderStudyDetailView(book) {
   if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED) {
     actionBtn = `
       <button class="study-detail-action primary" data-start="${book.id}">
-        <span>📖</span>
-        <span>読み始める！</span>
+        <span>🎒</span>
+        <span>カバンに入れる</span>
       </button>`;
   }
 
