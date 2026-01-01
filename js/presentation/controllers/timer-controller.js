@@ -3,7 +3,6 @@
 // タイマー操作の制御
 // ========================================
 import { escapeAttr } from '../../shared/utils.js';
-import { eventBus, Events } from '../../shared/event-bus.js';
 import * as timerService from '../../domain/timer/timer-service.js';
 import * as uiState from '../state/ui-state.js';
 import { applyReadingAnimation } from '../effects/animations.js';
