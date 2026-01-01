@@ -400,7 +400,7 @@
 
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: var(--space-lg);
   padding: var(--space-sm) 0;
   margin-top: var(--space-lg);
@@ -877,4 +877,116 @@
 
 .book-detail-btn span:first-child {
   font-size: 16px;
+}
+
+/* ==========================================================================
+   Responsive - Tablet (600px~)
+   ========================================================================== */
+
+@media (min-width: 600px) {
+  .page-header__emoji {
+    font-size: 56px;
+  }
+
+  .page-header__title {
+    font-size: 26px;
+  }
+
+  .page-header__subtitle {
+    font-size: 14px;
+  }
+
+  .empty-state__icon {
+    font-size: 56px;
+  }
+
+  .empty-state__text {
+    font-size: 16px;
+  }
+
+  .book-card__cover {
+    max-height: 180px;
+  }
+
+  .book-card__title {
+    font-size: 14px;
+  }
+
+  .detail-view__content {
+    gap: var(--space-2xl);
+  }
+
+  .detail-view__cover {
+    width: 140px;
+    height: 200px;
+  }
+
+  .detail-view__title {
+    font-size: 20px;
+  }
+
+  .book-detail-modal {
+    max-width: 450px;
+  }
+
+  .book-detail-cover {
+    width: 160px;
+    height: 230px;
+  }
+
+  .book-detail-title {
+    font-size: 20px;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Desktop (1024px~)
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .page-header__emoji {
+    font-size: 64px;
+  }
+
+  .page-header__title {
+    font-size: 28px;
+  }
+
+  .page-header__subtitle {
+    font-size: 15px;
+  }
+
+  .book-card {
+    padding: var(--space-xl);
+  }
+
+  .book-card__cover {
+    max-height: 200px;
+  }
+
+  .book-card__title {
+    font-size: 15px;
+  }
+
+  .detail-view__cover {
+    width: 160px;
+    height: 230px;
+  }
+
+  .detail-view__title {
+    font-size: 22px;
+  }
+
+  .book-detail-modal {
+    max-width: 500px;
+  }
+
+  .book-detail-cover {
+    width: 180px;
+    height: 260px;
+  }
+
+  .book-detail-title {
+    font-size: 22px;
+  }
 }
