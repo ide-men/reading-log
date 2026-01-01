@@ -37,7 +37,10 @@ export function applyReadingAnimation() {
   const iconEl = document.getElementById('readingIcon');
   const labelEl = document.getElementById('readingLabel');
 
-  iconEl.textContent = config.icon;
+  // 表紙画像がある場合はアイコンを上書きしない
+  if (!iconEl.classList.contains('has-cover')) {
+    iconEl.textContent = config.icon;
+  }
   animEl.className = `reading-anim anim-${config.anim}`;
   labelEl.textContent = config.label;
 }
