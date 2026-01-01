@@ -2201,11 +2201,83 @@ select.form-input {
 .book-carousel-container {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   padding: 0 var(--space-md);
   min-height: 160px;
+  position: relative;
+}
+
+/* カルーセルのラッパー（フェード用） */
+.book-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* フェードグラデーション（左右にさらに本があることを示す） */
+.book-carousel-wrapper::before,
+.book-carousel-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.book-carousel-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+
+.book-carousel-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
+/* スクロール可能時にフェードを表示 */
+.book-carousel-wrapper.can-scroll-left::before {
+  opacity: 1;
+}
+
+.book-carousel-wrapper.can-scroll-right::after {
+  opacity: 1;
+}
+
+/* ドットインジケーター */
+.carousel-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  padding: var(--space-sm) 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-dots.visible {
+  opacity: 1;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  opacity: 0.3;
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+}
+
+.carousel-dot.active {
+  opacity: 1;
+  background: var(--accent);
+  transform: scale(1.2);
 }
 
 .book-carousel {
