@@ -3,9 +3,9 @@
 // ========================================
 import { BOOK_STATUS } from './constants.js';
 import { stateManager } from './state.js';
-import { saveState } from './storage.js';
 import { escapeHtml } from './utils.js';
 import { showToast } from './ui.js';
+import { persistAndRender } from './book-helpers.js';
 import { renderBooks } from './book-rendering.js';
 
 // ========================================
@@ -21,8 +21,7 @@ export function acquireBook(id) {
   // 少し待ってからステータス更新
   setTimeout(() => {
     stateManager.updateBook(id, { status: BOOK_STATUS.UNREAD });
-    saveState();
-    renderBooks();
+    persistAndRender(renderBooks);
   }, 300);
 }
 
@@ -44,8 +43,7 @@ export function moveToReading(id) {
       status: BOOK_STATUS.READING,
       startedAt: today
     });
-    saveState();
-    renderBooks();
+    persistAndRender(renderBooks);
   }, 300);
 }
 
@@ -148,8 +146,7 @@ export function startReadingBook(id) {
   }
 
   stateManager.updateBook(id, updates);
-  saveState();
-  renderBooks();
+  persistAndRender(renderBooks);
   showToast(wasCompleted ? 'カバンに入れました！' : '読書を始めました！');
 }
 
@@ -162,8 +159,7 @@ export function completeBook(id) {
     status: BOOK_STATUS.COMPLETED,
     completedAt: today
   });
-  saveState();
-  renderBooks();
+  persistAndRender(renderBooks);
   showToast('読了おめでとうございます！');
 }
 
@@ -172,7 +168,6 @@ export function completeBook(id) {
 // ========================================
 export function dropBook(id) {
   stateManager.updateBook(id, { status: BOOK_STATUS.DROPPED });
-  saveState();
-  renderBooks();
+  persistAndRender(renderBooks);
   showToast('本を中断しました');
 }

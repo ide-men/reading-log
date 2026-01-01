@@ -3,7 +3,16 @@
 // ========================================
 import { BOOK_STATUS, BOOK_COLORS } from './constants.js';
 import { stateManager } from './state.js';
+import { saveState } from './storage.js';
 import { escapeHtml, adjustColor } from './utils.js';
+
+// ========================================
+// 本の状態変更後の共通処理
+// ========================================
+export function persistAndRender(renderBooks) {
+  saveState();
+  renderBooks();
+}
 
 // ========================================
 // ステータス別フィルタ

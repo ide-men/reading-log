@@ -3,7 +3,6 @@
 // ========================================
 import { BOOK_STATUS } from './constants.js';
 import { stateManager } from './state.js';
-import { saveState } from './storage.js';
 import { getCoverUrlFromLink } from './utils.js';
 import { showToast, closeModal } from './ui.js';
 import {
@@ -12,6 +11,7 @@ import {
   getEditingBookId,
   setEditingBookId
 } from './book-state.js';
+import { persistAndRender } from './book-helpers.js';
 import { renderBooks } from './book-rendering.js';
 
 // ========================================
@@ -55,8 +55,7 @@ export function addBook(status = BOOK_STATUS.READING) {
   };
 
   stateManager.addBook(bookData);
-  saveState();
-  renderBooks();
+  persistAndRender(renderBooks);
 
   // フォームをクリア
   document.getElementById('bookInput').value = '';
@@ -122,8 +121,7 @@ export function saveEditBook() {
     }
 
     stateManager.updateBook(editingBookId, updates);
-    saveState();
-    renderBooks();
+    persistAndRender(renderBooks);
     showToast('保存しました');
   }
   closeModal('editBookModal');
@@ -145,8 +143,7 @@ export function confirmDeleteBook(updateUI) {
   const deletingBookId = getDeletingBookId();
   stateManager.removeBook(deletingBookId);
 
-  saveState();
-  renderBooks();
+  persistAndRender(renderBooks);
   updateUI();
   showToast('削除しました');
   closeModal('deleteConfirm');
