@@ -2,8 +2,6 @@
 // Navigation Controller
 // タブ・モーダル・設定の制御
 // ========================================
-import { QUOTES } from '../../shared/constants.js';
-import { randomItem } from '../../shared/utils.js';
 import { eventBus, Events } from '../../shared/event-bus.js';
 import {
   exportData,
@@ -80,10 +78,6 @@ export function showToast(message, duration = 3000) {
 // UI更新
 // ========================================
 export function updateUI() {
-  const quote = randomItem(QUOTES);
-  document.getElementById('quoteText').textContent = quote.text;
-  document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
-
   updateButtonAnimation();
 }
 
