@@ -543,6 +543,7 @@ export function addBook(status = BOOK_STATUS.READING) {
   }
 
   const link = document.getElementById('linkInput').value.trim();
+  const comment = document.getElementById('bookCommentInput').value.trim();
   let coverUrl = null;
   const asin = extractAsinFromUrl(link);
 
@@ -561,7 +562,7 @@ export function addBook(status = BOOK_STATUS.READING) {
     status,
     startedAt: status === BOOK_STATUS.READING ? today : null,
     completedAt: null,
-    note: null,
+    note: comment || null,
     readingTime: 0
   };
 
@@ -571,6 +572,7 @@ export function addBook(status = BOOK_STATUS.READING) {
 
   // フォームをクリア
   document.getElementById('bookInput').value = '';
+  document.getElementById('bookCommentInput').value = '';
   document.getElementById('linkInput').value = '';
   document.getElementById('linkFields').classList.remove('open');
   document.getElementById('linkIcon').textContent = '+';

@@ -49,9 +49,6 @@
         <button class="btn btn-success" id="completeSelectedBtn" disabled>読み終わった！</button>
         <button class="btn btn-secondary" id="dropSelectedBtn" disabled>中断</button>
       </div>
-      <button class="btn btn-secondary add-book-btn" id="addReadingBookBtn">
-        <span>＋ 本を追加</span>
-      </button>
     </div>
 
     <div class="quote-bottom">
@@ -93,10 +90,6 @@
     </div>
 
     <div id="studyBookList"></div>
-
-    <button class="btn btn-secondary add-book-btn" id="addStudyBookBtn">
-      <span>＋ 本を追加</span>
-    </button>
   </div>
 
   <!-- 本屋タブ -->
@@ -113,10 +106,6 @@
     </div>
 
     <div class="store-grid" id="storeBookList"></div>
-
-    <button class="btn btn-secondary add-book-btn" id="addStoreBookBtn">
-      <span>＋ 本を追加</span>
-    </button>
   </div>
 
   <!-- 本を手に入れた時のセレブレーション -->
@@ -189,6 +178,11 @@
   </div>
 </div>
 
+<!-- 本追加FAB -->
+<button class="fab" id="addBookFab">
+  <span class="fab-icon">＋</span>
+</button>
+
 <nav class="nav">
   <button class="active" data-tab="home"><span>🎒</span><span>カバン</span></button>
   <button data-tab="study"><span>📚</span><span>書斎</span></button>
@@ -219,6 +213,10 @@
         <div class="form-group">
           <label class="form-label">タイトル</label>
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
+        </div>
+        <div class="form-group">
+          <label class="form-label">一言（任意）</label>
+          <input type="text" class="form-input" id="bookCommentInput" placeholder="例：友人におすすめされた本">
         </div>
         <div class="form-group">
           <button class="link-toggle" id="linkToggle">
