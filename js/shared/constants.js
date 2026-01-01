@@ -64,14 +64,6 @@ export const CELEBRATION_CONFIG = {
   statusUpdateDelay: 300
 };
 
-export const QUOTES = [
-  { text: '読書は心の旅路。一ページが新しい世界への扉となる。', author: '今日の一言' },
-  { text: '本を読むことは、他人の頭で考えることである。', author: 'ショーペンハウアー' },
-  { text: '良書は最良の友人である。', author: 'プロヴァーブ' },
-  { text: '知識への投資は、常に最高の利息がつく。', author: 'ベンジャミン・フランクリン' },
-  { text: '本は心の糧。毎日少しずつ味わおう。', author: '今日の一言' }
-];
-
 export const BOOK_COLORS = [
   '#c62828', '#1565c0', '#2e7d32', '#6a1b9a', '#e65100',
   '#00695c', '#37474f', '#8d6e63', '#d84315', '#0277bd'

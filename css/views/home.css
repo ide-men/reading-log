@@ -64,30 +64,6 @@
 }
 
 /* ==========================================================================
-   Quote
-   ========================================================================== */
-
-.quote-bottom {
-  padding: var(--space-xl);
-  padding-bottom: 10px;
-  text-align: center;
-  opacity: 0.6;
-}
-
-.quote-bottom p:first-child {
-  font-size: 12px;
-  font-style: italic;
-  line-height: 1.6;
-  color: var(--text-dim);
-}
-
-.quote-bottom p:last-child {
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: var(--space-xs);
-}
-
-/* ==========================================================================
    Status Tabs (書斎のステータス切り替え)
    ========================================================================== */
 
