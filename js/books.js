@@ -149,9 +149,13 @@ export function addBook(isPastBook = false) {
 
   saveState();
   renderBooks();
-  closeModal('addBookModal');
+
+  // フォームをクリア（モーダルは閉じない）
   document.getElementById('bookInput').value = '';
   document.getElementById('linkInput').value = '';
+  document.getElementById('linkFields').classList.remove('show');
+  document.getElementById('linkIcon').textContent = '+';
+  document.getElementById('bookInput').focus();
 }
 
 // ========================================
