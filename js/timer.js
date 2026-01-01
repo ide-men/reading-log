@@ -4,7 +4,7 @@
 import { CONFIG } from './constants.js';
 import { stateManager } from './state.js';
 import { saveState } from './storage.js';
-import { applyReadingAnimation, stopReadingAnimation } from './animations.js';
+import { applyReadingAnimation } from './animations.js';
 
 // タイマー状態
 let timer = null;
@@ -32,7 +32,6 @@ export function startReading() {
 export function stopReading(onComplete) {
   clearInterval(timer);
   timer = null;
-  stopReadingAnimation();
   document.getElementById('readingScreen').classList.remove('active');
 
   const minutes = Math.floor(seconds / 60);

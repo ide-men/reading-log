@@ -13,7 +13,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 </head>
 <body>
   <div class="app">
@@ -130,16 +129,9 @@
 
   <!-- 読書画面 -->
   <div class="reading-screen" id="readingScreen">
-    <div class="page-flip-container" id="pageFlipContainer">
-      <div class="page-flip-book" id="pageFlipBook">
-        <div class="page-flip-page" data-density="hard"></div>
-        <div class="page-flip-page"></div>
-        <div class="page-flip-page"></div>
-        <div class="page-flip-page"></div>
-        <div class="page-flip-page"></div>
-        <div class="page-flip-page"></div>
-        <div class="page-flip-page" data-density="hard"></div>
-      </div>
+    <div class="reading-anim" id="readingAnim">
+      <div class="reading-glow"></div>
+      <div class="reading-icon" id="readingIcon">📖</div>
     </div>
     <p class="reading-label" id="readingLabel">読書に集中しています</p>
     <button class="reading-stop" id="stopBtn">読書をおわる</button>
