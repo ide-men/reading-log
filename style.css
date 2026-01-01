@@ -1305,19 +1305,11 @@ html, body {
   }
 }
 
-.modal-bar {
-  width: 36px;
-  height: 4px;
-  background: var(--text-dim);
-  border-radius: 2px;
-  margin: var(--space-md) auto;
-}
-
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-sm) var(--space-xl) var(--space-lg);
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
 }
 
 .modal-header h2 {
