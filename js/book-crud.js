@@ -17,15 +17,19 @@ import { renderBooks } from './book-rendering.js';
 // ========================================
 // 本の追加
 // ========================================
-export function addBook(status = BOOK_STATUS.READING) {
-  const title = document.getElementById('bookInput').value.trim();
-  if (!title) {
-    showToast('タイトルを入力してください');
-    return;
-  }
 
-  const link = document.getElementById('linkInput').value.trim();
-  const comment = document.getElementById('bookCommentInput').value.trim();
+// フォームからデータを取得
+function getBookFormData() {
+  return {
+    title: document.getElementById('bookInput').value.trim(),
+    link: document.getElementById('linkInput').value.trim(),
+    comment: document.getElementById('bookCommentInput').value.trim()
+  };
+}
+
+// 本のデータオブジェクトを作成
+function createBookData(formData, status) {
+  const { title, link, comment } = formData;
   const coverUrl = getCoverUrlFromLink(link, () => {
     showToast('短縮URL(amzn.asia等)では表紙画像を取得できません', 4000);
   });
@@ -38,11 +42,10 @@ export function addBook(status = BOOK_STATUS.READING) {
   if (status === BOOK_STATUS.READING) {
     startedAt = today;
   } else if (status === BOOK_STATUS.COMPLETED) {
-    // 過去に読了した本を追加
     completedAt = today;
   }
 
-  const bookData = {
+  return {
     id: Date.now(),
     title,
     link: link || null,
@@ -53,26 +56,40 @@ export function addBook(status = BOOK_STATUS.READING) {
     note: comment || null,
     readingTime: 0
   };
+}
 
-  stateManager.addBook(bookData);
-  persistAndRender(renderBooks);
-
-  // フォームをクリア
+// フォームをクリア
+function clearAddBookForm() {
   document.getElementById('bookInput').value = '';
   document.getElementById('bookCommentInput').value = '';
   document.getElementById('linkInput').value = '';
   document.getElementById('linkFields').classList.remove('open');
   document.getElementById('linkIcon').textContent = '+';
+}
 
-  // 通知を表示
-  const messages = {
-    [BOOK_STATUS.READING]: 'カバンに追加しました',
-    [BOOK_STATUS.UNREAD]: '積読に追加しました',
-    [BOOK_STATUS.COMPLETED]: '読了に追加しました',
-    [BOOK_STATUS.DROPPED]: '中断に追加しました',
-    [BOOK_STATUS.WISHLIST]: '本屋に追加しました'
-  };
-  showToast(messages[status] || '本を追加しました');
+// ステータスに応じたメッセージを取得
+const ADD_BOOK_MESSAGES = {
+  [BOOK_STATUS.READING]: 'カバンに追加しました',
+  [BOOK_STATUS.UNREAD]: '積読に追加しました',
+  [BOOK_STATUS.COMPLETED]: '読了に追加しました',
+  [BOOK_STATUS.DROPPED]: '中断に追加しました',
+  [BOOK_STATUS.WISHLIST]: '本屋に追加しました'
+};
+
+export function addBook(status = BOOK_STATUS.READING) {
+  const formData = getBookFormData();
+
+  if (!formData.title) {
+    showToast('タイトルを入力してください');
+    return;
+  }
+
+  const bookData = createBookData(formData, status);
+  stateManager.addBook(bookData);
+  persistAndRender(renderBooks);
+
+  clearAddBookForm();
+  showToast(ADD_BOOK_MESSAGES[status] || '本を追加しました');
 
   // 続けて追加がOFFならモーダルを閉じる
   const continueAdd = document.getElementById('continueAddCheckbox').checked;
