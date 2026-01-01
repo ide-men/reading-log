@@ -32,19 +32,17 @@ export function calculateStreak() {
 }
 
 export function calculateYearlyPrediction(books, history) {
-  // 過去に読んだ本（isPastBook: true）は予測から除外
-  const recentBooks = books.filter(b => !b.isPastBook);
-  if (!recentBooks.length || !history.length) return '--冊';
+  if (!books.length || !history.length) return '--冊';
 
   const now = new Date();
   const firstSession = new Date(history[0].d);
   const daysSinceStart = Math.max(1, Math.ceil((now - firstSession) / CONFIG.msPerDay));
-  const booksPerDay = recentBooks.length / daysSinceStart;
+  const booksPerDay = books.length / daysSinceStart;
 
   const endOfYear = new Date(now.getFullYear(), 11, 31);
   const daysLeft = Math.ceil((endOfYear - now) / CONFIG.msPerDay);
 
-  return (recentBooks.length + Math.round(booksPerDay * daysLeft)) + '冊';
+  return (books.length + Math.round(booksPerDay * daysLeft)) + '冊';
 }
 
 // ========================================
@@ -125,10 +123,8 @@ function renderReadingInsights() {
   }
 
   const tips = [];
-  // 過去に読んだ本は1冊あたりの計算から除外
-  const recentBooks = state.books.filter(b => !b.isPastBook);
-  if (recentBooks.length > 0 && state.stats.total > 0) {
-    tips.push(`平均1冊あたり${Math.round(state.stats.total / recentBooks.length)}分`);
+  if (state.books.length > 0 && state.stats.total > 0) {
+    tips.push(`平均1冊あたり${Math.round(state.stats.total / state.books.length)}分`);
   }
   if (state.stats.total >= 60) tips.push(`合計${Math.floor(state.stats.total / 60)}時間読書`);
   if (state.stats.total >= 120) tips.push(`映画${Math.floor(state.stats.total / 120)}本分の時間`);

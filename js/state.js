@@ -135,7 +135,3 @@ class StateManager {
 
 // シングルトンインスタンス
 export const stateManager = new StateManager();
-
-// 便利なショートカット
-export const getState = () => stateManager.getState();
-export const setState = (updates) => stateManager.setState(updates);

@@ -1,7 +1,7 @@
 // ========================================
 // イベントリスナー
 // ========================================
-import { stateManager, createInitialState } from './state.js';
+import { stateManager } from './state.js';
 import { BOOK_STATUS } from './constants.js';
 import {
   exportData,
@@ -50,9 +50,6 @@ import {
   setTabCallbacks
 } from './ui.js';
 import { openLink } from './utils.js';
-
-// 現在追加しようとしている本のステータス
-let addingBookStatus = BOOK_STATUS.READING;
 
 export function initializeEventListeners() {
   // タブコールバックを登録
@@ -139,7 +136,6 @@ export function initializeEventListeners() {
     };
 
     const status = statusMap[tabName] || BOOK_STATUS.READING;
-    addingBookStatus = status;
     document.getElementById('addBookModalTitle').textContent = titleMap[tabName] || '本を追加';
     document.getElementById('addBookStatus').value = status;
     openModal('addBookModal');

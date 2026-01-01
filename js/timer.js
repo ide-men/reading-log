@@ -25,20 +25,21 @@ export function startReading(bookId = null) {
   seconds = 0;
   currentBookId = bookId;
 
-  // 読書中の本の情報を表示
-  const bookInfo = document.getElementById('readingBookInfo');
-  const bookCover = document.getElementById('readingBookCover');
+  // アイコン位置に表紙画像または📖を表示
+  const readingIcon = document.getElementById('readingIcon');
 
   if (bookId) {
     const book = stateManager.getBook(bookId);
     if (book && book.coverUrl) {
-      bookInfo.style.display = 'flex';
-      bookCover.style.backgroundImage = `url(${book.coverUrl})`;
+      readingIcon.innerHTML = `<img src="${book.coverUrl}" class="reading-cover-img" alt="">`;
+      readingIcon.classList.add('has-cover');
     } else {
-      bookInfo.style.display = 'none';
+      readingIcon.textContent = '📖';
+      readingIcon.classList.remove('has-cover');
     }
   } else {
-    bookInfo.style.display = 'none';
+    readingIcon.textContent = '📖';
+    readingIcon.classList.remove('has-cover');
   }
 
   applyReadingAnimation();
@@ -96,12 +97,4 @@ export function stopReading(onComplete) {
 
   saveState();
   onComplete();
-}
-
-export function toggleReading(callbacks) {
-  if (timer) {
-    stopReading(callbacks);
-  } else {
-    startReading();
-  }
 }
