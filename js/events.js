@@ -30,7 +30,9 @@ import {
   selectBook,
   getSelectedBookId,
   openBookDetail,
-  getDetailBookId
+  getDetailBookId,
+  setStudySelectedBookId,
+  clearStudySelection
 } from './books.js';
 import { renderStats } from './stats.js';
 import {
@@ -216,6 +218,9 @@ export function initializeEventListeners() {
     document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
 
+    // 選択状態をクリア
+    clearStudySelection();
+
     // ステータスを更新してレンダリング
     setCurrentStudyStatus(status);
     renderStudyBooks();
@@ -244,17 +249,50 @@ export function initializeEventListeners() {
     }
   });
 
-  // 書斎の本リストのアクション（グリッドカード）
+  // 書斎の本リストのアクション（グリッドカード・詳細ビュー）
   document.getElementById('studyBookList').addEventListener('click', (e) => {
+    // 詳細ビューの閉じるボタン
+    const closeBtn = e.target.closest('[data-close-detail]');
+    if (closeBtn) {
+      clearStudySelection();
+      renderStudyBooks();
+      return;
+    }
+
     // 読み始めるボタン
     const startBtn = e.target.closest('[data-start]');
     if (startBtn) {
       e.stopPropagation();
+      clearStudySelection();
       startReadingBook(Number(startBtn.dataset.start));
       return;
     }
 
-    // カードをクリックで詳細ダイアログを開く
+    // リンクボタン
+    const linkBtn = e.target.closest('[data-link]');
+    if (linkBtn) {
+      e.preventDefault();
+      openLink(linkBtn.dataset.link);
+      return;
+    }
+
+    // 編集ボタン
+    const editBtn = e.target.closest('[data-edit]');
+    if (editBtn) {
+      clearStudySelection();
+      editBook(Number(editBtn.dataset.edit));
+      return;
+    }
+
+    // 削除ボタン
+    const deleteBtn = e.target.closest('[data-delete]');
+    if (deleteBtn) {
+      clearStudySelection();
+      deleteBook(Number(deleteBtn.dataset.delete));
+      return;
+    }
+
+    // カードをクリックで詳細ダイアログを開く（グリッド時のみ）
     const card = e.target.closest('.study-book-card');
     if (card && card.dataset.bookId) {
       openBookDetail(Number(card.dataset.bookId));
@@ -305,6 +343,18 @@ export function initializeEventListeners() {
     } else if (bookCenter > screenCenter + threshold) {
       tooltip.classList.add('tooltip-align-right');
     }
+  });
+
+  // 書斎の本棚クリック（本を選択）
+  document.getElementById('studyShelf').addEventListener('click', (e) => {
+    const miniBook = e.target.closest('.mini-book');
+    if (!miniBook) return;
+
+    const bookId = Number(miniBook.dataset.bookId);
+    if (!bookId) return;
+
+    setStudySelectedBookId(bookId);
+    renderStudyBooks();
   });
 
   // 本屋のアクション

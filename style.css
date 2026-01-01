@@ -2626,6 +2626,167 @@ select.form-input {
   opacity: 0.8;
 }
 
+/* Mini Book Selected State */
+.mini-book.selected {
+  transform: translateY(-10px) scale(1.1) !important;
+  z-index: 20;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 2px var(--amber),
+    0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.mini-book {
+  cursor: pointer;
+}
+
+/* Study Detail View (インライン詳細表示) */
+.study-detail-view {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-top: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.study-detail-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+
+.study-detail-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.study-detail-content {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.study-detail-cover {
+  width: 120px;
+  height: 170px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.study-detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.study-detail-cover .book-placeholder {
+  font-size: 48px;
+}
+
+.study-detail-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.study-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.study-detail-date {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.study-detail-note {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: var(--space-md);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+  white-space: pre-wrap;
+}
+
+.study-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.study-detail-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.study-detail-action:hover {
+  background: var(--border);
+}
+
+.study-detail-action.primary {
+  background: linear-gradient(135deg, #8B5A2B, #A0522D);
+  color: white;
+}
+
+.study-detail-action.primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
+}
+
+.study-detail-action.danger {
+  color: #ef4444;
+}
+
+.study-detail-action.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
 /* ==========================================================================
    21. Book Detail Modal (書籍詳細ダイアログ)
    ========================================================================== */
