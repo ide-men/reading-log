@@ -4,11 +4,7 @@
 import { BOOK_STATUS } from './constants.js';
 import { stateManager } from './state.js';
 import { saveState } from './storage.js';
-import {
-  extractAsinFromUrl,
-  getAmazonImageUrl,
-  isAmazonShortUrl
-} from './utils.js';
+import { getCoverUrlFromLink } from './utils.js';
 import { showToast, closeModal } from './ui.js';
 import {
   getDeletingBookId,
@@ -30,14 +26,9 @@ export function addBook(status = BOOK_STATUS.READING) {
 
   const link = document.getElementById('linkInput').value.trim();
   const comment = document.getElementById('bookCommentInput').value.trim();
-  let coverUrl = null;
-  const asin = extractAsinFromUrl(link);
-
-  if (asin) {
-    coverUrl = getAmazonImageUrl(asin);
-  } else if (isAmazonShortUrl(link)) {
+  const coverUrl = getCoverUrlFromLink(link, () => {
     showToast('短縮URL(amzn.asia等)では表紙画像を取得できません', 4000);
-  }
+  });
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -125,12 +116,9 @@ export function saveEditBook() {
 
     if (newLink !== book.link) {
       updates.link = newLink;
-      const asin = extractAsinFromUrl(newLink);
-      updates.coverUrl = asin ? getAmazonImageUrl(asin) : null;
-
-      if (!asin && isAmazonShortUrl(newLink)) {
+      updates.coverUrl = getCoverUrlFromLink(newLink, () => {
         showToast('短縮URLでは表紙画像を取得できません', 4000);
-      }
+      });
     }
 
     stateManager.updateBook(editingBookId, updates);

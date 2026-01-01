@@ -14,6 +14,7 @@ import {
   addBook,
   editBook,
   saveEditBook,
+  deleteBook,
   confirmDeleteBook,
   renderBooks,
   renderReadingBooks,
