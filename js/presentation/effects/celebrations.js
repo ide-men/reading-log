@@ -32,13 +32,23 @@ export function showAcquireCelebration(book, destination = '書斎', onComplete 
   }
   bookName.textContent = book.title;
 
-  // ヒントテキストを更新
+  // タイトルとヒントテキストを更新
+  const titleEl = celebration.querySelector('.acquire-title');
+  if (titleEl) {
+    const titleText = {
+      'カバン': '🎉 手に入れた！',
+      '書斎': '🎉 手に入れた！',
+      '読了': '🎉 読了おめでとう！'
+    };
+    titleEl.textContent = titleText[destination] || '🎉 手に入れた！';
+  }
+
   const hintEl = celebration.querySelector('.acquire-hint');
   if (hintEl) {
     const hintText = {
       'カバン': 'カバンに追加されました',
       '書斎': '書斎の積読に追加されました',
-      '読了': '読了おめでとうございます！'
+      '読了': 'お疲れさまでした！'
     };
     hintEl.textContent = hintText[destination] || '書斎の積読に追加されました';
   }
