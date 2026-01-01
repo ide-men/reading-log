@@ -2,7 +2,7 @@
 // 定数・設定
 // ========================================
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 1;
 
 // 本のステータス
 export const BOOK_STATUS = {

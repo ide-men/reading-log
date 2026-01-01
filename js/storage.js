@@ -10,23 +10,6 @@ import { extractAsinFromUrl, getAmazonImageUrl } from './utils.js';
 // ========================================
 const migrations = {};
 
-// V1 → V2: 本にreadingTime追加、履歴にbookId追加
-migrations[2] = (state) => {
-  // 各本にreadingTime（読書時間・分）を追加
-  state.books = state.books.map(book => ({
-    ...book,
-    readingTime: book.readingTime ?? 0
-  }));
-
-  // 各履歴にbookId（読んでいた本のID）を追加
-  state.history = state.history.map(entry => ({
-    ...entry,
-    bookId: entry.bookId ?? null
-  }));
-
-  return state;
-};
-
 function runMigrations(loadedState, fromVersion) {
   let currentState = loadedState;
   for (let v = fromVersion + 1; v <= SCHEMA_VERSION; v++) {
