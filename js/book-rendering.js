@@ -246,7 +246,7 @@ export function renderStudyBooks() {
     bookList.innerHTML = renderDetailView(selectedBook, 'study');
   } else {
     // グリッドカードレイアウトでレンダリング
-    bookList.innerHTML = `<div class="study-grid">${[...books].reverse().map((book, i) => {
+    bookList.innerHTML = `<div class="study-grid">${books.toReversed().map((book, i) => {
       const colorIndex = books.length - 1 - i;
       const color = getBookColorByIndex(colorIndex);
       const coverHtml = createBookCoverHtml(book, '📕');
@@ -310,7 +310,7 @@ export function renderStoreBooks() {
     container.innerHTML = renderDetailView(selectedBook, 'store');
   } else {
     // グリッドカードレイアウトでレンダリング
-    container.innerHTML = `<div class="store-grid">${[...books].reverse().map((book, i) => {
+    container.innerHTML = `<div class="store-grid">${books.toReversed().map((book, i) => {
       const colorIndex = books.length - 1 - i;
       const color = getBookColorByIndex(colorIndex);
       const coverHtml = createBookCoverHtml(book, '📖');

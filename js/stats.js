@@ -71,13 +71,18 @@ function renderWeekChart() {
   const data = [];
   let max = 30;
 
+  // 日付ごとの合計時間をマップ化（O(n) で history を 1 回だけ走査）
+  const minutesByDate = {};
+  for (const h of state.history) {
+    const dateStr = h.d.split('T')[0];
+    minutesByDate[dateStr] = (minutesByDate[dateStr] || 0) + h.m;
+  }
+
   for (let i = 6; i >= 0; i--) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split('T')[0];
-    const minutes = state.history
-      .filter(h => h.d.startsWith(dateStr))
-      .reduce((sum, h) => sum + h.m, 0);
+    const minutes = minutesByDate[dateStr] || 0;
     max = Math.max(max, minutes);
     data.push({
       label: dayNames[date.getDay()],
@@ -109,13 +114,14 @@ function renderReadingInsights() {
     : '--';
 
   if (history.length >= 3) {
-    const hours = history.map(h => h.h);
-    const counts = [
-      hours.filter(h => h >= 5 && h < 12).length,
-      hours.filter(h => h >= 12 && h < 18).length,
-      hours.filter(h => h >= 18 && h < 22).length,
-      hours.filter(h => h >= 22 || h < 5).length
-    ];
+    // 単一ループで時間帯別カウントを計算（O(n) × 1 回のみ）
+    const counts = [0, 0, 0, 0]; // 朝, 昼, 夜, 深夜
+    for (const { h } of history) {
+      if (h >= 5 && h < 12) counts[0]++;
+      else if (h >= 12 && h < 18) counts[1]++;
+      else if (h >= 18 && h < 22) counts[2]++;
+      else counts[3]++;
+    }
     const maxIndex = counts.indexOf(Math.max(...counts));
     const types = [['朝型', '🌅'], ['昼型', '☀️'], ['夜型', '🌙'], ['深夜型', '🌃']];
     document.getElementById('timeType').textContent = types[maxIndex][0];

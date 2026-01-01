@@ -83,21 +83,23 @@ function showAcquireCelebration(book, destination = '書斎') {
   // 表示
   celebration.classList.add('active');
 
-  // 自動で閉じる
+  // クリックで早めに閉じる
   const toastMessage = destination === 'カバン'
     ? 'カバンに追加しました！'
     : '書斎の積読に追加しました！';
-  setTimeout(() => {
-    celebration.classList.remove('active');
-    showToast(toastMessage);
-  }, 2000);
 
-  // クリックで早めに閉じる
   const closeHandler = () => {
     celebration.classList.remove('active');
     celebration.removeEventListener('click', closeHandler);
+    clearTimeout(autoCloseTimer);
   };
   celebration.addEventListener('click', closeHandler);
+
+  // 自動で閉じる（イベントリスナーも確実に解除）
+  const autoCloseTimer = setTimeout(() => {
+    closeHandler();
+    showToast(toastMessage);
+  }, 2000);
 }
 
 // ========================================
