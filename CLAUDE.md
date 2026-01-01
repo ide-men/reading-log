@@ -17,7 +17,14 @@ js/
 ├── storage.js       # 永続化・マイグレーション・バックアップ
 ├── utils.js         # ユーティリティ関数
 ├── timer.js         # 読書タイマー管理
-├── books.js         # 本のCRUD・レンダリング
+│
+├── books.js         # 本モジュールのファサード（再エクスポート）
+├── book-state.js    # 本の選択状態管理
+├── book-helpers.js  # 本関連の共通ヘルパー関数
+├── book-rendering.js # 本のレンダリング（カバン・書斎・本屋）
+├── book-crud.js     # 本の追加・編集・削除
+├── book-status.js   # 本のステータス遷移
+│
 ├── stats.js         # 統計計算・グラフ表示
 ├── animations.js    # ボタン・読書画面アニメーション
 ├── ui.js            # UI操作・モーダル・エフェクト
