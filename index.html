@@ -142,7 +142,7 @@
     <div class="modal">
       <div class="modal-bar"></div>
       <div class="modal-header">
-        <h2>読了を記録</h2>
+        <h2>読んだ本を追加</h2>
         <button class="modal-close" data-close="addBookModal">×</button>
       </div>
       <div class="modal-body">
@@ -163,6 +163,10 @@
             <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
           </div>
         </div>
+        <label class="continue-checkbox">
+          <input type="checkbox" id="continueAddCheckbox">
+          <span>続けて追加</span>
+        </label>
         <button class="btn btn-primary" id="addBookBtn">読み終えた！</button>
         <div class="past-book-link">
           <button type="button" id="addPastBookBtn">過去に読んだ本を登録</button>

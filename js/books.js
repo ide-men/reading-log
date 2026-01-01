@@ -149,9 +149,20 @@ export function addBook(isPastBook = false) {
 
   saveState();
   renderBooks();
-  closeModal('addBookModal');
+
+  // フォームをクリア
   document.getElementById('bookInput').value = '';
   document.getElementById('linkInput').value = '';
+  document.getElementById('linkFields').classList.remove('show');
+  document.getElementById('linkIcon').textContent = '+';
+
+  // 続けて追加がONならモーダルを開いたまま、OFFなら閉じる
+  const continueAdd = document.getElementById('continueAddCheckbox').checked;
+  if (continueAdd) {
+    document.getElementById('bookInput').focus();
+  } else {
+    closeModal('addBookModal');
+  }
 }
 
 // ========================================

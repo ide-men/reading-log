@@ -1041,6 +1041,23 @@ html, body {
   display: block;
 }
 
+.continue-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.continue-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 .past-book-link {
   text-align: center;
   margin-top: var(--space-lg);
@@ -1196,8 +1213,9 @@ html, body {
 
 .modal-overlay {
   background: rgba(0, 0, 0, 0.7);
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
+  padding: var(--space-xl);
 }
 
 .confirm-overlay {
@@ -1211,12 +1229,23 @@ html, body {
 /* Modal */
 .modal {
   background: var(--surface);
-  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  border-radius: var(--radius-3xl);
   width: 100%;
   max-width: var(--max-width);
   max-height: 85vh;
   overflow-y: auto;
-  animation: slideUp 0.3s ease;
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-bar {
