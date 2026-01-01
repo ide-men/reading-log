@@ -28,7 +28,9 @@ import {
   setCurrentStudyStatus,
   getCurrentStudyStatus,
   selectBook,
-  getSelectedBookId
+  getSelectedBookId,
+  openBookDetail,
+  getDetailBookId
 } from './books.js';
 import { renderStats } from './stats.js';
 import {
@@ -242,30 +244,44 @@ export function initializeEventListeners() {
     }
   });
 
-  // 書斎の本リストのアクション
+  // 書斎の本リストのアクション（グリッドカード）
   document.getElementById('studyBookList').addEventListener('click', (e) => {
+    // 読み始めるボタン
     const startBtn = e.target.closest('[data-start]');
     if (startBtn) {
+      e.stopPropagation();
       startReadingBook(Number(startBtn.dataset.start));
       return;
     }
 
-    const linkBtn = e.target.closest('[data-link]');
-    if (linkBtn) {
-      e.preventDefault();
-      openLink(linkBtn.dataset.link);
-      return;
+    // カードをクリックで詳細ダイアログを開く
+    const card = e.target.closest('.study-book-card');
+    if (card && card.dataset.bookId) {
+      openBookDetail(Number(card.dataset.bookId));
     }
+  });
 
-    const editBtn = e.target.closest('[data-edit]');
-    if (editBtn) {
-      editBook(Number(editBtn.dataset.edit));
-      return;
+  // 書籍詳細ダイアログのアクション
+  document.getElementById('bookDetailLinkBtn').addEventListener('click', () => {
+    const link = document.getElementById('bookDetailLinkBtn').dataset.link;
+    if (link) {
+      openLink(link);
     }
+  });
 
-    const deleteBtn = e.target.closest('[data-delete]');
-    if (deleteBtn) {
-      deleteBook(Number(deleteBtn.dataset.delete));
+  document.getElementById('bookDetailEditBtn').addEventListener('click', () => {
+    const bookId = getDetailBookId();
+    if (bookId) {
+      closeModal('bookDetailModal');
+      editBook(bookId);
+    }
+  });
+
+  document.getElementById('bookDetailDeleteBtn').addEventListener('click', () => {
+    const bookId = getDetailBookId();
+    if (bookId) {
+      closeModal('bookDetailModal');
+      deleteBook(bookId);
     }
   });
 
