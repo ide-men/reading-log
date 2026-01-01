@@ -355,7 +355,13 @@ export function initializeEventListeners() {
   });
 
   // 書斎の本棚クリック（本を選択/選択解除）
+  let lastStudyShelfClickTime = 0;
   document.getElementById('studyShelf').addEventListener('click', (e) => {
+    // タッチデバイスでのダブルイベント防止
+    const now = Date.now();
+    if (now - lastStudyShelfClickTime < 300) return;
+    lastStudyShelfClickTime = now;
+
     const miniBook = e.target.closest('.mini-book');
     if (!miniBook) return;
 
@@ -394,7 +400,13 @@ export function initializeEventListeners() {
   });
 
   // 本屋の本棚クリック（本を選択/選択解除）
+  let lastStoreShelfClickTime = 0;
   document.getElementById('storeShelf').addEventListener('click', (e) => {
+    // タッチデバイスでのダブルイベント防止
+    const now = Date.now();
+    if (now - lastStoreShelfClickTime < 300) return;
+    lastStoreShelfClickTime = now;
+
     const miniBook = e.target.closest('.store-mini-book');
     if (!miniBook) return;
 
