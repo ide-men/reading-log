@@ -825,6 +825,10 @@ html, body {
   scrollbar-width: none;
   padding-top: 80px;
   margin-top: -80px;
+  padding-left: 100px;
+  padding-right: 100px;
+  margin-left: -100px;
+  margin-right: -100px;
   touch-action: pan-x;
   overscroll-behavior: contain;
   overscroll-behavior-y: none;
