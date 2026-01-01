@@ -36,3 +36,39 @@
 .book-grid .empty-state {
   grid-column: 1 / -1;
 }
+
+/* ==========================================================================
+   Responsive - Tablet (600px~)
+   ========================================================================== */
+
+@media (min-width: 600px) {
+  .store-stats {
+    padding: var(--space-lg) var(--space-2xl);
+  }
+
+  .store-count {
+    font-size: 36px;
+  }
+
+  .store-label {
+    font-size: 14px;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Desktop (1024px~)
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .store-stats {
+    padding: var(--space-xl) var(--space-3xl);
+  }
+
+  .store-count {
+    font-size: 40px;
+  }
+
+  .store-label {
+    font-size: 15px;
+  }
+}

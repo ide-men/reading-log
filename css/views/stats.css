@@ -8,7 +8,7 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 10px;
   margin-bottom: var(--space-xl);
 }
@@ -265,4 +265,96 @@
 
 .tip span:last-child {
   font-size: 13px;
+}
+
+/* ==========================================================================
+   Responsive - Tablet (600px~)
+   ========================================================================== */
+
+@media (min-width: 600px) {
+  .stats-grid {
+    gap: var(--space-md);
+  }
+
+  .stats-card {
+    padding: var(--space-xl);
+  }
+
+  .stats-card-value {
+    font-size: 28px;
+  }
+
+  .stats-card-label {
+    font-size: 11px;
+  }
+
+  .week-chart {
+    height: 120px;
+    padding: var(--space-lg);
+  }
+
+  .week-bar-fill {
+    max-width: 32px;
+  }
+
+  .prediction-card,
+  .style-card {
+    padding: var(--space-xl) var(--space-2xl);
+  }
+
+  .prediction-icon,
+  .style-icon {
+    font-size: 36px;
+  }
+
+  .prediction-value {
+    font-size: 24px;
+  }
+
+  .style-value {
+    font-size: 22px;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Desktop (1024px~)
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .stats-card {
+    padding: var(--space-2xl);
+  }
+
+  .stats-card-value {
+    font-size: 32px;
+  }
+
+  .stats-card-label {
+    font-size: 12px;
+  }
+
+  .week-chart {
+    height: 140px;
+  }
+
+  .week-bar-fill {
+    max-width: 40px;
+  }
+
+  .prediction-icon,
+  .style-icon {
+    font-size: 40px;
+  }
+
+  .prediction-value {
+    font-size: 26px;
+  }
+
+  .style-value {
+    font-size: 24px;
+  }
+
+  .tip {
+    padding: var(--space-lg) var(--space-xl);
+  }
 }

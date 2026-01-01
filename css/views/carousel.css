@@ -201,3 +201,81 @@
   font-size: 12px;
   color: var(--text-dim);
 }
+
+/* ==========================================================================
+   Responsive - Tablet (600px~)
+   ========================================================================== */
+
+@media (min-width: 600px) {
+  .book-carousel-container {
+    min-height: 240px;
+  }
+
+  .book-carousel {
+    gap: var(--space-2xl);
+    padding: var(--space-2xl) calc(50% - 70px);
+    scroll-padding: 0 calc(50% - 70px);
+  }
+
+  .carousel-book {
+    width: 140px;
+  }
+
+  .carousel-book-cover {
+    width: 130px;
+    height: 182px;
+    font-size: 52px;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .selected-book-title {
+    font-size: 18px;
+  }
+
+  .selected-book-meta {
+    font-size: 13px;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Desktop (1024px~)
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .book-carousel-container {
+    min-height: 280px;
+  }
+
+  .book-carousel {
+    gap: var(--space-3xl);
+    padding: var(--space-3xl) calc(50% - 85px);
+    scroll-padding: 0 calc(50% - 85px);
+  }
+
+  .carousel-book {
+    width: 170px;
+  }
+
+  .carousel-book-cover {
+    width: 160px;
+    height: 224px;
+    font-size: 64px;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .selected-book-title {
+    font-size: 20px;
+  }
+
+  .selected-book-meta {
+    font-size: 14px;
+  }
+}

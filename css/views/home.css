@@ -258,3 +258,104 @@
   padding: var(--space-md);
   font-size: 13px;
 }
+
+/* ==========================================================================
+   Responsive - Tablet (600px~)
+   ========================================================================== */
+
+@media (min-width: 600px) {
+  .main-btn {
+    padding: var(--space-xl) var(--space-3xl);
+    font-size: 20px;
+    border-radius: 32px;
+  }
+
+  .main-btn-icon {
+    font-size: 28px;
+  }
+
+  .status-tabs {
+    gap: var(--space-md);
+    padding: var(--space-sm);
+  }
+
+  .status-tab {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .status-tab .status-icon {
+    font-size: 24px;
+  }
+
+  .status-tab .status-label {
+    font-size: 12px;
+  }
+
+  .status-tab .status-count {
+    font-size: 18px;
+  }
+
+  .reading-book-card {
+    padding: var(--space-xl);
+  }
+
+  .reading-book-cover {
+    width: 60px;
+    height: 84px;
+  }
+
+  .reading-book-title {
+    font-size: 16px;
+  }
+
+  .reading-book-meta {
+    font-size: 13px;
+  }
+
+  .home-actions-row .btn {
+    padding: var(--space-lg);
+    font-size: 14px;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Desktop (1024px~)
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .main-btn {
+    max-width: 500px;
+    margin: 0 auto;
+    font-size: 22px;
+  }
+
+  .main-btn-icon {
+    font-size: 32px;
+  }
+
+  .status-tab .status-icon {
+    font-size: 26px;
+  }
+
+  .status-tab .status-label {
+    font-size: 13px;
+  }
+
+  .status-tab .status-count {
+    font-size: 20px;
+  }
+
+  .reading-book-cover {
+    width: 70px;
+    height: 98px;
+  }
+
+  .reading-book-title {
+    font-size: 17px;
+  }
+
+  .reading-book-action {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
