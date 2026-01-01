@@ -475,6 +475,25 @@ export function initCarouselEvents() {
     }
   });
 
+  document.getElementById('editSelectedBtn').addEventListener('click', () => {
+    const selectedId = uiState.getSelectedBookId();
+    if (selectedId) {
+      closeBookActionsDropdown();
+      editBook(selectedId);
+    }
+  });
+
+  document.getElementById('openLinkSelectedBtn').addEventListener('click', () => {
+    const selectedId = uiState.getSelectedBookId();
+    if (selectedId) {
+      const book = bookRepository.getBookById(selectedId);
+      if (book && book.link) {
+        closeBookActionsDropdown();
+        openLink(book.link);
+      }
+    }
+  });
+
   // ⋮メニューの開閉
   const menuBtn = document.getElementById('bookActionsMenuBtn');
   const dropdown = document.getElementById('bookActionsDropdown');

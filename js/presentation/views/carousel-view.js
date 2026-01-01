@@ -127,6 +127,7 @@ export function updateSelectedBookInfo() {
   const startBtn = document.getElementById('startBtn');
   const completeBtn = document.getElementById('completeSelectedBtn');
   const menuBtn = document.getElementById('bookActionsMenuBtn');
+  const linkBtn = document.getElementById('openLinkSelectedBtn');
 
   if (!selectedBookId) {
     infoContainer.innerHTML = '';
@@ -134,6 +135,7 @@ export function updateSelectedBookInfo() {
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を選んでください</span>';
     completeBtn.disabled = true;
     menuBtn.disabled = true;
+    if (linkBtn) linkBtn.disabled = true;
     return;
   }
 
@@ -152,6 +154,8 @@ export function updateSelectedBookInfo() {
   startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>この本を読む</span>';
   completeBtn.disabled = false;
   menuBtn.disabled = false;
+  // リンクボタンはリンクがある場合のみ有効化
+  if (linkBtn) linkBtn.disabled = !book.link;
 }
 
 // ========================================

@@ -36,10 +36,10 @@ export function switchTab(name) {
   document.getElementById(`tab-${name}`).classList.add('active');
   document.querySelector(`.nav button[data-tab="${name}"]`).classList.add('active');
 
-  // FABの表示/非表示を切り替え（記録タブでは非表示）
+  // FABの表示/非表示を切り替え（カバン・記録タブでは非表示）
   const fab = document.getElementById('addBookFab');
   if (fab) {
-    fab.classList.toggle('hidden', name === 'stats');
+    fab.classList.toggle('hidden', name === 'home' || name === 'stats');
   }
 
   if (tabCallbacks[name]) {
