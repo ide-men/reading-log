@@ -283,11 +283,7 @@ export function renderStudyBooks() {
         width:${width}px;
         ${bgStyle}
         transform: rotate(${tilt}deg);
-      ">
-        <div class="book-tooltip">
-          <div class="tooltip-title">${escapeHtml(book.title)}</div>
-        </div>
-      </div>`;
+      "></div>`;
   }).join('');
 
   // 選択中の本がある場合は詳細ビューを表示
@@ -525,11 +521,7 @@ export function renderStoreBooks() {
         width:${width}px;
         ${bgStyle}
         transform: rotate(${tilt}deg);
-      ">
-        <div class="book-tooltip">
-          <div class="tooltip-title">${escapeHtml(book.title)}</div>
-        </div>
-      </div>`;
+      "></div>`;
   }).join('');
 
   // 選択中の本がある場合は詳細ビューを表示

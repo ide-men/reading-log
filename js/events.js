@@ -332,28 +332,6 @@ export function initializeEventListeners() {
     }
   });
 
-  // 書斎の本棚ツールチップ
-  document.getElementById('studyShelf').addEventListener('mouseover', (e) => {
-    const miniBook = e.target.closest('.mini-book');
-    if (!miniBook) return;
-
-    const tooltip = miniBook.querySelector('.book-tooltip');
-    if (!tooltip) return;
-
-    tooltip.classList.remove('tooltip-align-left', 'tooltip-align-right');
-
-    const bookRect = miniBook.getBoundingClientRect();
-    const bookCenter = bookRect.left + bookRect.width / 2;
-    const screenCenter = window.innerWidth / 2;
-    const threshold = window.innerWidth * 0.15;
-
-    if (bookCenter < screenCenter - threshold) {
-      tooltip.classList.add('tooltip-align-left');
-    } else if (bookCenter > screenCenter + threshold) {
-      tooltip.classList.add('tooltip-align-right');
-    }
-  });
-
   // 書斎の本棚クリック（本を選択/選択解除）
   let lastStudyShelfClickTime = 0;
   document.getElementById('studyShelf').addEventListener('click', (e) => {
@@ -370,32 +348,15 @@ export function initializeEventListeners() {
 
     // 同じ本をクリックしたら選択解除、違う本なら選択
     if (getStudySelectedBookId() === bookId) {
+      // 選択解除: アニメーションを実行してから再レンダリング
+      miniBook.classList.remove('selected');
       clearStudySelection();
+      setTimeout(() => {
+        renderStudyBooks();
+      }, 200);
     } else {
       setStudySelectedBookId(bookId);
-    }
-    renderStudyBooks();
-  });
-
-  // 本屋の本棚ツールチップ
-  document.getElementById('storeShelf').addEventListener('mouseover', (e) => {
-    const miniBook = e.target.closest('.store-mini-book');
-    if (!miniBook) return;
-
-    const tooltip = miniBook.querySelector('.book-tooltip');
-    if (!tooltip) return;
-
-    tooltip.classList.remove('tooltip-align-left', 'tooltip-align-right');
-
-    const bookRect = miniBook.getBoundingClientRect();
-    const bookCenter = bookRect.left + bookRect.width / 2;
-    const screenCenter = window.innerWidth / 2;
-    const threshold = window.innerWidth * 0.15;
-
-    if (bookCenter < screenCenter - threshold) {
-      tooltip.classList.add('tooltip-align-left');
-    } else if (bookCenter > screenCenter + threshold) {
-      tooltip.classList.add('tooltip-align-right');
+      renderStudyBooks();
     }
   });
 
@@ -415,11 +376,16 @@ export function initializeEventListeners() {
 
     // 同じ本をクリックしたら選択解除、違う本なら選択
     if (getStoreSelectedBookId() === bookId) {
+      // 選択解除: アニメーションを実行してから再レンダリング
+      miniBook.classList.remove('selected');
       clearStoreSelection();
+      setTimeout(() => {
+        renderStoreBooks();
+      }, 200);
     } else {
       setStoreSelectedBookId(bookId);
+      renderStoreBooks();
     }
-    renderStoreBooks();
   });
 
   // 本屋のアクション（グリッドカード・詳細ビュー）
