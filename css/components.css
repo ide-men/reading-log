@@ -487,6 +487,37 @@ select.form-input {
   padding: 0 var(--space-xl) 28px;
 }
 
+.modal-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.modal-actions .btn {
+  flex: 1;
+  margin-top: 0;
+}
+
+/* Drop Book Modal */
+.drop-book-info {
+  margin-bottom: var(--space-lg);
+}
+
+.drop-book-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--elevated);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: var(--space-sm);
+}
+
 /* Celebration (in modal) */
 .celebration {
   text-align: center;

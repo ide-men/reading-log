@@ -215,6 +215,19 @@
   color: var(--text-dim);
 }
 
+.selected-book-bookmark {
+  font-size: 12px;
+  color: #92400e;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* ==========================================================================
    Responsive - Tablet (600px~)
    ========================================================================== */

@@ -170,13 +170,30 @@ export function completeBook(id) {
   }, CELEBRATION_CONFIG.statusUpdateDelay);
 }
 
-// reading → dropped（中断）
-export function dropBook(id) {
-  const result = bookService.dropBook(id);
+// reading → dropped（中断）- モーダルを開く
+export function openDropBookModal(id) {
+  const book = bookRepository.getBookById(id);
+  if (!book) return;
+
+  uiState.setDroppingBookId(id);
+  document.getElementById('dropBookTitle').textContent = book.title;
+  document.getElementById('bookmarkInput').value = '';
+  openModal('dropBookModal');
+}
+
+// 中断を確定
+export function confirmDropBook() {
+  const droppingBookId = uiState.getDroppingBookId();
+  if (!droppingBookId) return;
+
+  const bookmark = document.getElementById('bookmarkInput').value.trim() || null;
+  const result = bookService.dropBook(droppingBookId, bookmark);
+
   if (result.success) {
     renderBooks();
     showToast(result.message);
   }
+  closeModal('dropBookModal');
 }
 
 // ========================================
@@ -470,9 +487,13 @@ export function initCarouselEvents() {
   document.getElementById('dropSelectedBtn').addEventListener('click', () => {
     const selectedId = uiState.getSelectedBookId();
     if (selectedId) {
-      dropBook(selectedId);
       closeBookActionsDropdown();
+      openDropBookModal(selectedId);
     }
+  });
+
+  document.getElementById('confirmDropBtn').addEventListener('click', () => {
+    confirmDropBook();
   });
 
   document.getElementById('editSelectedBtn').addEventListener('click', () => {

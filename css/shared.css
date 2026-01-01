@@ -699,6 +699,28 @@
   color: var(--text-dim);
 }
 
+.detail-view__bookmark {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 13px;
+  color: var(--text);
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.detail-view__bookmark-icon {
+  font-size: 16px;
+}
+
+.detail-view__bookmark-text {
+  color: #92400e;
+  font-weight: 500;
+}
+
 .detail-view__note {
   font-size: 14px;
   color: var(--text);

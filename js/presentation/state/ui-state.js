@@ -85,3 +85,14 @@ export function getDetailBookId() {
 export function setDetailBookId(id) {
   stateManager.setDetailBookId(id);
 }
+
+// ========================================
+// 中断確認
+// ========================================
+export function getDroppingBookId() {
+  return stateManager.getDroppingBookId();
+}
+
+export function setDroppingBookId(id) {
+  stateManager.setDroppingBookId(id);
+}

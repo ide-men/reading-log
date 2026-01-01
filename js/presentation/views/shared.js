@@ -109,6 +109,14 @@ export function renderDetailView(book, type = 'study') {
   const dateText = getBookDateText(book);
   const modifier = type === 'store' ? 'detail-view--store' : 'detail-view--study';
 
+  // 付箋メモ表示（中断本のみ）
+  const bookmarkHtml = (book.status === BOOK_STATUS.DROPPED && book.bookmark)
+    ? `<div class="detail-view__bookmark">
+        <span class="detail-view__bookmark-icon">📑</span>
+        <span class="detail-view__bookmark-text">${escapeHtml(book.bookmark)}</span>
+      </div>`
+    : '';
+
   // メモ表示
   const noteHtml = book.note
     ? `<div class="detail-view__note">${escapeHtml(book.note)}</div>`
@@ -152,6 +160,7 @@ export function renderDetailView(book, type = 'study') {
         <div class="detail-view__info">
           <div class="detail-view__title">${escapeHtml(book.title)}</div>
           <div class="detail-view__date">${dateText}</div>
+          ${bookmarkHtml}
           ${noteHtml}
           <div class="detail-view__actions">
             ${primaryActions}
