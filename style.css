@@ -204,9 +204,7 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-.content:has(#tab-home.active) {
-  overflow: hidden;
-}
+/* カバン画面でも縦スクロールを有効にする（小さなデバイス対応） */
 
 .tab {
   display: none;
@@ -217,8 +215,7 @@ html, body {
 }
 
 #tab-home {
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
   position: relative;
 }
 
@@ -1415,6 +1412,14 @@ html, body {
   text-align: center;
   padding: var(--space-3xl) var(--space-xl);
   color: var(--text-dim);
+  width: 100%;
+}
+
+/* 書斎・本屋のシェルフにemptyメッセージがある場合、中央配置 */
+.shelf-visual:has(.empty-study),
+.store-shelf-visual:has(.empty-study) {
+  justify-content: center;
+  align-items: center;
 }
 
 .empty-study-icon {
