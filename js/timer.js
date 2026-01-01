@@ -24,6 +24,31 @@ export function startReading(bookId = null) {
 
   seconds = 0;
   currentBookId = bookId;
+
+  // 読書中の本の情報を表示
+  const bookInfo = document.getElementById('readingBookInfo');
+  const bookCover = document.getElementById('readingBookCover');
+  const bookTitle = document.getElementById('readingBookTitle');
+
+  if (bookId) {
+    const book = stateManager.getBook(bookId);
+    if (book) {
+      bookInfo.style.display = 'flex';
+      bookTitle.textContent = book.title;
+      if (book.coverUrl) {
+        bookCover.style.backgroundImage = `url(${book.coverUrl})`;
+        bookCover.classList.add('has-cover');
+      } else {
+        bookCover.style.backgroundImage = '';
+        bookCover.classList.remove('has-cover');
+      }
+    } else {
+      bookInfo.style.display = 'none';
+    }
+  } else {
+    bookInfo.style.display = 'none';
+  }
+
   applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
   timer = setInterval(() => seconds++, 1000);

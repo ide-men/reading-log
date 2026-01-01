@@ -1993,6 +1993,39 @@ select.form-input {
   margin-bottom: 48px;
 }
 
+.reading-book-info {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.reading-book-cover {
+  width: 80px;
+  height: 120px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.reading-book-cover.has-cover {
+  border: none;
+}
+
+.reading-book-title {
+  font-size: 15px;
+  color: var(--text);
+  text-align: center;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .reading-stop {
   padding: 14px 40px;
   font-size: 14px;
