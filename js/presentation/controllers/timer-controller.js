@@ -50,32 +50,34 @@ export function handleStopReading() {
   updateUI();
   renderReadingBooks();
 
-  // 感想入力モーダルを表示
+  // 付箋入力モーダルを表示（どこまで読んだか）
   if (book) {
-    uiState.setReadingNoteBookId(bookId);
-    document.getElementById('readingNoteBookTitle').textContent = book.title;
-    document.getElementById('readingNoteInput').value = book.note || '';
-    openModal('readingNoteModal');
+    uiState.setReadingBookmarkBookId(bookId);
+    document.getElementById('readingBookmarkBookTitle').textContent = book.title;
+    document.getElementById('readingBookmarkInput').value = book.bookmark || '';
+    openModal('readingBookmarkModal');
   }
 }
 
 // ========================================
-// 読書終了時の感想保存
+// 読書終了時の付箋保存
 // ========================================
-export function saveReadingNote() {
-  const bookId = uiState.getReadingNoteBookId();
+export function saveReadingBookmark() {
+  const bookId = uiState.getReadingBookmarkBookId();
   if (!bookId) return;
 
-  const note = document.getElementById('readingNoteInput').value.trim() || null;
-  bookService.editBook(bookId, { note });
+  const bookmark = document.getElementById('readingBookmarkInput').value.trim() || null;
+  bookService.editBook(bookId, { bookmark });
 
-  closeModal('readingNoteModal');
-  showToast('保存しました');
+  closeModal('readingBookmarkModal');
+  if (bookmark) {
+    showToast('付箋を貼りました');
+  }
   renderReadingBooks();
 }
 
-export function skipReadingNote() {
-  closeModal('readingNoteModal');
+export function skipReadingBookmark() {
+  closeModal('readingBookmarkModal');
 }
 
 // ========================================
@@ -94,13 +96,13 @@ export function initTimerEvents() {
     handleStopReading();
   });
 
-  // 読書終了時の感想モーダル
-  document.getElementById('saveReadingNoteBtn').addEventListener('click', () => {
-    saveReadingNote();
+  // 読書終了時の付箋モーダル
+  document.getElementById('saveReadingBookmarkBtn').addEventListener('click', () => {
+    saveReadingBookmark();
   });
 
-  document.getElementById('skipReadingNoteBtn').addEventListener('click', () => {
-    skipReadingNote();
+  document.getElementById('skipReadingBookmarkBtn').addEventListener('click', () => {
+    skipReadingBookmark();
   });
 }
 

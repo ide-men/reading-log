@@ -98,7 +98,7 @@ export function setDroppingBookId(id) {
 }
 
 // ========================================
-// 読書終了時の感想入力
+// 読了時の感想入力
 // ========================================
 export function getReadingNoteBookId() {
   return stateManager.getReadingNoteBookId();
@@ -106,4 +106,15 @@ export function getReadingNoteBookId() {
 
 export function setReadingNoteBookId(id) {
   stateManager.setReadingNoteBookId(id);
+}
+
+// ========================================
+// 読書終了時の付箋入力
+// ========================================
+export function getReadingBookmarkBookId() {
+  return stateManager.getReadingBookmarkBookId();
+}
+
+export function setReadingBookmarkBookId(id) {
+  stateManager.setReadingBookmarkBookId(id);
 }

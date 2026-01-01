@@ -469,24 +469,47 @@
     </div>
   </div>
 
-  <!-- 読書終了モーダル -->
-  <div class="modal-overlay" id="readingNoteModal" role="dialog" aria-modal="true" aria-labelledby="readingNoteModalTitle">
+  <!-- 読書終了時の付箋モーダル -->
+  <div class="modal-overlay" id="readingBookmarkModal" role="dialog" aria-modal="true" aria-labelledby="readingBookmarkModalTitle">
     <div class="modal">
       <div class="modal-header">
-        <h2 id="readingNoteModalTitle">📝 おつかれさまでした！</h2>
-        <button class="modal-close" data-close="readingNoteModal" aria-label="閉じる">×</button>
+        <h2 id="readingBookmarkModalTitle">📑 どこまで読んだ？</h2>
+        <button class="modal-close" data-close="readingBookmarkModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="drop-book-info">
-          <div class="drop-book-title" id="readingNoteBookTitle"></div>
+          <div class="drop-book-title" id="readingBookmarkBookTitle"></div>
         </div>
         <div class="form-group">
-          <textarea class="form-input form-textarea" id="readingNoteInput" placeholder="今日読んだ感想やメモ..." rows="3"></textarea>
-          <div class="form-hint">一言残せます（任意）</div>
+          <input type="text" class="form-input" id="readingBookmarkInput" placeholder="例: 128ページ、第3章の途中...">
+          <div class="form-hint">次に読む時に思い出せます（任意）</div>
         </div>
         <div class="modal-actions">
-          <button class="btn btn-secondary" id="skipReadingNoteBtn">スキップ</button>
-          <button class="btn btn-primary" id="saveReadingNoteBtn">保存</button>
+          <button class="btn btn-secondary" id="skipReadingBookmarkBtn">スキップ</button>
+          <button class="btn btn-primary" id="saveReadingBookmarkBtn">付箋を貼る</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 読了時の感想モーダル -->
+  <div class="modal-overlay" id="completeNoteModal" role="dialog" aria-modal="true" aria-labelledby="completeNoteModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="completeNoteModalTitle">🎉 読了おめでとう！</h2>
+        <button class="modal-close" data-close="completeNoteModal" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="drop-book-info">
+          <div class="drop-book-title" id="completeNoteBookTitle"></div>
+        </div>
+        <div class="form-group">
+          <textarea class="form-input form-textarea" id="completeNoteInput" placeholder="この本の感想..." rows="3"></textarea>
+          <div class="form-hint">感想を残せます（任意）</div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="skipCompleteNoteBtn">スキップ</button>
+          <button class="btn btn-primary" id="saveCompleteNoteBtn">保存</button>
         </div>
       </div>
     </div>
