@@ -29,6 +29,9 @@ export function handleStartReading() {
     readingIcon.classList.remove('has-cover');
   }
 
+  // タイマー表示をリセット
+  document.getElementById('readingTimer').textContent = '00:00';
+
   applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
   document.getElementById('startBtn').innerHTML =
@@ -60,6 +63,11 @@ export function initTimerEvents() {
 
   document.getElementById('stopBtn').addEventListener('click', () => {
     handleStopReading();
+  });
+
+  // タイマーティックで経過時間を更新
+  eventBus.on(Events.TIMER_TICK, ({ formatted }) => {
+    document.getElementById('readingTimer').textContent = formatted;
   });
 }
 
