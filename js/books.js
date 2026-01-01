@@ -367,7 +367,7 @@ export function renderStudyBooks() {
 
       // ステータスに応じたアクションボタン（グリッドではステータス変更のみ）
       let actionBtn = '';
-      if (currentStudyStatus === BOOK_STATUS.UNREAD || currentStudyStatus === BOOK_STATUS.DROPPED) {
+      if (currentStudyStatus === BOOK_STATUS.UNREAD || currentStudyStatus === BOOK_STATUS.DROPPED || currentStudyStatus === BOOK_STATUS.COMPLETED) {
         actionBtn = `
           <div class="study-book-actions">
             <button class="study-action-btn" data-start="${book.id}">
@@ -429,7 +429,7 @@ function renderStudyDetailView(book) {
 
   // ステータスに応じたアクションボタン
   let actionBtn = '';
-  if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED) {
+  if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED || book.status === BOOK_STATUS.COMPLETED) {
     actionBtn = `
       <button class="study-detail-action primary" data-start="${book.id}">
         <span>🎒</span>
@@ -709,14 +709,26 @@ export function addBook(status = BOOK_STATUS.READING) {
   }
 
   const today = new Date().toISOString().split('T')[0];
+
+  // ステータスに応じて日付を設定
+  let startedAt = null;
+  let completedAt = null;
+  if (status === BOOK_STATUS.READING) {
+    startedAt = today;
+  } else if (status === BOOK_STATUS.COMPLETED) {
+    // 過去に読了した本を追加
+    completedAt = today;
+  }
+  // dropped は startedAt/completedAt どちらも設定しない
+
   const bookData = {
     id: Date.now(),
     title,
     link: link || null,
     coverUrl,
     status,
-    startedAt: status === BOOK_STATUS.READING ? today : null,
-    completedAt: null,
+    startedAt,
+    completedAt,
     note: comment || null,
     readingTime: 0
   };
@@ -735,7 +747,9 @@ export function addBook(status = BOOK_STATUS.READING) {
   // 通知を表示
   const messages = {
     [BOOK_STATUS.READING]: 'カバンに追加しました',
-    [BOOK_STATUS.UNREAD]: '書斎に追加しました',
+    [BOOK_STATUS.UNREAD]: '積読に追加しました',
+    [BOOK_STATUS.COMPLETED]: '読了に追加しました',
+    [BOOK_STATUS.DROPPED]: '中断に追加しました',
     [BOOK_STATUS.WISHLIST]: '本屋に追加しました'
   };
   showToast(messages[status] || '本を追加しました');
@@ -864,18 +878,26 @@ function createCelebrationParticles(container) {
   }
 }
 
-// unread/dropped → reading（読み始める！）
+// unread/dropped/completed → reading（読み始める・再読！）
 export function startReadingBook(id) {
   const book = stateManager.getBook(id);
   const today = new Date().toISOString().split('T')[0];
+  const wasCompleted = book.status === BOOK_STATUS.COMPLETED;
+
   const updates = {
     status: BOOK_STATUS.READING,
-    startedAt: book.startedAt || today
+    startedAt: today
   };
+
+  // 読了からの再読の場合は completedAt をリセット
+  if (wasCompleted) {
+    updates.completedAt = null;
+  }
+
   stateManager.updateBook(id, updates);
   saveState();
   renderBooks();
-  showToast('読書を始めました！');
+  showToast(wasCompleted ? 'カバンに入れました！' : '読書を始めました！');
 }
 
 // reading → completed（読み終わった！）

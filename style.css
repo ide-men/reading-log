@@ -1649,6 +1649,43 @@ select.form-input {
   cursor: pointer;
 }
 
+/* Status Selector (書斎タブ用) */
+.status-selector {
+  margin-bottom: var(--space-md);
+}
+
+.status-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.status-option:hover {
+  background: var(--elevated);
+}
+
+.status-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.status-option-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
 /* Text Button */
 .btn-text {
   background: none;

@@ -138,7 +138,25 @@ export function initializeEventListeners() {
     const status = statusMap[tabName] || BOOK_STATUS.READING;
     document.getElementById('addBookModalTitle').textContent = titleMap[tabName] || '本を追加';
     document.getElementById('addBookStatus').value = status;
+
+    // 書斎タブの場合はステータス選択UIを表示
+    const statusSelector = document.getElementById('studyStatusSelector');
+    if (tabName === 'study') {
+      statusSelector.style.display = 'block';
+      // ラジオボタンをリセット（積読をデフォルトに）
+      document.querySelector('input[name="studyStatus"][value="unread"]').checked = true;
+    } else {
+      statusSelector.style.display = 'none';
+    }
+
     openModal('addBookModal');
+  });
+
+  // 書斎タブ用ステータス選択ラジオボタン
+  document.querySelectorAll('input[name="studyStatus"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      document.getElementById('addBookStatus').value = e.target.value;
+    });
   });
 
   // リンク入力トグル
