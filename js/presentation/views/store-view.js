@@ -27,7 +27,7 @@ export function renderStoreBooks() {
     shelfEl: shelf,
     containerEl: container,
     type: 'store',
-    miniBookClass: 'store-mini-book',
+    miniBookClass: 'mini-book',
     emptyConfig: { icon: '🏪', text: '気になる本はありません', hint: '読みたい本を見つけたら追加しましょう' }
   });
 }

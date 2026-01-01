@@ -15,44 +15,44 @@ import {
 // 共通グリッドカードレンダリング
 // ========================================
 export function renderBookGrid(books, type = 'study') {
-  const prefix = type === 'store' ? 'store' : 'study';
+  const modifier = type === 'store' ? 'book-card--store' : 'book-card--study';
   const placeholder = type === 'store' ? '📖' : '📕';
 
   const renderActions = (book) => {
     if (type === 'store') {
       return `
-        <button class="store-acquire-btn" data-to-study="${book.id}">
+        <button class="action-btn action-btn--primary" data-to-study="${book.id}">
           <span>📚</span>
           <span>書斎に入れる</span>
         </button>
-        <button class="store-acquire-btn secondary" data-to-bag="${book.id}">
+        <button class="action-btn action-btn--secondary" data-to-bag="${book.id}">
           <span>🎒</span>
           <span>カバンに入れる</span>
         </button>`;
     }
     return `
-      <button class="study-action-btn" data-start="${book.id}">
+      <button class="action-btn action-btn--primary" data-start="${book.id}">
         <span>🎒</span>
         <span>カバンに入れる</span>
       </button>`;
   };
 
-  return `<div class="${prefix}-grid">${[...books].reverse().map((book, i) => {
+  return `<div class="book-grid">${[...books].reverse().map((book, i) => {
     const colorIndex = books.length - 1 - i;
     const color = getBookColorByIndex(colorIndex);
     const coverHtml = createBookCoverHtml(book, placeholder);
     const dateText = getBookDateText(book);
 
     return `
-      <div class="${prefix}-book-card" data-book-id="${book.id}">
-        <div class="${prefix}-book-cover" style="background-color: ${color}">
+      <div class="book-card ${modifier}" data-book-id="${book.id}">
+        <div class="book-card__cover" style="background-color: ${color}">
           ${coverHtml}
         </div>
-        <div class="${prefix}-book-info">
-          <div class="${prefix}-book-title">${escapeHtml(book.title)}</div>
-          <div class="${prefix}-book-date">${dateText}</div>
+        <div class="book-card__info">
+          <div class="book-card__title">${escapeHtml(book.title)}</div>
+          <div class="book-card__date">${dateText}</div>
         </div>
-        <div class="${prefix}-book-actions">
+        <div class="book-card__actions">
           ${renderActions(book)}
         </div>
       </div>
@@ -76,10 +76,10 @@ export function renderShelfContent(options) {
 
   if (books.length === 0) {
     shelfEl.innerHTML = `
-      <div class="empty-study">
-        <div class="empty-study-icon">${emptyConfig.icon}</div>
-        <div class="empty-study-text">${emptyConfig.text}</div>
-        <div class="empty-study-hint">${emptyConfig.hint}</div>
+      <div class="empty-state empty-state--small">
+        <div class="empty-state__icon">${emptyConfig.icon}</div>
+        <div class="empty-state__text">${emptyConfig.text}</div>
+        <div class="empty-state__hint">${emptyConfig.hint}</div>
       </div>`;
     containerEl.innerHTML = '';
     return;
@@ -106,16 +106,16 @@ export function renderDetailView(book, type = 'study') {
   const placeholder = type === 'store' ? '📖' : '📕';
   const coverHtml = createBookCoverHtml(book, placeholder);
   const dateText = getBookDateText(book);
-  const prefix = type === 'store' ? 'store' : 'study';
+  const modifier = type === 'store' ? 'detail-view--store' : 'detail-view--study';
 
   // メモ表示
   const noteHtml = book.note
-    ? `<div class="${prefix}-detail-note">${escapeHtml(book.note)}</div>`
+    ? `<div class="detail-view__note">${escapeHtml(book.note)}</div>`
     : '';
 
   // リンクボタン
   const linkBtn = isValidUrl(book.link)
-    ? `<button class="${prefix}-detail-action" data-link="${escapeAttr(book.link)}">
+    ? `<button class="detail-view__action" data-link="${escapeAttr(book.link)}">
         <span>↗</span>
         <span>リンクを開く</span>
       </button>`
@@ -125,41 +125,41 @@ export function renderDetailView(book, type = 'study') {
   let primaryActions = '';
   if (type === 'store') {
     primaryActions = `
-      <button class="${prefix}-detail-action primary" data-to-study="${book.id}">
+      <button class="detail-view__action detail-view__action--primary" data-to-study="${book.id}">
         <span>📚</span>
         <span>書斎に入れる</span>
       </button>
-      <button class="${prefix}-detail-action" data-to-bag="${book.id}">
+      <button class="detail-view__action" data-to-bag="${book.id}">
         <span>🎒</span>
         <span>カバンに入れる</span>
       </button>`;
   } else if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED || book.status === BOOK_STATUS.COMPLETED) {
     primaryActions = `
-      <button class="${prefix}-detail-action primary" data-start="${book.id}">
+      <button class="detail-view__action detail-view__action--primary" data-start="${book.id}">
         <span>🎒</span>
         <span>カバンに入れる</span>
       </button>`;
   }
 
   return `
-    <div class="${prefix}-detail-view">
-      <button class="${prefix}-detail-close" data-close-detail>✕</button>
-      <div class="${prefix}-detail-content">
-        <div class="${prefix}-detail-cover" style="background-color: ${color}">
+    <div class="detail-view ${modifier}">
+      <button class="detail-view__close" data-close-detail>✕</button>
+      <div class="detail-view__content">
+        <div class="detail-view__cover" style="background-color: ${color}">
           ${coverHtml}
         </div>
-        <div class="${prefix}-detail-info">
-          <div class="${prefix}-detail-title">${escapeHtml(book.title)}</div>
-          <div class="${prefix}-detail-date">${dateText}</div>
+        <div class="detail-view__info">
+          <div class="detail-view__title">${escapeHtml(book.title)}</div>
+          <div class="detail-view__date">${dateText}</div>
           ${noteHtml}
-          <div class="${prefix}-detail-actions">
+          <div class="detail-view__actions">
             ${primaryActions}
             ${linkBtn}
-            <button class="${prefix}-detail-action" data-edit="${book.id}">
+            <button class="detail-view__action" data-edit="${book.id}">
               <span>✏️</span>
               <span>編集</span>
             </button>
-            <button class="${prefix}-detail-action danger" data-delete="${book.id}">
+            <button class="detail-view__action detail-view__action--danger" data-delete="${book.id}">
               <span>🗑️</span>
               <span>削除</span>
             </button>

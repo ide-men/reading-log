@@ -33,10 +33,10 @@
     <main class="content" role="main">
       <!-- ホームタブ（カバン） -->
       <section class="tab active" id="tab-home" role="tabpanel" aria-labelledby="nav-home">
-    <div class="bag-header">
-      <div class="bag-emoji">🎒</div>
-      <div class="bag-title">カバン</div>
-      <div class="bag-subtitle">本を選んで読書を始めよう</div>
+    <div class="page-header page-header--compact">
+      <div class="page-header__emoji">🎒</div>
+      <div class="page-header__title">カバン</div>
+      <div class="page-header__subtitle">本を選んで読書を始めよう</div>
     </div>
 
     <div class="book-carousel-container">
@@ -73,10 +73,10 @@
 
       <!-- 書斎タブ -->
       <section class="tab" id="tab-study" role="tabpanel" aria-labelledby="nav-study">
-    <div class="study-header">
-      <div class="study-emoji">📚</div>
-      <div class="study-title">書斎</div>
-      <div class="study-subtitle">あなたの本棚</div>
+    <div class="page-header">
+      <div class="page-header__emoji">📚</div>
+      <div class="page-header__title">書斎</div>
+      <div class="page-header__subtitle">あなたの本棚</div>
     </div>
 
     <div class="status-tabs" id="studyStatusTabs">
@@ -97,9 +97,9 @@
       </button>
     </div>
 
-    <div class="shelf-container">
-      <div class="shelf-board">
-        <div class="shelf-visual" id="studyShelf"></div>
+    <div class="shelf">
+      <div class="shelf__board">
+        <div class="shelf__visual" id="studyShelf"></div>
       </div>
     </div>
 
@@ -108,10 +108,10 @@
 
       <!-- 本屋タブ -->
       <section class="tab" id="tab-store" role="tabpanel" aria-labelledby="nav-store">
-    <div class="store-header">
-      <div class="store-emoji">🏪</div>
-      <div class="store-title">本屋</div>
-      <div class="store-subtitle">気になる本</div>
+    <div class="page-header">
+      <div class="page-header__emoji">🏪</div>
+      <div class="page-header__title">本屋</div>
+      <div class="page-header__subtitle">気になる本</div>
     </div>
 
     <div class="store-stats">
@@ -119,9 +119,9 @@
       <span class="store-label">冊の本を見つけた</span>
     </div>
 
-    <div class="store-shelf-container">
-      <div class="store-shelf-board">
-        <div class="store-shelf-visual" id="storeShelf"></div>
+    <div class="shelf">
+      <div class="shelf__board">
+        <div class="shelf__visual" id="storeShelf"></div>
       </div>
     </div>
 

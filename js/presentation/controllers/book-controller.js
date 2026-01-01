@@ -235,7 +235,7 @@ const studyBookListHandlers = [
 ];
 
 function studyBookListFallback(e) {
-  const card = e.target.closest('.study-book-card');
+  const card = e.target.closest('.book-card');
   if (card && card.dataset.bookId) {
     openBookDetail(Number(card.dataset.bookId));
   }
@@ -290,7 +290,7 @@ const storeBookListHandlers = [
 ];
 
 function storeBookListFallback(e) {
-  const card = e.target.closest('.store-book-card');
+  const card = e.target.closest('.book-card');
   if (card && card.dataset.bookId) {
     openBookDetail(Number(card.dataset.bookId));
   }
@@ -506,7 +506,7 @@ export function initStoreEvents() {
   initShelfEvents({
     shelfId: 'storeShelf',
     bookListId: 'storeBookList',
-    miniBookClass: 'store-mini-book',
+    miniBookClass: 'mini-book',
     handlers: storeBookListHandlers,
     fallback: storeBookListFallback,
     getSelectedId: bookRepository.getStoreSelectedBookId,
