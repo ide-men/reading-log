@@ -84,6 +84,22 @@ export function openLink(url, event) {
 }
 
 // ========================================
+// DOM要素キャッシング
+// ========================================
+const elementCache = new Map();
+
+export function getElement(id) {
+  if (!elementCache.has(id)) {
+    elementCache.set(id, document.getElementById(id));
+  }
+  return elementCache.get(id);
+}
+
+export function clearElementCache() {
+  elementCache.clear();
+}
+
+// ========================================
 // 時間帯判定
 // ========================================
 export function getTimeSlot(hour = new Date().getHours()) {
