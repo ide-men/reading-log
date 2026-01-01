@@ -1721,6 +1721,8 @@ select.form-input {
   align-items: center;
   justify-content: center;
   padding: var(--space-xl);
+  touch-action: none;
+  overscroll-behavior: contain;
 }
 
 .confirm-overlay {
@@ -1739,7 +1741,10 @@ select.form-input {
   max-width: var(--max-width);
   max-height: 85vh;
   overflow-y: auto;
+  overflow-x: hidden;
   animation: modalIn 0.25s ease;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 @keyframes modalIn {
