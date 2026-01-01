@@ -32,6 +32,7 @@ import {
   openBookDetail,
   getDetailBookId,
   setStudySelectedBookId,
+  getStudySelectedBookId,
   clearStudySelection
 } from './books.js';
 import { renderStats } from './stats.js';
@@ -349,7 +350,7 @@ export function initializeEventListeners() {
     }
   });
 
-  // 書斎の本棚クリック（本を選択）
+  // 書斎の本棚クリック（本を選択/選択解除）
   document.getElementById('studyShelf').addEventListener('click', (e) => {
     const miniBook = e.target.closest('.mini-book');
     if (!miniBook) return;
@@ -357,7 +358,12 @@ export function initializeEventListeners() {
     const bookId = Number(miniBook.dataset.bookId);
     if (!bookId) return;
 
-    setStudySelectedBookId(bookId);
+    // 同じ本をクリックしたら選択解除、違う本なら選択
+    if (getStudySelectedBookId() === bookId) {
+      clearStudySelection();
+    } else {
+      setStudySelectedBookId(bookId);
+    }
     renderStudyBooks();
   });
 
