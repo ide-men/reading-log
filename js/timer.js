@@ -5,6 +5,7 @@ import { CONFIG } from './constants.js';
 import { stateManager } from './state.js';
 import { saveState } from './storage.js';
 import { applyReadingAnimation } from './animations.js';
+import { escapeAttr } from './utils.js';
 
 // タイマー状態
 let timer = null;
@@ -31,7 +32,7 @@ export function startReading(bookId = null) {
   if (bookId) {
     const book = stateManager.getBook(bookId);
     if (book && book.coverUrl) {
-      readingIcon.innerHTML = `<img src="${book.coverUrl}" class="reading-cover-img" alt="">`;
+      readingIcon.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" class="reading-cover-img" alt="">`;
       readingIcon.classList.add('has-cover');
     } else {
       readingIcon.textContent = '📖';
