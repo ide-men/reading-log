@@ -276,16 +276,21 @@ export function loadSampleData({ showToast, onSuccess }) {
     };
   });
 
+  // 読書履歴に紐付ける本（reading + completed）
+  const readableBooks = books.filter(b => b.status === 'reading' || b.status === 'completed');
+
   const history = [];
   for (let i = 0; i < 25; i++) {
     const daysAgo = Math.floor(Math.random() * 30);
     const date = new Date(now - daysAgo * dayMs);
     const hour = 6 + Math.floor(Math.random() * 16);
     date.setHours(hour, Math.floor(Math.random() * 60), 0, 0);
+    const randomBook = readableBooks[Math.floor(Math.random() * readableBooks.length)];
     history.push({
       d: date.toISOString(),
       m: 15 + Math.floor(Math.random() * 45),
-      h: hour
+      h: hour,
+      bookId: randomBook?.id || null
     });
   }
   history.sort((a, b) => new Date(a.d) - new Date(b.d));
