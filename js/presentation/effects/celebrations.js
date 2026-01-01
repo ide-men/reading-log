@@ -26,9 +26,12 @@ export function showAcquireCelebration(book, destination = '書斎', onComplete 
   // ヒントテキストを更新
   const hintEl = celebration.querySelector('.acquire-hint');
   if (hintEl) {
-    hintEl.textContent = destination === 'カバン'
-      ? 'カバンに追加されました'
-      : '書斎の積読に追加されました';
+    const hintText = {
+      'カバン': 'カバンに追加されました',
+      '書斎': '書斎の積読に追加されました',
+      '読了': '読了おめでとうございます！'
+    };
+    hintEl.textContent = hintText[destination] || '書斎の積読に追加されました';
   }
 
   // パーティクルを生成
