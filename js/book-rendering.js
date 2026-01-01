@@ -14,7 +14,6 @@ import {
 } from './book-state.js';
 import {
   getBooksByStatus,
-  formatDate,
   getRelativeDate,
   getBookDateText,
   getBookColor,
@@ -337,7 +336,7 @@ export function renderStoreBooks() {
       const colorIndex = books.length - 1 - i;
       const color = getBookColorByIndex(colorIndex);
       const coverHtml = createBookCoverHtml(book, '📖');
-      const dateText = formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+      const dateText = getBookDateText(book);
 
       return `
         <div class="store-book-card" data-book-id="${book.id}">
