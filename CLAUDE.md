@@ -28,7 +28,8 @@ js/
 ├── stats.js         # 統計計算・グラフ表示
 ├── animations.js    # ボタン・読書画面アニメーション
 ├── ui.js            # UI操作・モーダル・エフェクト
-└── events.js        # イベントリスナー設定
+├── events.js        # イベントリスナー設定
+└── event-handlers.js # イベントハンドラマップ
 ```
 
 ## 状態管理
