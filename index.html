@@ -27,18 +27,28 @@
     <div class="bag-header">
       <div class="bag-emoji">🎒</div>
       <div class="bag-title">カバン</div>
-      <div class="bag-subtitle">持ち歩いている本</div>
+      <div class="bag-subtitle">本を選んで読書を始めよう</div>
     </div>
 
-    <div class="reading-books" id="readingBooks">
-      <!-- 読書中の本がここに表示される -->
+    <div class="book-carousel-container">
+      <div class="book-carousel" id="bookCarousel">
+        <!-- 本のカルーセルがここに表示される -->
+      </div>
     </div>
 
-    <div class="home-actions">
-      <button class="main-btn" id="startBtn">
+    <div class="selected-book-info" id="selectedBookInfo">
+      <!-- 選択中の本の情報 -->
+    </div>
+
+    <div class="home-actions-fixed">
+      <button class="main-btn" id="startBtn" disabled>
         <span class="main-btn-icon">📖</span>
-        <span>読書をはじめる</span>
+        <span>本を選んでください</span>
       </button>
+      <div class="home-actions-row">
+        <button class="btn btn-success" id="completeSelectedBtn" disabled>読み終わった！</button>
+        <button class="btn btn-secondary" id="dropSelectedBtn" disabled>中断</button>
+      </div>
       <button class="btn btn-secondary add-book-btn" id="addReadingBookBtn">
         <span>＋ 本を追加</span>
       </button>
