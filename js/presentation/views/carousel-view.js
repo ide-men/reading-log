@@ -157,20 +157,49 @@ export function updateSelectedBookInfo() {
 // ========================================
 // カルーセルで本を選択
 // ========================================
-export function selectBook(id) {
+export function selectBook(id, scrollToCenter = false) {
   uiState.setSelectedBookId(id);
 
   // UIを更新
   const books = document.querySelectorAll('.carousel-book');
+  let selectedElement = null;
+
   books.forEach(book => {
     if (parseInt(book.dataset.id) === id) {
       book.classList.add('selected');
+      selectedElement = book;
     } else {
       book.classList.remove('selected');
     }
   });
 
+  // 選択した本を中央にスクロール
+  if (scrollToCenter && selectedElement) {
+    scrollBookToCenter(selectedElement);
+  }
+
   updateSelectedBookInfo();
+}
+
+// ========================================
+// 本を中央にスクロール
+// ========================================
+function scrollBookToCenter(bookElement) {
+  const carousel = document.getElementById('bookCarousel');
+  if (!carousel || !bookElement) return;
+
+  const carouselRect = carousel.getBoundingClientRect();
+  const bookRect = bookElement.getBoundingClientRect();
+
+  // 本の中央とカルーセルの中央のオフセットを計算
+  const bookCenterX = bookRect.left + bookRect.width / 2;
+  const carouselCenterX = carouselRect.left + carouselRect.width / 2;
+  const scrollOffset = bookCenterX - carouselCenterX;
+
+  carousel.scrollBy({
+    left: scrollOffset,
+    behavior: 'smooth'
+  });
 }
 
 // ========================================

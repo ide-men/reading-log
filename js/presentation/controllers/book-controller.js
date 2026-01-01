@@ -434,7 +434,7 @@ export function initCarouselEvents() {
   document.getElementById('bookCarousel').addEventListener('click', (e) => {
     const book = e.target.closest('.carousel-book');
     if (book && book.dataset.id) {
-      selectBook(Number(book.dataset.id));
+      selectBook(Number(book.dataset.id), true);
       updateCarouselScrollState();
     }
   });
