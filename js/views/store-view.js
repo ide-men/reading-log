@@ -1,0 +1,34 @@
+// ========================================
+// 本屋（ウィッシュリスト）ビュー
+// ========================================
+import { BOOK_STATUS } from '../constants.js';
+import { stateManager } from '../state.js';
+import { getBooksByStatus } from '../book-helpers.js';
+import { renderShelfContent } from './shared.js';
+
+// ========================================
+// 本屋（ウィッシュリスト）のレンダリング
+// ========================================
+export function renderStoreBooks() {
+  const storeSelectedBookId = stateManager.getStoreSelectedBookId();
+  const books = getBooksByStatus(BOOK_STATUS.WISHLIST);
+  const shelf = document.getElementById('storeShelf');
+  const container = document.getElementById('storeBookList');
+  const countEl = document.getElementById('wishlistCount');
+
+  if (!container || !shelf) return;
+
+  if (countEl) {
+    countEl.textContent = books.length;
+  }
+
+  renderShelfContent({
+    books,
+    selectedBookId: storeSelectedBookId,
+    shelfEl: shelf,
+    containerEl: container,
+    type: 'store',
+    miniBookClass: 'store-mini-book',
+    emptyConfig: { icon: '🏪', text: '気になる本はありません', hint: '読みたい本を見つけたら追加しましょう' }
+  });
+}

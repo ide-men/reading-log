@@ -1,7 +1,7 @@
 // ========================================
 // State Manager
 // ========================================
-import { SCHEMA_VERSION } from './constants.js';
+import { SCHEMA_VERSION, BOOK_STATUS } from './constants.js';
 
 // 初期状態を作成する関数
 export function createInitialMeta() {
@@ -21,6 +21,19 @@ export function createInitialStats() {
   };
 }
 
+// UI状態の初期値（永続化しない）
+export function createInitialUI() {
+  return {
+    selectedBookId: null,        // カルーセルで選択中
+    studySelectedBookId: null,   // 書斎で選択中
+    storeSelectedBookId: null,   // 本屋で選択中
+    currentStudyStatus: BOOK_STATUS.UNREAD,  // 書斎の現在のタブ
+    editingBookId: null,         // 編集中の本
+    deletingBookId: null,        // 削除確認中の本
+    detailBookId: null           // 詳細ダイアログで開いている本
+  };
+}
+
 export function createInitialState() {
   return {
     meta: createInitialMeta(),
@@ -35,13 +48,54 @@ export function createInitialState() {
 class StateManager {
   constructor() {
     this._state = null;
+    this._ui = createInitialUI();  // UI状態（永続化しない）
     this._listeners = new Set();
   }
 
   // 状態を初期化
   initialize(state) {
     this._state = state;
+    this._ui = createInitialUI();  // UI状態をリセット
   }
+
+  // ========================================
+  // UI状態の getter/setter
+  // ========================================
+  getUI(key) {
+    return key ? this._ui[key] : this._ui;
+  }
+
+  setUI(key, value) {
+    this._ui[key] = value;
+  }
+
+  // カルーセル選択
+  getSelectedBookId() { return this._ui.selectedBookId; }
+  setSelectedBookId(id) { this._ui.selectedBookId = id; }
+
+  // 書斎選択
+  getStudySelectedBookId() { return this._ui.studySelectedBookId; }
+  setStudySelectedBookId(id) { this._ui.studySelectedBookId = id; }
+  clearStudySelection() { this._ui.studySelectedBookId = null; }
+
+  // 本屋選択
+  getStoreSelectedBookId() { return this._ui.storeSelectedBookId; }
+  setStoreSelectedBookId(id) { this._ui.storeSelectedBookId = id; }
+  clearStoreSelection() { this._ui.storeSelectedBookId = null; }
+
+  // 書斎ステータス
+  getCurrentStudyStatus() { return this._ui.currentStudyStatus; }
+  setCurrentStudyStatus(status) { this._ui.currentStudyStatus = status; }
+
+  // 編集・削除
+  getEditingBookId() { return this._ui.editingBookId; }
+  setEditingBookId(id) { this._ui.editingBookId = id; }
+  getDeletingBookId() { return this._ui.deletingBookId; }
+  setDeletingBookId(id) { this._ui.deletingBookId = id; }
+
+  // 詳細ダイアログ
+  getDetailBookId() { return this._ui.detailBookId; }
+  setDetailBookId(id) { this._ui.detailBookId = id; }
 
   // 現在の状態を取得（読み取り専用のコピー）
   getState() {

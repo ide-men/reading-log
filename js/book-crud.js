@@ -5,12 +5,6 @@ import { BOOK_STATUS } from './constants.js';
 import { stateManager } from './state.js';
 import { getCoverUrlFromLink } from './utils.js';
 import { showToast, closeModal } from './ui.js';
-import {
-  getDeletingBookId,
-  setDeletingBookId,
-  getEditingBookId,
-  setEditingBookId
-} from './book-state.js';
 import { persistAndRender } from './book-helpers.js';
 import { renderBooks } from './book-rendering.js';
 
@@ -105,7 +99,7 @@ export function editBook(id) {
   const book = stateManager.getBook(id);
   if (!book) return;
 
-  setEditingBookId(id);
+  stateManager.setEditingBookId(id);
   document.getElementById('editBookTitle').value = book.title;
   document.getElementById('editBookLink').value = book.link || '';
   document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
@@ -114,7 +108,7 @@ export function editBook(id) {
 }
 
 export function saveEditBook() {
-  const editingBookId = getEditingBookId();
+  const editingBookId = stateManager.getEditingBookId();
   const title = document.getElementById('editBookTitle').value.trim();
   if (!title) {
     showToast('タイトルを入力してください');
@@ -151,13 +145,13 @@ export function deleteBook(id) {
   const book = stateManager.getBook(id);
   if (!book) return;
 
-  setDeletingBookId(id);
+  stateManager.setDeletingBookId(id);
   document.getElementById('deleteBookTitle').textContent = `「${book.title}」`;
   document.getElementById('deleteConfirm').classList.add('active');
 }
 
 export function confirmDeleteBook(updateUI) {
-  const deletingBookId = getDeletingBookId();
+  const deletingBookId = stateManager.getDeletingBookId();
   stateManager.removeBook(deletingBookId);
 
   persistAndRender(renderBooks);
