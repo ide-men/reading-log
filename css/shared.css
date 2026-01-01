@@ -626,7 +626,6 @@
   padding: var(--space-xl);
   margin-top: var(--space-lg);
   box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border);
   animation: slideUp 0.3s ease;
 }
 
