@@ -218,59 +218,21 @@ export function renderStudyBooks() {
 
   if (!shelf || !bookList) return;
 
-  if (books.length === 0) {
-    const emptyMessages = {
-      [BOOK_STATUS.COMPLETED]: { icon: '✅', text: '読了した本はまだありません', hint: '本を読み終えたらここに表示されます' },
-      [BOOK_STATUS.UNREAD]: { icon: '📚', text: '積読本はありません', hint: '買った本を追加してみましょう' },
-      [BOOK_STATUS.DROPPED]: { icon: '⏸️', text: '中断した本はありません', hint: '読書を中断した本がここに表示されます' }
-    };
-    const msg = emptyMessages[currentStudyStatus] || emptyMessages[BOOK_STATUS.COMPLETED];
+  const emptyMessages = {
+    [BOOK_STATUS.COMPLETED]: { icon: '✅', text: '読了した本はまだありません', hint: '本を読み終えたらここに表示されます' },
+    [BOOK_STATUS.UNREAD]: { icon: '📚', text: '積読本はありません', hint: '買った本を追加してみましょう' },
+    [BOOK_STATUS.DROPPED]: { icon: '⏸️', text: '中断した本はありません', hint: '読書を中断した本がここに表示されます' }
+  };
 
-    shelf.innerHTML = `
-      <div class="empty-study">
-        <div class="empty-study-icon">${msg.icon}</div>
-        <div class="empty-study-text">${msg.text}</div>
-        <div class="empty-study-hint">${msg.hint}</div>
-      </div>`;
-    bookList.innerHTML = '';
-    return;
-  }
-
-  // 本棚表示
-  shelf.innerHTML = renderMiniBookShelf(books, studySelectedBookId, 'mini-book');
-
-  // 選択中の本がある場合は詳細ビューを表示
-  const selectedBook = studySelectedBookId ? books.find(b => b.id === studySelectedBookId) : null;
-
-  if (selectedBook) {
-    bookList.innerHTML = renderDetailView(selectedBook, 'study');
-  } else {
-    // グリッドカードレイアウトでレンダリング
-    bookList.innerHTML = `<div class="study-grid">${[...books].reverse().map((book, i) => {
-      const colorIndex = books.length - 1 - i;
-      const color = getBookColorByIndex(colorIndex);
-      const coverHtml = createBookCoverHtml(book, '📕');
-      const dateText = getBookDateText(book);
-
-      return `
-        <div class="study-book-card" data-book-id="${book.id}">
-          <div class="study-book-cover" style="background-color: ${color}">
-            ${coverHtml}
-          </div>
-          <div class="study-book-info">
-            <div class="study-book-title">${escapeHtml(book.title)}</div>
-            <div class="study-book-date">${dateText}</div>
-          </div>
-          <div class="study-book-actions">
-            <button class="study-action-btn" data-start="${book.id}">
-              <span>🎒</span>
-              <span>カバンに入れる</span>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('')}</div>`;
-  }
+  renderShelfContent({
+    books,
+    selectedBookId: studySelectedBookId,
+    shelfEl: shelf,
+    containerEl: bookList,
+    type: 'study',
+    miniBookClass: 'mini-book',
+    emptyConfig: emptyMessages[currentStudyStatus] || emptyMessages[BOOK_STATUS.COMPLETED]
+  });
 }
 
 // ========================================
@@ -289,55 +251,101 @@ export function renderStoreBooks() {
     countEl.textContent = books.length;
   }
 
+  renderShelfContent({
+    books,
+    selectedBookId: storeSelectedBookId,
+    shelfEl: shelf,
+    containerEl: container,
+    type: 'store',
+    miniBookClass: 'store-mini-book',
+    emptyConfig: { icon: '🏪', text: '気になる本はありません', hint: '読みたい本を見つけたら追加しましょう' }
+  });
+}
+
+// ========================================
+// 共通グリッドカードレンダリング
+// ========================================
+function renderBookGrid(books, type = 'study') {
+  const prefix = type === 'store' ? 'store' : 'study';
+  const placeholder = type === 'store' ? '📖' : '📕';
+
+  const renderActions = (book) => {
+    if (type === 'store') {
+      return `
+        <button class="store-acquire-btn" data-to-study="${book.id}">
+          <span>📚</span>
+          <span>書斎に入れる</span>
+        </button>
+        <button class="store-acquire-btn secondary" data-to-bag="${book.id}">
+          <span>🎒</span>
+          <span>カバンに入れる</span>
+        </button>`;
+    }
+    return `
+      <button class="study-action-btn" data-start="${book.id}">
+        <span>🎒</span>
+        <span>カバンに入れる</span>
+      </button>`;
+  };
+
+  return `<div class="${prefix}-grid">${[...books].reverse().map((book, i) => {
+    const colorIndex = books.length - 1 - i;
+    const color = getBookColorByIndex(colorIndex);
+    const coverHtml = createBookCoverHtml(book, placeholder);
+    const dateText = getBookDateText(book);
+
+    return `
+      <div class="${prefix}-book-card" data-book-id="${book.id}">
+        <div class="${prefix}-book-cover" style="background-color: ${color}">
+          ${coverHtml}
+        </div>
+        <div class="${prefix}-book-info">
+          <div class="${prefix}-book-title">${escapeHtml(book.title)}</div>
+          <div class="${prefix}-book-date">${dateText}</div>
+        </div>
+        <div class="${prefix}-book-actions">
+          ${renderActions(book)}
+        </div>
+      </div>
+    `;
+  }).join('')}</div>`;
+}
+
+// ========================================
+// 共通シェルフコンテンツレンダリング
+// ========================================
+function renderShelfContent(options) {
+  const {
+    books,
+    selectedBookId,
+    shelfEl,
+    containerEl,
+    type,
+    miniBookClass,
+    emptyConfig
+  } = options;
+
   if (books.length === 0) {
-    shelf.innerHTML = `
+    shelfEl.innerHTML = `
       <div class="empty-study">
-        <div class="empty-study-icon">🏪</div>
-        <div class="empty-study-text">気になる本はありません</div>
-        <div class="empty-study-hint">読みたい本を見つけたら追加しましょう</div>
+        <div class="empty-study-icon">${emptyConfig.icon}</div>
+        <div class="empty-study-text">${emptyConfig.text}</div>
+        <div class="empty-study-hint">${emptyConfig.hint}</div>
       </div>`;
-    container.innerHTML = '';
+    containerEl.innerHTML = '';
     return;
   }
 
   // 本棚表示
-  shelf.innerHTML = renderMiniBookShelf(books, storeSelectedBookId, 'store-mini-book');
+  shelfEl.innerHTML = renderMiniBookShelf(books, selectedBookId, miniBookClass);
 
   // 選択中の本がある場合は詳細ビューを表示
-  const selectedBook = storeSelectedBookId ? books.find(b => b.id === storeSelectedBookId) : null;
+  const selectedBook = selectedBookId ? books.find(b => b.id === selectedBookId) : null;
 
   if (selectedBook) {
-    container.innerHTML = renderDetailView(selectedBook, 'store');
+    containerEl.innerHTML = renderDetailView(selectedBook, type);
   } else {
-    // グリッドカードレイアウトでレンダリング
-    container.innerHTML = `<div class="store-grid">${[...books].reverse().map((book, i) => {
-      const colorIndex = books.length - 1 - i;
-      const color = getBookColorByIndex(colorIndex);
-      const coverHtml = createBookCoverHtml(book, '📖');
-      const dateText = getBookDateText(book);
-
-      return `
-        <div class="store-book-card" data-book-id="${book.id}">
-          <div class="store-book-cover" style="background-color: ${color}">
-            ${coverHtml}
-          </div>
-          <div class="store-book-info">
-            <div class="store-book-title">${escapeHtml(book.title)}</div>
-            <div class="store-book-date">${dateText}</div>
-          </div>
-          <div class="store-book-actions">
-            <button class="store-acquire-btn" data-to-study="${book.id}">
-              <span>📚</span>
-              <span>書斎に入れる</span>
-            </button>
-            <button class="store-acquire-btn secondary" data-to-bag="${book.id}">
-              <span>🎒</span>
-              <span>カバンに入れる</span>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('')}</div>`;
+    containerEl.innerHTML = renderBookGrid(books, type);
   }
 }
 
