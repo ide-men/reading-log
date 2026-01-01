@@ -1,9 +1,9 @@
 // ========================================
 // 統計計算・表示
 // ========================================
-import { CONFIG } from './constants.js';
+import { CONFIG, UI_CONFIG } from './constants.js';
 import { stateManager } from './state.js';
-import { randomItem } from './utils.js';
+import { randomItem, getTimeSlotIndex } from './utils.js';
 
 // ========================================
 // 統計計算
@@ -92,7 +92,7 @@ function renderWeekChart() {
   }
 
   document.getElementById('weekChart').innerHTML = data.map(d => {
-    const height = d.minutes ? Math.max(8, Math.round(d.minutes / max * 60)) : 4;
+    const height = d.minutes ? Math.max(UI_CONFIG.chartBarMinHeight, Math.round(d.minutes / max * UI_CONFIG.chartBarMaxHeight)) : 4;
     return `
       <div class="week-bar${d.isToday ? ' today' : ''}">
         <div class="week-bar-fill${d.minutes ? '' : ' empty'}" style="height:${height}px"></div>
@@ -117,10 +117,7 @@ function renderReadingInsights() {
     // 単一ループで時間帯別カウントを計算（O(n) × 1 回のみ）
     const counts = [0, 0, 0, 0]; // 朝, 昼, 夜, 深夜
     for (const { h } of history) {
-      if (h >= 5 && h < 12) counts[0]++;
-      else if (h >= 12 && h < 18) counts[1]++;
-      else if (h >= 18 && h < 22) counts[2]++;
-      else counts[3]++;
+      counts[getTimeSlotIndex(h)]++;
     }
     const maxIndex = counts.indexOf(Math.max(...counts));
     const types = [['朝型', '🌅'], ['昼型', '☀️'], ['夜型', '🌙'], ['深夜型', '🌃']];

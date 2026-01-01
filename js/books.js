@@ -1,54 +1,49 @@
 // ========================================
-// 本の管理・レンダリング（ファサード）
+// 本モジュール ファサード
 // ========================================
-// 各モジュールから再エクスポート
+// 本関連の機能を一箇所からインポートできるようにする
+// 注: 直接インポートも推奨（依存関係を明確にするため）
 
-// 状態管理
+// ----------------------------------------
+// 選択状態の管理
+// ----------------------------------------
 export {
-  getEditingBookId,
-  setEditingBookId,
-  getDeletingBookId,
-  setDeletingBookId,
-  getCurrentStudyStatus,
-  setCurrentStudyStatus,
+  // カルーセル（カバン）
   getSelectedBookId,
   setSelectedBookId,
+  // 書斎
+  getCurrentStudyStatus,
+  setCurrentStudyStatus,
   getStudySelectedBookId,
   setStudySelectedBookId,
   clearStudySelection,
+  // 本屋
   getStoreSelectedBookId,
   setStoreSelectedBookId,
   clearStoreSelection,
+  // 詳細ダイアログ
   getDetailBookId,
-  setDetailBookId
+  setDetailBookId,
+  // 編集・削除
+  getEditingBookId,
+  getDeletingBookId
 } from './book-state.js';
 
-// ヘルパー関数
-export {
-  getBooksByStatus,
-  formatDate,
-  getRelativeDate,
-  getBookDateText,
-  getBookColor,
-  getBookColorByIndex,
-  createBookCoverHtml,
-  getMiniBookStyle,
-  renderMiniBookShelf
-} from './book-helpers.js';
-
+// ----------------------------------------
 // レンダリング
+// ----------------------------------------
 export {
+  renderBooks,
   renderReadingBooks,
-  updateCarouselScrollState,
-  updateSelectedBookInfo,
-  selectBook,
   renderStudyBooks,
   renderStoreBooks,
-  openBookDetail,
-  renderBooks
+  updateCarouselScrollState,
+  selectBook
 } from './book-rendering.js';
 
+// ----------------------------------------
 // CRUD操作
+// ----------------------------------------
 export {
   addBook,
   editBook,
@@ -57,7 +52,9 @@ export {
   confirmDeleteBook
 } from './book-crud.js';
 
+// ----------------------------------------
 // ステータス遷移
+// ----------------------------------------
 export {
   acquireBook,
   moveToReading,

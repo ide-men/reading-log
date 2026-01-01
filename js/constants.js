@@ -38,6 +38,32 @@ export const CONFIG = {
   storageWarningPercent: 80
 };
 
+// UI設定
+export const UI_CONFIG = {
+  // カルーセル
+  carouselScrollThreshold: 5,
+  carouselDotsMinBooks: 4,
+  // ダブルクリック防止
+  debounceInterval: 300,
+  // グラフ
+  chartBarMinHeight: 8,
+  chartBarMaxHeight: 60
+};
+
+// アニメーション設定
+export const ANIMATION_CONFIG = {
+  streakThreshold: 3,
+  streakProbability: 0.3
+};
+
+// セレブレーション設定
+export const CELEBRATION_CONFIG = {
+  particleCount: 50,
+  sparkleCount: 20,
+  displayDuration: 2000,
+  statusUpdateDelay: 300
+};
+
 export const QUOTES = [
   { text: '読書は心の旅路。一ページが新しい世界への扉となる。', author: '今日の一言' },
   { text: '本を読むことは、他人の頭で考えることである。', author: 'ショーペンハウアー' },

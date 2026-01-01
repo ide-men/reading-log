@@ -3,7 +3,16 @@
 // ========================================
 import { BOOK_STATUS, BOOK_COLORS } from './constants.js';
 import { stateManager } from './state.js';
+import { saveState } from './storage.js';
 import { escapeHtml, adjustColor } from './utils.js';
+
+// ========================================
+// 本の状態変更後の共通処理
+// ========================================
+export function persistAndRender(renderBooks) {
+  saveState();
+  renderBooks();
+}
 
 // ========================================
 // ステータス別フィルタ
@@ -38,12 +47,18 @@ export function getRelativeDate(dateStr) {
 // ========================================
 // 本の日付テキスト生成
 // ========================================
+
+// 本の追加日（ID=タイムスタンプ）を日付文字列として取得
+function getBookCreatedDateStr(book) {
+  return new Date(book.id).toISOString().split('T')[0];
+}
+
 export function getBookDateText(book) {
   if (book.status === BOOK_STATUS.COMPLETED && book.completedAt) {
     return formatDate(book.completedAt) + ' 読了';
   }
   if (book.status === BOOK_STATUS.UNREAD) {
-    return formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+    return formatDate(getBookCreatedDateStr(book)) + ' 追加';
   }
   if (book.status === BOOK_STATUS.DROPPED && book.startedAt) {
     return formatDate(book.startedAt) + ' 開始';
@@ -52,7 +67,7 @@ export function getBookDateText(book) {
     return formatDate(book.startedAt) + ' 開始';
   }
   if (book.status === BOOK_STATUS.WISHLIST) {
-    return formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+    return formatDate(getBookCreatedDateStr(book)) + ' 追加';
   }
   return '';
 }
