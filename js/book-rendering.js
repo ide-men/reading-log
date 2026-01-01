@@ -1,7 +1,7 @@
 // ========================================
 // 本のレンダリング
 // ========================================
-import { BOOK_STATUS } from './constants.js';
+import { BOOK_STATUS, UI_CONFIG } from './constants.js';
 import { stateManager } from './state.js';
 import { escapeHtml, escapeAttr, isValidUrl } from './utils.js';
 import {
@@ -81,8 +81,8 @@ export function renderReadingBooks() {
       </div>`;
   }).join('');
 
-  // ドットインジケーターを生成（4冊以上の場合のみ表示）
-  if (dotsContainer && books.length >= 4) {
+  // ドットインジケーターを生成（一定数以上の場合のみ表示）
+  if (dotsContainer && books.length >= UI_CONFIG.carouselDotsMinBooks) {
     dotsContainer.innerHTML = books.map((book, i) => {
       const isActive = book.id === selectedBookId;
       return `<div class="carousel-dot${isActive ? ' active' : ''}" data-index="${i}"></div>`;
@@ -110,8 +110,9 @@ export function updateCarouselScrollState() {
 
   if (!carousel || !wrapper) return;
 
-  const canScrollLeft = carousel.scrollLeft > 5;
-  const canScrollRight = carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth - 5;
+  const threshold = UI_CONFIG.carouselScrollThreshold;
+  const canScrollLeft = carousel.scrollLeft > threshold;
+  const canScrollRight = carousel.scrollLeft < carousel.scrollWidth - carousel.clientWidth - threshold;
 
   wrapper.classList.toggle('can-scroll-left', canScrollLeft);
   wrapper.classList.toggle('can-scroll-right', canScrollRight);

@@ -1,7 +1,7 @@
 // ========================================
 // 統計計算・表示
 // ========================================
-import { CONFIG } from './constants.js';
+import { CONFIG, UI_CONFIG } from './constants.js';
 import { stateManager } from './state.js';
 import { randomItem, getTimeSlotIndex } from './utils.js';
 
@@ -87,7 +87,7 @@ function renderWeekChart() {
   }
 
   document.getElementById('weekChart').innerHTML = data.map(d => {
-    const height = d.minutes ? Math.max(8, Math.round(d.minutes / max * 60)) : 4;
+    const height = d.minutes ? Math.max(UI_CONFIG.chartBarMinHeight, Math.round(d.minutes / max * UI_CONFIG.chartBarMaxHeight)) : 4;
     return `
       <div class="week-bar${d.isToday ? ' today' : ''}">
         <div class="week-bar-fill${d.minutes ? '' : ' empty'}" style="height:${height}px"></div>

@@ -1,14 +1,14 @@
 // ========================================
 // アニメーション
 // ========================================
-import { BUTTON_ANIMATIONS, READING_ANIMATIONS } from './constants.js';
+import { BUTTON_ANIMATIONS, READING_ANIMATIONS, ANIMATION_CONFIG } from './constants.js';
 import { randomItem, getTimeSlot } from './utils.js';
 import { calculateStreak } from './stats.js';
 
 export function getButtonAnimation() {
   const streak = calculateStreak();
 
-  if (streak >= 3 && Math.random() < 0.3) {
+  if (streak >= ANIMATION_CONFIG.streakThreshold && Math.random() < ANIMATION_CONFIG.streakProbability) {
     return randomItem(BUTTON_ANIMATIONS.streak);
   }
 

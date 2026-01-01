@@ -1,7 +1,7 @@
 // ========================================
 // イベントリスナー
 // ========================================
-import { BOOK_STATUS } from './constants.js';
+import { BOOK_STATUS, UI_CONFIG } from './constants.js';
 import {
   exportData,
   importData,
@@ -340,7 +340,7 @@ function initStudyEvents() {
   let lastStudyShelfClickTime = 0;
   document.getElementById('studyShelf').addEventListener('click', (e) => {
     const now = Date.now();
-    if (now - lastStudyShelfClickTime < 300) return;
+    if (now - lastStudyShelfClickTime < UI_CONFIG.debounceInterval) return;
     lastStudyShelfClickTime = now;
 
     const miniBook = e.target.closest('.mini-book');
@@ -376,7 +376,7 @@ function initStoreEvents() {
   let lastStoreShelfClickTime = 0;
   document.getElementById('storeShelf').addEventListener('click', (e) => {
     const now = Date.now();
-    if (now - lastStoreShelfClickTime < 300) return;
+    if (now - lastStoreShelfClickTime < UI_CONFIG.debounceInterval) return;
     lastStoreShelfClickTime = now;
 
     const miniBook = e.target.closest('.store-mini-book');

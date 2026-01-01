@@ -1,7 +1,7 @@
 // ========================================
 // 本のステータス遷移
 // ========================================
-import { BOOK_STATUS } from './constants.js';
+import { BOOK_STATUS, CELEBRATION_CONFIG } from './constants.js';
 import { stateManager } from './state.js';
 import { escapeHtml } from './utils.js';
 import { showToast } from './ui.js';
@@ -22,7 +22,7 @@ export function acquireBook(id) {
   setTimeout(() => {
     stateManager.updateBook(id, { status: BOOK_STATUS.UNREAD });
     persistAndRender(renderBooks);
-  }, 300);
+  }, CELEBRATION_CONFIG.statusUpdateDelay);
 }
 
 // ========================================
@@ -44,7 +44,7 @@ export function moveToReading(id) {
       startedAt: today
     });
     persistAndRender(renderBooks);
-  }, 300);
+  }, CELEBRATION_CONFIG.statusUpdateDelay);
 }
 
 // ========================================
@@ -88,7 +88,7 @@ function showAcquireCelebration(book, destination = '書斎') {
   setTimeout(() => {
     celebration.classList.remove('active');
     showToast(toastMessage);
-  }, 2000);
+  }, CELEBRATION_CONFIG.displayDuration);
 
   // クリックで早めに閉じる
   const closeHandler = () => {
@@ -103,9 +103,8 @@ function showAcquireCelebration(book, destination = '書斎') {
 // ========================================
 function createCelebrationParticles(container) {
   const colors = ['#f59e0b', '#fbbf24', '#6366f1', '#8b5cf6', '#ec4899', '#10b981'];
-  const particleCount = 50;
 
-  for (let i = 0; i < particleCount; i++) {
+  for (let i = 0; i < CELEBRATION_CONFIG.particleCount; i++) {
     const particle = document.createElement('div');
     particle.className = 'acquire-particle';
     particle.style.left = `${Math.random() * 100}%`;
@@ -117,7 +116,7 @@ function createCelebrationParticles(container) {
   }
 
   // スパークル追加
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < CELEBRATION_CONFIG.sparkleCount; i++) {
     const sparkle = document.createElement('div');
     sparkle.className = 'acquire-sparkle';
     sparkle.style.left = `${20 + Math.random() * 60}%`;
