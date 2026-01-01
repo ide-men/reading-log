@@ -1041,6 +1041,26 @@ html, body {
   display: block;
 }
 
+.past-book-link {
+  text-align: center;
+  margin-top: var(--space-lg);
+}
+
+.past-book-link button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: var(--space-sm);
+}
+
+.past-book-link button:hover {
+  color: var(--text-secondary);
+}
+
 .settings-hint {
   font-size: 11px;
   color: var(--text-dim);

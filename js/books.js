@@ -115,7 +115,7 @@ export function renderBooks() {
 // ========================================
 // 本の追加
 // ========================================
-export function addBook() {
+export function addBook(isPastBook = false) {
   const title = document.getElementById('bookInput').value.trim();
   if (!title) {
     showToast('タイトルを入力してください');
@@ -132,14 +132,20 @@ export function addBook() {
     showToast('短縮URL(amzn.asia等)では表紙画像を取得できません。amazon.co.jpのフルURLをお使いください', 4000);
   }
 
-  stateManager.addBook({
+  const bookData = {
     id: Date.now(),
     title,
     link: link || null,
     coverUrl
-  });
+  };
 
-  showToast('本を登録しました');
+  if (isPastBook) {
+    bookData.isPastBook = true;
+  }
+
+  stateManager.addBook(bookData);
+
+  showToast(isPastBook ? '過去の本を登録しました' : '本を登録しました');
 
   saveState();
   renderBooks();
