@@ -38,7 +38,8 @@ export {
   renderStudyBooks,
   renderStoreBooks,
   updateCarouselScrollState,
-  selectBook
+  selectBook,
+  openBookDetail
 } from './book-rendering.js';
 
 // ----------------------------------------
