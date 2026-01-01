@@ -19,9 +19,6 @@ import { showToast, closeModal } from './ui.js';
 let deletingBookId = null;
 let editingBookId = null;
 
-// 続けて追加時の通知タイマー
-let feedbackTimer = null;
-
 export function getEditingBookId() {
   return editingBookId;
 }
@@ -157,40 +154,16 @@ export function addBook(isPastBook = false) {
   document.getElementById('linkFields').classList.remove('show');
   document.getElementById('linkIcon').textContent = '+';
 
+  // 通知を表示
+  showToast(isPastBook ? '過去の本を追加しました' : '本を追加しました');
+
   // 続けて追加がONならモーダルを開いたまま、OFFなら閉じる
   const continueAdd = document.getElementById('continueAddCheckbox').checked;
   if (continueAdd) {
-    // 追加しました通知を表示（数秒後に消える）
-    showAddBookFeedback();
     document.getElementById('bookInput').focus();
   } else {
-    showToast(isPastBook ? '過去の本を追加しました' : '本を追加しました');
     closeModal('addBookModal');
   }
-}
-
-// 続けて追加時のフィードバック表示（数秒後に自動で消える）
-function showAddBookFeedback() {
-  const feedback = document.getElementById('addBookFeedback');
-
-  // 既存のタイマーをクリア
-  if (feedbackTimer) {
-    clearTimeout(feedbackTimer);
-  }
-
-  // アニメーションをリセットして再表示
-  feedback.classList.remove('show', 'fade-out');
-  void feedback.offsetWidth; // reflow
-  feedback.classList.add('show');
-
-  // 2秒後にフェードアウト
-  feedbackTimer = setTimeout(() => {
-    feedback.classList.add('fade-out');
-    // フェードアウト完了後に非表示
-    setTimeout(() => {
-      feedback.classList.remove('show', 'fade-out');
-    }, 300);
-  }, 2000);
 }
 
 // ========================================
