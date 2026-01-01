@@ -28,20 +28,12 @@ export function startReading(bookId = null) {
   // 読書中の本の情報を表示
   const bookInfo = document.getElementById('readingBookInfo');
   const bookCover = document.getElementById('readingBookCover');
-  const bookTitle = document.getElementById('readingBookTitle');
 
   if (bookId) {
     const book = stateManager.getBook(bookId);
-    if (book) {
+    if (book && book.coverUrl) {
       bookInfo.style.display = 'flex';
-      bookTitle.textContent = book.title;
-      if (book.coverUrl) {
-        bookCover.style.backgroundImage = `url(${book.coverUrl})`;
-        bookCover.classList.add('has-cover');
-      } else {
-        bookCover.style.backgroundImage = '';
-        bookCover.classList.remove('has-cover');
-      }
+      bookCover.style.backgroundImage = `url(${book.coverUrl})`;
     } else {
       bookInfo.style.display = 'none';
     }
