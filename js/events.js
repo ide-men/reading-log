@@ -2,6 +2,7 @@
 // イベントリスナー
 // ========================================
 import { stateManager, createInitialState } from './state.js';
+import { BOOK_STATUS } from './constants.js';
 import {
   exportData,
   importData,
@@ -10,7 +11,23 @@ import {
   updateStorageDisplay
 } from './storage.js';
 import { isTimerRunning, getSeconds, startReading, stopReading } from './timer.js';
-import { addBook, editBook, saveEditBook, deleteBook, confirmDeleteBook, renderBooks } from './books.js';
+import {
+  addBook,
+  editBook,
+  saveEditBook,
+  deleteBook,
+  confirmDeleteBook,
+  renderBooks,
+  renderReadingBooks,
+  renderStudyBooks,
+  renderStoreBooks,
+  acquireBook,
+  startReadingBook,
+  completeBook,
+  dropBook,
+  setCurrentStudyStatus,
+  getCurrentStudyStatus
+} from './books.js';
 import { renderStats } from './stats.js';
 import {
   switchTab,
@@ -18,16 +35,19 @@ import {
   closeModal,
   openModal,
   showToast,
-  setFab,
-  getFab,
   setTabCallbacks
 } from './ui.js';
 import { openLink } from './utils.js';
 
+// 現在追加しようとしている本のステータス
+let addingBookStatus = BOOK_STATUS.READING;
+
 export function initializeEventListeners() {
   // タブコールバックを登録
   setTabCallbacks({
-    books: renderBooks,
+    home: renderReadingBooks,
+    study: renderStudyBooks,
+    store: renderStoreBooks,
     stats: renderStats
   });
 
@@ -78,16 +98,27 @@ export function initializeEventListeners() {
     }
   });
 
-  // FAB（本追加ボタン）
-  const fab = document.createElement('button');
-  fab.className = 'header-btn primary';
-  fab.style.cssText = 'position:fixed;bottom:90px;right:20px;width:56px;height:56px;border-radius:50%;font-size:28px;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
-  fab.textContent = '+';
-  fab.addEventListener('click', () => {
+  // 本追加ボタン（各ページ）
+  document.getElementById('addReadingBookBtn').addEventListener('click', () => {
+    addingBookStatus = BOOK_STATUS.READING;
+    document.getElementById('addBookModalTitle').textContent = 'カバンに本を追加';
+    document.getElementById('addBookStatus').value = BOOK_STATUS.READING;
     openModal('addBookModal');
   });
-  document.body.appendChild(fab);
-  setFab(fab);
+
+  document.getElementById('addStudyBookBtn').addEventListener('click', () => {
+    addingBookStatus = BOOK_STATUS.UNREAD;
+    document.getElementById('addBookModalTitle').textContent = '書斎に本を追加';
+    document.getElementById('addBookStatus').value = BOOK_STATUS.UNREAD;
+    openModal('addBookModal');
+  });
+
+  document.getElementById('addStoreBookBtn').addEventListener('click', () => {
+    addingBookStatus = BOOK_STATUS.WISHLIST;
+    document.getElementById('addBookModalTitle').textContent = '本屋に本を追加';
+    document.getElementById('addBookStatus').value = BOOK_STATUS.WISHLIST;
+    openModal('addBookModal');
+  });
 
   // リンク入力トグル
   document.getElementById('linkToggle').addEventListener('click', () => {
@@ -96,10 +127,13 @@ export function initializeEventListeners() {
     document.getElementById('linkIcon').textContent = isOpen ? '−' : '+';
   });
 
-  // 本の追加・編集
-  document.getElementById('addBookBtn').addEventListener('click', () => addBook(false));
-  document.getElementById('addPastBookBtn').addEventListener('click', () => addBook(true));
+  // 本の追加
+  document.getElementById('addBookBtn').addEventListener('click', () => {
+    const status = document.getElementById('addBookStatus').value;
+    addBook(status);
+  });
 
+  // 本の編集
   document.getElementById('saveEditBtn').addEventListener('click', saveEditBook);
 
   // リセット
@@ -157,8 +191,67 @@ export function initializeEventListeners() {
     });
   });
 
-  // 本棚ツールチップ位置調整
-  document.getElementById('shelf').addEventListener('mouseover', (e) => {
+  // 書斎のステータスタブ切り替え
+  document.getElementById('studyStatusTabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.status-tab');
+    if (!tab) return;
+
+    const status = tab.dataset.status;
+    if (!status) return;
+
+    // アクティブ状態を更新
+    document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    // ステータスを更新してレンダリング
+    setCurrentStudyStatus(status);
+    renderStudyBooks();
+  });
+
+  // カバンのアクションボタン（読み終わった、中断）
+  document.getElementById('readingBooks').addEventListener('click', (e) => {
+    const completeBtn = e.target.closest('[data-complete]');
+    if (completeBtn) {
+      completeBook(Number(completeBtn.dataset.complete));
+      return;
+    }
+
+    const dropBtn = e.target.closest('[data-drop]');
+    if (dropBtn) {
+      dropBook(Number(dropBtn.dataset.drop));
+      return;
+    }
+  });
+
+  // 書斎の本リストのアクション
+  document.getElementById('studyBookList').addEventListener('click', (e) => {
+    const startBtn = e.target.closest('[data-start]');
+    if (startBtn) {
+      startReadingBook(Number(startBtn.dataset.start));
+      return;
+    }
+
+    const linkBtn = e.target.closest('[data-link]');
+    if (linkBtn) {
+      e.preventDefault();
+      openLink(linkBtn.dataset.link);
+      return;
+    }
+
+    const editBtn = e.target.closest('[data-edit]');
+    if (editBtn) {
+      editBook(Number(editBtn.dataset.edit));
+      return;
+    }
+
+    const deleteBtn = e.target.closest('[data-delete]');
+    if (deleteBtn) {
+      deleteBook(Number(deleteBtn.dataset.delete));
+    }
+  });
+
+  // 書斎の本棚ツールチップ
+  document.getElementById('studyShelf').addEventListener('mouseover', (e) => {
     const miniBook = e.target.closest('.mini-book');
     if (!miniBook) return;
 
@@ -179,17 +272,14 @@ export function initializeEventListeners() {
     }
   });
 
-  // 本棚リンククリック
-  document.getElementById('shelf').addEventListener('click', (e) => {
-    const linkBtn = e.target.closest('[data-link]');
-    if (linkBtn) {
-      e.preventDefault();
-      openLink(linkBtn.dataset.link);
+  // 本屋のアクション
+  document.getElementById('storeBookList').addEventListener('click', (e) => {
+    const acquireBtn = e.target.closest('[data-acquire]');
+    if (acquireBtn) {
+      acquireBook(Number(acquireBtn.dataset.acquire));
+      return;
     }
-  });
 
-  // 本リストのボタン操作
-  document.getElementById('bookList').addEventListener('click', (e) => {
     const linkBtn = e.target.closest('[data-link]');
     if (linkBtn) {
       e.preventDefault();

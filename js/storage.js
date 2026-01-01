@@ -253,16 +253,25 @@ export function loadSampleData({ showToast, onSuccess }) {
   const now = Date.now();
   const dayMs = CONFIG.msPerDay;
 
+  // 相対日数をISO日付文字列に変換
+  const daysToDate = (daysAgo) => {
+    if (daysAgo === undefined || daysAgo === null) return null;
+    const date = new Date(now + daysAgo * dayMs);
+    return date.toISOString().split('T')[0];
+  };
+
   const books = SAMPLE_BOOKS.map((book, i) => {
-    const daysAgo = Math.floor((SAMPLE_BOOKS.length - 1 - i) * 4);
-    const id = now - (daysAgo * dayMs) - (i * 1000);
+    const id = now - (i * 1000);
     const asin = extractAsinFromUrl(book.link);
     return {
       id,
       title: book.title,
       link: book.link,
       coverUrl: getAmazonImageUrl(asin),
-      xp: true
+      status: book.status || 'completed',
+      startedAt: daysToDate(book.startedAt),
+      completedAt: daysToDate(book.completedAt),
+      note: book.note || null
     };
   });
 
@@ -281,8 +290,6 @@ export function loadSampleData({ showToast, onSuccess }) {
   history.sort((a, b) => new Date(a.d) - new Date(b.d));
 
   const totalMinutes = history.reduce((sum, h) => sum + h.m, 0);
-  const xp = books.length * CONFIG.xpPerBook + history.length;
-  const lv = Math.floor(xp / CONFIG.xpPerLevel) + 1;
 
   stateManager.initialize({
     meta: {
@@ -295,8 +302,6 @@ export function loadSampleData({ showToast, onSuccess }) {
       today: history.filter(h => h.d.startsWith(new Date().toISOString().split('T')[0])).reduce((sum, h) => sum + h.m, 0),
       date: new Date().toDateString(),
       sessions: history.length,
-      xp,
-      lv,
       firstSessionDate: history[0]?.d || null
     },
     books,

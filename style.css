@@ -304,63 +304,294 @@ html, body {
 }
 
 /* ==========================================================================
-   9. Bookshelf
+   9. Page Headers (Bag, Study, Store)
    ========================================================================== */
 
-.bookshelf {
-  background: linear-gradient(to bottom, #1a1410, var(--surface) 70%);
-  margin: 0 calc(var(--space-xl) * -1) var(--space-xl);
-  padding: var(--space-2xl) var(--space-xl) var(--space-xl);
+/* Bag Header (カバン) */
+.bag-header {
   text-align: center;
+  padding: var(--space-xl) 0;
 }
 
-.bookshelf-header {
-  margin-bottom: var(--space-lg);
-}
-
-.bookshelf-emoji {
-  font-size: 40px;
+.bag-emoji {
+  font-size: 48px;
   margin-bottom: var(--space-sm);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-.bookshelf-title-main {
-  font-size: 20px;
+.bag-title {
+  font-size: 22px;
   font-weight: 700;
+  color: var(--text);
+}
+
+.bag-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+/* Study Header (書斎) */
+.study-header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+}
+
+.study-emoji {
+  font-size: 48px;
+  margin-bottom: var(--space-sm);
+}
+
+.study-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.study-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+/* Store Header (本屋) */
+.store-header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+}
+
+.store-emoji {
+  font-size: 48px;
+  margin-bottom: var(--space-sm);
+}
+
+.store-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.store-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+.store-stats {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: var(--space-xl);
+}
+
+.store-count {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+.store-label {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   9.1 Status Tabs (書斎のステータス切り替え)
+   ========================================================================== */
+
+.status-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-xs);
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+}
+
+.status-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-md) var(--space-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-tab:hover {
+  background: var(--elevated);
+}
+
+.status-tab.active {
+  background: var(--elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.status-tab .status-icon {
+  font-size: 20px;
+}
+
+.status-tab .status-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.status-tab.active .status-label {
+  color: var(--text);
+}
+
+.status-tab .status-count {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.status-tab.active .status-count {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   9.2 Reading Books (カバンの読書中本リスト)
+   ========================================================================== */
+
+.reading-books {
+  margin-bottom: var(--space-xl);
+}
+
+.reading-book-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+  display: flex;
+  gap: var(--space-lg);
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reading-book-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.reading-book-cover {
+  width: 50px;
+  height: 70px;
+  background: var(--elevated);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.reading-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reading-book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.reading-book-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reading-book-meta {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.reading-book-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.reading-book-action {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.reading-book-action.complete {
+  background: #10b981;
+  color: white;
+}
+
+.reading-book-action.complete:hover {
+  background: #059669;
+}
+
+.reading-book-action.drop {
+  background: var(--elevated);
+  color: var(--text-dim);
+}
+
+.reading-book-action.drop:hover {
+  background: var(--border);
+}
+
+.empty-reading {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+}
+
+.empty-reading-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-reading-text {
+  font-size: 15px;
   color: var(--text);
   margin-bottom: var(--space-xs);
 }
 
-.bookshelf-subtitle {
+.empty-reading-hint {
   font-size: 13px;
-  color: var(--text-dim);
-  opacity: 0.8;
 }
 
-.bookshelf-stats {
-  margin-bottom: var(--space-lg);
+/* Home Actions */
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: 0 var(--space-xl);
+  margin-bottom: var(--space-xl);
 }
 
-.bookshelf-stat-main {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  background: rgba(232, 168, 124, 0.1);
-  border: 1px solid rgba(232, 168, 124, 0.2);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-sm) var(--space-xl);
+.add-book-btn {
+  margin-top: 0 !important;
 }
 
-.bookshelf-count {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.bookshelf-label {
-  font-size: 14px;
-  color: var(--text-dim);
-}
+/* ==========================================================================
+   9.3 Bookshelf (書斎の本棚表示)
+   ========================================================================== */
 
 /* Shelf Container */
 .shelf-container {
@@ -699,6 +930,96 @@ html, body {
   cursor: pointer;
 }
 
+/* Book Action Buttons (ステータス遷移) */
+.book-status-action {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.book-status-action.acquire {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.book-status-action.acquire:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.book-status-action.start {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: var(--bg);
+}
+
+.book-status-action.start:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(232, 168, 124, 0.3);
+}
+
+/* Store Book List (本屋) */
+.store-book-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.store-book-item:last-child {
+  border-bottom: none;
+}
+
+.empty-store {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+}
+
+.empty-store-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-store-text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.empty-store-hint {
+  font-size: 13px;
+}
+
+/* Empty Shelf for Study */
+.empty-study {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+}
+
+.empty-study-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-study-text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.empty-study-hint {
+  font-size: 13px;
+}
+
 /* ==========================================================================
    11. Stats & Charts
    ========================================================================== */
@@ -990,6 +1311,28 @@ html, body {
 .form-input:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.form-group-half {
+  flex: 1;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+select.form-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b7a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
 }
 
 .link-toggle {
