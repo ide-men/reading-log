@@ -106,6 +106,13 @@
   display: none;
 }
 
+/* 空状態の場合はカルーセルのパディングを解除して全幅表示 */
+.book-carousel:has(.empty-state) {
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+  justify-content: center;
+}
+
 .carousel-book {
   flex-shrink: 0;
   width: 110px;
