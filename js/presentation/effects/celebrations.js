@@ -1,14 +1,13 @@
 // ========================================
 // セレブレーション表示
 // ========================================
-import { CELEBRATION_CONFIG } from './constants.js';
-import { escapeHtml } from './utils.js';
-import { showToast } from './ui.js';
+import { CELEBRATION_CONFIG } from '../../shared/constants.js';
+import { escapeHtml } from '../../shared/utils.js';
 
 // ========================================
 // 本を手に入れた時のセレブレーション
 // ========================================
-export function showAcquireCelebration(book, destination = '書斎') {
+export function showAcquireCelebration(book, destination = '書斎', onComplete = null) {
   const celebration = document.getElementById('acquireCelebration');
   const bookVisual = document.getElementById('acquireBookVisual');
   const bookName = document.getElementById('acquireBookName');
@@ -40,18 +39,16 @@ export function showAcquireCelebration(book, destination = '書斎') {
   celebration.classList.add('active');
 
   // 自動で閉じる
-  const toastMessage = destination === 'カバン'
-    ? 'カバンに追加しました！'
-    : '書斎の積読に追加しました！';
   setTimeout(() => {
     celebration.classList.remove('active');
-    showToast(toastMessage);
+    if (onComplete) onComplete();
   }, CELEBRATION_CONFIG.displayDuration);
 
   // クリックで早めに閉じる
   const closeHandler = () => {
     celebration.classList.remove('active');
     celebration.removeEventListener('click', closeHandler);
+    if (onComplete) onComplete();
   };
   celebration.addEventListener('click', closeHandler);
 }

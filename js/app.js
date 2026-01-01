@@ -1,13 +1,50 @@
 // ========================================
 // Reading Log - メインエントリポイント
 // ========================================
-import { stateManager } from './state.js';
-import { loadState, cleanupHistory, saveState } from './storage.js';
-import { initializeEventListeners } from './events.js';
-import { updateUI } from './ui.js';
-import { renderBooks } from './books.js';
 
+// Core
+import { stateManager } from './core/state-manager.js';
+import { loadState, cleanupHistory, saveState } from './core/storage.js';
+
+// Presentation - Controllers
+import {
+  initNavigationEvents,
+  initModalEvents,
+  initSettingsEvents,
+  updateUI,
+  renderBooks
+} from './presentation/controllers/navigation.js';
+import {
+  initTimerEvents,
+  initBeforeUnloadEvent
+} from './presentation/controllers/timer-controller.js';
+import {
+  initAddBookEvents,
+  initEditDeleteEvents,
+  initCarouselEvents,
+  initStudyEvents,
+  initStoreEvents
+} from './presentation/controllers/book-controller.js';
+
+// ========================================
+// 全イベントリスナー初期化
+// ========================================
+function initializeEventListeners() {
+  initNavigationEvents();
+  initTimerEvents();
+  initSettingsEvents();
+  initAddBookEvents();
+  initEditDeleteEvents();
+  initModalEvents();
+  initCarouselEvents();
+  initStudyEvents();
+  initStoreEvents();
+  initBeforeUnloadEvent();
+}
+
+// ========================================
 // アプリケーション初期化
+// ========================================
 function init() {
   // 状態を読み込み
   const state = loadState();
@@ -34,7 +71,9 @@ function init() {
   });
 }
 
+// ========================================
 // DOM読み込み完了後に初期化
+// ========================================
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {

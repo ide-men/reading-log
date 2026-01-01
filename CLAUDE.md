@@ -7,44 +7,97 @@
 - HTML (index.html) + CSS (style.css) + JS (ES Modules)
 - Vanilla JavaScript / 外部依存なし
 
+## アーキテクチャ
+
+レイヤードアーキテクチャを採用:
+
+```
+┌─────────────────────────────────────────┐
+│  presentation/   # プレゼンテーション層  │
+│  - views/        # HTMLレンダリング       │
+│  - controllers/  # イベントハンドラ       │
+│  - effects/      # アニメーション         │
+└──────────────┬──────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  domain/         # ドメイン層            │
+│  - book/         # 本のビジネスロジック   │
+│  - timer/        # タイマーロジック       │
+│  - stats/        # 統計計算              │
+└──────────────┬───────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  core/           # 基盤層                │
+│  - state-manager # 状態管理              │
+│  - storage       # 永続化                │
+└──────────────────────────────────────────┘
+               ↓
+┌──────────────────────────────────────────┐
+│  shared/         # 共有                  │
+│  - constants     # 定数                  │
+│  - utils         # ユーティリティ         │
+│  - event-bus     # イベント通知          │
+└──────────────────────────────────────────┘
+```
+
 ## ファイル構成
 
 ```
 js/
-├── app.js           # エントリポイント・初期化
-├── constants.js     # 定数・設定値（QUOTES, COLORS等）
-├── sample-data.js   # サンプル書籍データ
-├── state.js         # State Manager（永続化データ + UI状態）
-├── storage.js       # 永続化・マイグレーション・バックアップ
-├── utils.js         # ユーティリティ関数
-├── timer.js         # 読書タイマー管理
+├── app.js                    # エントリポイント
+├── sample-data.js            # サンプル書籍データ
 │
-├── books.js         # 本モジュールのファサード（再エクスポート）
-├── book-helpers.js  # 本関連の共通ヘルパー関数
-├── book-rendering.js # ビューのファサード（再エクスポート）
-├── book-crud.js     # 本の追加・編集・削除
-├── book-status.js   # 本のステータス遷移
+├── shared/                   # 共有（依存なし）
+│   ├── constants.js          # 定数・設定値
+│   ├── utils.js              # ユーティリティ関数
+│   └── event-bus.js          # アプリ内イベント通知
 │
-├── views/
-│   ├── carousel-view.js # カバン（カルーセル）のレンダリング
-│   ├── study-view.js    # 書斎のレンダリング
-│   ├── store-view.js    # 本屋のレンダリング
-│   └── shared.js        # 共通レンダリング関数
+├── core/                     # 基盤層
+│   ├── state-manager.js      # 状態管理
+│   └── storage.js            # 永続化・マイグレーション
 │
-├── stats.js         # 統計計算・グラフ表示
-├── animations.js    # ボタン・読書画面アニメーション
-├── celebrations.js  # セレブレーション表示・パーティクル
-├── ui.js            # UI操作・モーダル・エフェクト
-├── events.js        # イベントリスナー設定
-└── event-handlers.js # イベントハンドラマップ
+├── domain/                   # ドメイン層（純粋なビジネスロジック）
+│   ├── book/
+│   │   ├── book-entity.js    # Book型定義・バリデーション
+│   │   ├── book-service.js   # CRUD・ステータス遷移
+│   │   └── book-repository.js # stateManagerアクセス抽象化
+│   ├── timer/
+│   │   └── timer-service.js  # タイマーロジック
+│   └── stats/
+│       └── stats-service.js  # 統計計算
+│
+└── presentation/             # プレゼンテーション層
+    ├── views/
+    │   ├── carousel-view.js  # カバン（カルーセル）
+    │   ├── study-view.js     # 書斎
+    │   ├── store-view.js     # 本屋
+    │   ├── stats-view.js     # 統計
+    │   └── shared.js         # 共通レンダリング関数
+    ├── controllers/
+    │   ├── navigation.js     # ナビ・モーダル・設定
+    │   ├── timer-controller.js # タイマー制御
+    │   └── book-controller.js  # 本のCRUD制御
+    └── effects/
+        ├── animations.js     # ボタン・読書アニメーション
+        └── celebrations.js   # セレブレーション・パーティクル
 ```
+
+## 層間の依存ルール
+
+| 層 | 依存可能 |
+|----|----------|
+| shared | なし |
+| core | shared |
+| domain | core, shared |
+| presentation | domain, core, shared |
+| app.js | 全層 |
 
 ## 状態管理
 
-State Managerパターンを採用（`js/state.js`）:
+State Managerパターンを採用（`js/core/state-manager.js`）:
 
 ```javascript
-import { stateManager } from './state.js';
+import { stateManager } from './core/state-manager.js';
 
 // 状態の取得
 const state = stateManager.getState();
@@ -56,6 +109,22 @@ stateManager.addBook({ id: Date.now(), title: '...' });
 // 変更の購読
 stateManager.subscribe((newState) => {
   // 状態変更時のコールバック
+});
+```
+
+## イベントバス
+
+循環依存を避けるため、層間通信にEventBusを使用:
+
+```javascript
+import { eventBus, Events } from './shared/event-bus.js';
+
+// イベント発行
+eventBus.emit(Events.BOOK_ADDED, { book });
+
+// イベント購読
+eventBus.on(Events.BOOK_ADDED, (data) => {
+  // 処理
 });
 ```
 
@@ -82,7 +151,7 @@ stateManager.subscribe((newState) => {
 ### マイグレーションの仕組み
 
 ```javascript
-// js/storage.js 内のマイグレーションインフラ
+// js/core/storage.js 内のマイグレーションインフラ
 const migrations = {};
 
 // 将来 V2 に移行する際の例:

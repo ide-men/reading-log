@@ -1,22 +1,21 @@
 // ========================================
 // 書斎ビュー
 // ========================================
-import { BOOK_STATUS } from '../constants.js';
-import { stateManager } from '../state.js';
-import { getBooksByStatus } from '../book-helpers.js';
+import { BOOK_STATUS } from '../../shared/constants.js';
+import * as bookRepository from '../../domain/book/book-repository.js';
 import { renderShelfContent } from './shared.js';
 
 // ========================================
 // 書斎のレンダリング
 // ========================================
 export function renderStudyBooks() {
-  const currentStudyStatus = stateManager.getCurrentStudyStatus();
-  const studySelectedBookId = stateManager.getStudySelectedBookId();
+  const currentStudyStatus = bookRepository.getCurrentStudyStatus();
+  const studySelectedBookId = bookRepository.getStudySelectedBookId();
 
   // カウント更新
-  const completedBooks = getBooksByStatus(BOOK_STATUS.COMPLETED);
-  const unreadBooks = getBooksByStatus(BOOK_STATUS.UNREAD);
-  const droppedBooks = getBooksByStatus(BOOK_STATUS.DROPPED);
+  const completedBooks = bookRepository.getBooksByStatus(BOOK_STATUS.COMPLETED);
+  const unreadBooks = bookRepository.getBooksByStatus(BOOK_STATUS.UNREAD);
+  const droppedBooks = bookRepository.getBooksByStatus(BOOK_STATUS.DROPPED);
 
   document.getElementById('completedCount').textContent = completedBooks.length;
   document.getElementById('unreadCount').textContent = unreadBooks.length;

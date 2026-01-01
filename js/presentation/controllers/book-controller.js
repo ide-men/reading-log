@@ -1,0 +1,517 @@
+// ========================================
+// Book Controller
+// 本のCRUD・ステータス変更の制御
+// ========================================
+import { BOOK_STATUS, UI_CONFIG, CELEBRATION_CONFIG } from '../../shared/constants.js';
+import { openLink } from '../../shared/utils.js';
+import * as bookService from '../../domain/book/book-service.js';
+import * as bookRepository from '../../domain/book/book-repository.js';
+import { showAcquireCelebration } from '../effects/celebrations.js';
+import { renderReadingBooks, selectBook, updateCarouselScrollState } from '../views/carousel-view.js';
+import { renderStudyBooks } from '../views/study-view.js';
+import { renderStoreBooks } from '../views/store-view.js';
+import { openBookDetail } from '../views/shared.js';
+import { showToast, closeModal, openModal, renderBooks, updateUI } from './navigation.js';
+
+// ========================================
+// 本の追加
+// ========================================
+export function addBook(status = BOOK_STATUS.READING) {
+  const title = document.getElementById('bookInput').value.trim();
+  const link = document.getElementById('linkInput').value.trim();
+  const note = document.getElementById('bookCommentInput').value.trim();
+
+  const result = bookService.addBook({ title, link, note, status });
+
+  if (!result.success) {
+    showToast(result.message);
+    return;
+  }
+
+  if (result.shortUrlWarning) {
+    showToast('短縮URL(amzn.asia等)では表紙画像を取得できません', 4000);
+  }
+
+  // フォームをクリア
+  document.getElementById('bookInput').value = '';
+  document.getElementById('bookCommentInput').value = '';
+  document.getElementById('linkInput').value = '';
+  document.getElementById('linkFields').classList.remove('open');
+  document.getElementById('linkIcon').textContent = '+';
+
+  renderBooks();
+  showToast(result.message);
+
+  // 続けて追加がOFFならモーダルを閉じる
+  const continueAdd = document.getElementById('continueAddCheckbox').checked;
+  if (!continueAdd) {
+    closeModal('addBookModal');
+  }
+}
+
+// ========================================
+// 本の編集
+// ========================================
+export function editBook(id) {
+  const book = bookRepository.getBookById(id);
+  if (!book) return;
+
+  bookRepository.setEditingBookId(id);
+  document.getElementById('editBookTitle').value = book.title;
+  document.getElementById('editBookLink').value = book.link || '';
+  document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
+  document.getElementById('editBookNote').value = book.note || '';
+  openModal('editBookModal');
+}
+
+export function saveEditBook() {
+  const editingBookId = bookRepository.getEditingBookId();
+  const title = document.getElementById('editBookTitle').value.trim();
+  const link = document.getElementById('editBookLink').value.trim() || null;
+  const status = document.getElementById('editBookStatus').value;
+  const note = document.getElementById('editBookNote').value.trim() || null;
+
+  const result = bookService.editBook(editingBookId, { title, link, status, note });
+
+  if (!result.success) {
+    showToast(result.message);
+    return;
+  }
+
+  if (result.shortUrlWarning) {
+    showToast('短縮URLでは表紙画像を取得できません', 4000);
+  }
+
+  renderBooks();
+  showToast(result.message);
+  closeModal('editBookModal');
+}
+
+// ========================================
+// 本の削除
+// ========================================
+export function deleteBook(id) {
+  const book = bookRepository.getBookById(id);
+  if (!book) return;
+
+  bookRepository.setDeletingBookId(id);
+  document.getElementById('deleteBookTitle').textContent = `「${book.title}」`;
+  openModal('deleteConfirm');
+}
+
+export function confirmDeleteBook() {
+  const deletingBookId = bookRepository.getDeletingBookId();
+  const result = bookService.deleteBook(deletingBookId);
+
+  if (result.success) {
+    renderBooks();
+    updateUI();
+    showToast(result.message);
+  }
+  closeModal('deleteConfirm');
+}
+
+// ========================================
+// ステータス遷移
+// ========================================
+
+// wishlist → unread（書斎に入れる）
+export function acquireBook(id) {
+  const result = bookService.acquireBook(id);
+  if (!result.success) return;
+
+  showAcquireCelebration(result.book, result.destination, () => {
+    showToast('書斎の積読に追加しました！');
+  });
+
+  setTimeout(() => {
+    result.applyUpdate();
+    renderBooks();
+  }, CELEBRATION_CONFIG.statusUpdateDelay);
+}
+
+// wishlist → reading（カバンに入れる）
+export function moveToReading(id) {
+  const result = bookService.moveToReading(id);
+  if (!result.success) return;
+
+  showAcquireCelebration(result.book, result.destination, () => {
+    showToast('カバンに追加しました！');
+  });
+
+  setTimeout(() => {
+    result.applyUpdate();
+    renderBooks();
+  }, CELEBRATION_CONFIG.statusUpdateDelay);
+}
+
+// unread/dropped/completed → reading（読み始める・再読！）
+export function startReadingBook(id) {
+  const result = bookService.startReadingBook(id);
+  if (result.success) {
+    renderBooks();
+    showToast(result.message);
+  }
+}
+
+// reading → completed（読み終わった！）
+export function completeBook(id) {
+  const result = bookService.completeBook(id);
+  if (result.success) {
+    renderBooks();
+    showToast(result.message);
+  }
+}
+
+// reading → dropped（中断）
+export function dropBook(id) {
+  const result = bookService.dropBook(id);
+  if (result.success) {
+    renderBooks();
+    showToast(result.message);
+  }
+}
+
+// ========================================
+// イベント委譲ユーティリティ
+// ========================================
+function delegateEvents(container, eventType, handlers, fallback = null) {
+  container.addEventListener(eventType, (e) => {
+    for (const { selector, handler, stopPropagation, preventDefault } of handlers) {
+      const target = e.target.closest(selector);
+      if (target) {
+        if (stopPropagation) e.stopPropagation();
+        if (preventDefault) e.preventDefault();
+        handler(e, target);
+        return;
+      }
+    }
+    if (fallback) {
+      fallback(e);
+    }
+  });
+}
+
+// ========================================
+// 書斎のイベントハンドラ
+// ========================================
+const studyBookListHandlers = [
+  {
+    selector: '[data-close-detail]',
+    handler: () => {
+      bookRepository.clearStudySelection();
+      renderStudyBooks();
+    }
+  },
+  {
+    selector: '[data-start]',
+    stopPropagation: true,
+    handler: (e, target) => {
+      bookRepository.clearStudySelection();
+      startReadingBook(Number(target.dataset.start));
+    }
+  },
+  {
+    selector: '[data-link]',
+    preventDefault: true,
+    handler: (e, target) => {
+      openLink(target.dataset.link);
+    }
+  },
+  {
+    selector: '[data-edit]',
+    handler: (e, target) => {
+      bookRepository.clearStudySelection();
+      editBook(Number(target.dataset.edit));
+    }
+  },
+  {
+    selector: '[data-delete]',
+    handler: (e, target) => {
+      bookRepository.clearStudySelection();
+      deleteBook(Number(target.dataset.delete));
+    }
+  }
+];
+
+function studyBookListFallback(e) {
+  const card = e.target.closest('.study-book-card');
+  if (card && card.dataset.bookId) {
+    openBookDetail(Number(card.dataset.bookId));
+  }
+}
+
+// ========================================
+// 本屋のイベントハンドラ
+// ========================================
+const storeBookListHandlers = [
+  {
+    selector: '[data-close-detail]',
+    handler: () => {
+      bookRepository.clearStoreSelection();
+      renderStoreBooks();
+    }
+  },
+  {
+    selector: '[data-to-study]',
+    handler: (e, target) => {
+      bookRepository.clearStoreSelection();
+      acquireBook(Number(target.dataset.toStudy));
+    }
+  },
+  {
+    selector: '[data-to-bag]',
+    handler: (e, target) => {
+      bookRepository.clearStoreSelection();
+      moveToReading(Number(target.dataset.toBag));
+    }
+  },
+  {
+    selector: '[data-link]',
+    preventDefault: true,
+    handler: (e, target) => {
+      openLink(target.dataset.link);
+    }
+  },
+  {
+    selector: '[data-edit]',
+    handler: (e, target) => {
+      bookRepository.clearStoreSelection();
+      editBook(Number(target.dataset.edit));
+    }
+  },
+  {
+    selector: '[data-delete]',
+    handler: (e, target) => {
+      bookRepository.clearStoreSelection();
+      deleteBook(Number(target.dataset.delete));
+    }
+  }
+];
+
+function storeBookListFallback(e) {
+  const card = e.target.closest('.store-book-card');
+  if (card && card.dataset.bookId) {
+    openBookDetail(Number(card.dataset.bookId));
+  }
+}
+
+// ========================================
+// 共通シェルフイベント設定
+// ========================================
+function initShelfEvents(config) {
+  const { shelfId, bookListId, miniBookClass, handlers, fallback, getSelectedId, setSelectedId, clearSelection, renderFn } = config;
+
+  delegateEvents(
+    document.getElementById(bookListId),
+    'click',
+    handlers,
+    fallback
+  );
+
+  let lastClickTime = 0;
+  document.getElementById(shelfId).addEventListener('click', (e) => {
+    const now = Date.now();
+    if (now - lastClickTime < UI_CONFIG.debounceInterval) return;
+    lastClickTime = now;
+
+    const miniBook = e.target.closest(`.${miniBookClass}`);
+    if (!miniBook) return;
+
+    const bookId = Number(miniBook.dataset.bookId);
+    if (!bookId) return;
+
+    if (getSelectedId() === bookId) {
+      miniBook.classList.remove('selected');
+      clearSelection();
+      setTimeout(renderFn, 200);
+    } else {
+      setSelectedId(bookId);
+      renderFn();
+    }
+  });
+}
+
+// ========================================
+// 本の追加イベント初期化
+// ========================================
+export function initAddBookEvents() {
+  const fab = document.getElementById('addBookFab');
+  fab.addEventListener('click', () => {
+    const activeTab = document.querySelector('.nav button.active');
+    const tabName = activeTab?.dataset.tab || 'home';
+
+    const statusMap = {
+      home: BOOK_STATUS.READING,
+      study: BOOK_STATUS.UNREAD,
+      store: BOOK_STATUS.WISHLIST
+    };
+
+    const titleMap = {
+      home: 'カバンに本を追加',
+      study: '書斎に本を追加',
+      store: '本屋に本を追加'
+    };
+
+    const status = statusMap[tabName] || BOOK_STATUS.READING;
+    document.getElementById('addBookModalTitle').textContent = titleMap[tabName] || '本を追加';
+    document.getElementById('addBookStatus').value = status;
+
+    const statusSelector = document.getElementById('studyStatusSelector');
+    if (tabName === 'study') {
+      statusSelector.style.display = 'block';
+      document.querySelector('input[name="studyStatus"][value="unread"]').checked = true;
+    } else {
+      statusSelector.style.display = 'none';
+    }
+
+    openModal('addBookModal');
+  });
+
+  document.querySelectorAll('input[name="studyStatus"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      document.getElementById('addBookStatus').value = e.target.value;
+    });
+  });
+
+  document.getElementById('linkToggle').addEventListener('click', () => {
+    const fields = document.getElementById('linkFields');
+    const isOpen = fields.classList.toggle('open');
+    document.getElementById('linkIcon').textContent = isOpen ? '−' : '+';
+  });
+
+  document.getElementById('addBookBtn').addEventListener('click', () => {
+    const status = document.getElementById('addBookStatus').value;
+    addBook(status);
+  });
+}
+
+// ========================================
+// 本の編集・削除イベント初期化
+// ========================================
+export function initEditDeleteEvents() {
+  document.getElementById('saveEditBtn').addEventListener('click', saveEditBook);
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+    confirmDeleteBook();
+  });
+
+  document.getElementById('bookDetailLinkBtn').addEventListener('click', () => {
+    const link = document.getElementById('bookDetailLinkBtn').dataset.link;
+    if (link) {
+      openLink(link);
+    }
+  });
+
+  document.getElementById('bookDetailEditBtn').addEventListener('click', () => {
+    const bookId = bookRepository.getDetailBookId();
+    if (bookId) {
+      closeModal('bookDetailModal');
+      editBook(bookId);
+    }
+  });
+
+  document.getElementById('bookDetailDeleteBtn').addEventListener('click', () => {
+    const bookId = bookRepository.getDetailBookId();
+    if (bookId) {
+      closeModal('bookDetailModal');
+      deleteBook(bookId);
+    }
+  });
+}
+
+// ========================================
+// カルーセル（カバン）イベント初期化
+// ========================================
+export function initCarouselEvents() {
+  document.getElementById('bookCarousel').addEventListener('click', (e) => {
+    const book = e.target.closest('.carousel-book');
+    if (book && book.dataset.id) {
+      selectBook(Number(book.dataset.id));
+      updateCarouselScrollState();
+    }
+  });
+
+  document.getElementById('bookCarousel').addEventListener('scroll', () => {
+    updateCarouselScrollState();
+  });
+
+  document.getElementById('carouselDots').addEventListener('click', (e) => {
+    const dot = e.target.closest('.carousel-dot');
+    if (!dot) return;
+
+    const index = Number(dot.dataset.index);
+    const carousel = document.getElementById('bookCarousel');
+    const books = carousel.querySelectorAll('.carousel-book');
+
+    if (books[index]) {
+      const bookId = Number(books[index].dataset.id);
+      selectBook(bookId);
+      books[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      updateCarouselScrollState();
+    }
+  });
+
+  document.getElementById('completeSelectedBtn').addEventListener('click', () => {
+    const selectedId = bookRepository.getSelectedBookId();
+    if (selectedId) {
+      completeBook(selectedId);
+    }
+  });
+
+  document.getElementById('dropSelectedBtn').addEventListener('click', () => {
+    const selectedId = bookRepository.getSelectedBookId();
+    if (selectedId) {
+      dropBook(selectedId);
+    }
+  });
+}
+
+// ========================================
+// 書斎イベント初期化
+// ========================================
+export function initStudyEvents() {
+  document.getElementById('studyStatusTabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.status-tab');
+    if (!tab) return;
+
+    const status = tab.dataset.status;
+    if (!status) return;
+
+    document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    bookRepository.clearStudySelection();
+    bookRepository.setCurrentStudyStatus(status);
+    renderStudyBooks();
+  });
+
+  initShelfEvents({
+    shelfId: 'studyShelf',
+    bookListId: 'studyBookList',
+    miniBookClass: 'mini-book',
+    handlers: studyBookListHandlers,
+    fallback: studyBookListFallback,
+    getSelectedId: bookRepository.getStudySelectedBookId,
+    setSelectedId: bookRepository.setStudySelectedBookId,
+    clearSelection: bookRepository.clearStudySelection,
+    renderFn: renderStudyBooks
+  });
+}
+
+// ========================================
+// 本屋イベント初期化
+// ========================================
+export function initStoreEvents() {
+  initShelfEvents({
+    shelfId: 'storeShelf',
+    bookListId: 'storeBookList',
+    miniBookClass: 'store-mini-book',
+    handlers: storeBookListHandlers,
+    fallback: storeBookListFallback,
+    getSelectedId: bookRepository.getStoreSelectedBookId,
+    setSelectedId: bookRepository.setStoreSelectedBookId,
+    clearSelection: bookRepository.clearStoreSelection,
+    renderFn: renderStoreBooks
+  });
+}
