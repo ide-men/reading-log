@@ -3,7 +3,6 @@
 // タイマー操作の制御
 // ========================================
 import { escapeAttr } from '../../shared/utils.js';
-import { eventBus, Events } from '../../shared/event-bus.js';
 import * as timerService from '../../domain/timer/timer-service.js';
 import * as uiState from '../state/ui-state.js';
 import { applyReadingAnimation } from '../effects/animations.js';
@@ -28,9 +27,6 @@ export function handleStartReading() {
     readingIcon.textContent = '📖';
     readingIcon.classList.remove('has-cover');
   }
-
-  // タイマー表示をリセット
-  document.getElementById('readingTimer').textContent = '00:00';
 
   applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
@@ -63,11 +59,6 @@ export function initTimerEvents() {
 
   document.getElementById('stopBtn').addEventListener('click', () => {
     handleStopReading();
-  });
-
-  // タイマーティックで経過時間を更新
-  eventBus.on(Events.TIMER_TICK, ({ formatted }) => {
-    document.getElementById('readingTimer').textContent = formatted;
   });
 }
 
