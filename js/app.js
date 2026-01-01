@@ -5,6 +5,7 @@ import { stateManager } from './state.js';
 import { loadState, cleanupHistory, saveState } from './storage.js';
 import { initializeEventListeners } from './events.js';
 import { updateUI } from './ui.js';
+import { renderBooks } from './books.js';
 
 // アプリケーション初期化
 function init() {
@@ -20,6 +21,9 @@ function init() {
 
   // イベントリスナーを設定
   initializeEventListeners();
+
+  // 初期レンダリング
+  renderBooks();
 
   // UIを更新
   updateUI();

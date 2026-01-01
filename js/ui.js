@@ -6,19 +6,8 @@ import { randomItem } from './utils.js';
 import { updateButtonAnimation } from './animations.js';
 import { saveState } from './storage.js';
 
-// FAB要素
-let fab = null;
-
 // タブ切り替え時のコールバック
 let tabCallbacks = {};
-
-export function getFab() {
-  return fab;
-}
-
-export function setFab(element) {
-  fab = element;
-}
 
 export function setTabCallbacks(callbacks) {
   tabCallbacks = callbacks;
@@ -33,10 +22,6 @@ export function switchTab(name) {
 
   document.getElementById(`tab-${name}`).classList.add('active');
   document.querySelector(`.nav button[data-tab="${name}"]`).classList.add('active');
-
-  if (fab) {
-    fab.style.display = name === 'books' ? 'flex' : 'none';
-  }
 
   if (tabCallbacks[name]) {
     tabCallbacks[name]();

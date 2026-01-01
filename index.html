@@ -22,12 +22,25 @@
     </header>
 
 <div class="content">
-  <!-- ホームタブ -->
+  <!-- ホームタブ（カバン） -->
   <div class="tab active" id="tab-home">
-    <div class="home-center">
+    <div class="bag-header">
+      <div class="bag-emoji">🎒</div>
+      <div class="bag-title">カバン</div>
+      <div class="bag-subtitle">持ち歩いている本</div>
+    </div>
+
+    <div class="reading-books" id="readingBooks">
+      <!-- 読書中の本がここに表示される -->
+    </div>
+
+    <div class="home-actions">
       <button class="main-btn" id="startBtn">
         <span class="main-btn-icon">📖</span>
         <span>読書をはじめる</span>
+      </button>
+      <button class="btn btn-secondary add-book-btn" id="addReadingBookBtn">
+        <span>＋ 本を追加</span>
       </button>
     </div>
 
@@ -37,29 +50,63 @@
     </div>
   </div>
 
-  <!-- 本棚タブ -->
-  <div class="tab" id="tab-books">
-    <div class="bookshelf">
-      <div class="bookshelf-header">
-        <div class="bookshelf-emoji">📚</div>
-        <div class="bookshelf-title-main">あなたの本棚</div>
-        <div class="bookshelf-subtitle">読み終えた本がここに並びます</div>
-      </div>
-      <div class="bookshelf-stats">
-        <div class="bookshelf-stat-main">
-          <div class="bookshelf-count" id="bookCount">0</div>
-          <div class="bookshelf-label">冊読了</div>
-        </div>
-      </div>
-      <div class="shelf-container">
-        <div class="shelf-board">
-          <div class="shelf-visual" id="shelf"></div>
-        </div>
+  <!-- 書斎タブ -->
+  <div class="tab" id="tab-study">
+    <div class="study-header">
+      <div class="study-emoji">📚</div>
+      <div class="study-title">書斎</div>
+      <div class="study-subtitle">あなたの本棚</div>
+    </div>
+
+    <div class="status-tabs" id="studyStatusTabs">
+      <button class="status-tab active" data-status="completed">
+        <span class="status-icon">✅</span>
+        <span class="status-label">読了</span>
+        <span class="status-count" id="completedCount">0</span>
+      </button>
+      <button class="status-tab" data-status="unread">
+        <span class="status-icon">📚</span>
+        <span class="status-label">積読</span>
+        <span class="status-count" id="unreadCount">0</span>
+      </button>
+      <button class="status-tab" data-status="dropped">
+        <span class="status-icon">⏸️</span>
+        <span class="status-label">中断</span>
+        <span class="status-count" id="droppedCount">0</span>
+      </button>
+    </div>
+
+    <div class="shelf-container">
+      <div class="shelf-board">
+        <div class="shelf-visual" id="studyShelf"></div>
       </div>
     </div>
 
-    <h3 class="section-title" id="booksListTitle">📖 読了リスト</h3>
-    <div id="bookList"></div>
+    <div id="studyBookList"></div>
+
+    <button class="btn btn-secondary add-book-btn" id="addStudyBookBtn">
+      <span>＋ 本を追加</span>
+    </button>
+  </div>
+
+  <!-- 本屋タブ -->
+  <div class="tab" id="tab-store">
+    <div class="store-header">
+      <div class="store-emoji">🏪</div>
+      <div class="store-title">本屋</div>
+      <div class="store-subtitle">気になっている本</div>
+    </div>
+
+    <div class="store-stats">
+      <span class="store-count" id="wishlistCount">0</span>
+      <span class="store-label">冊気になる</span>
+    </div>
+
+    <div id="storeBookList"></div>
+
+    <button class="btn btn-secondary add-book-btn" id="addStoreBookBtn">
+      <span>＋ 本を追加</span>
+    </button>
   </div>
 
   <!-- 記録タブ -->
@@ -120,8 +167,9 @@
 </div>
 
 <nav class="nav">
-  <button class="active" data-tab="home"><span>🏠</span><span>ホーム</span></button>
-  <button data-tab="books"><span>📚</span><span>本棚</span></button>
+  <button class="active" data-tab="home"><span>🎒</span><span>カバン</span></button>
+  <button data-tab="study"><span>📚</span><span>書斎</span></button>
+  <button data-tab="store"><span>🏪</span><span>本屋</span></button>
   <button data-tab="stats"><span>📊</span><span>記録</span></button>
 </nav>
 
@@ -141,14 +189,10 @@
   <div class="modal-overlay" id="addBookModal">
     <div class="modal">
       <div class="modal-header">
-        <h2>読んだ本を追加</h2>
+        <h2 id="addBookModalTitle">本を追加</h2>
         <button class="modal-close" data-close="addBookModal">×</button>
       </div>
       <div class="modal-body">
-        <div class="celebration">
-          <div class="celebration-icon">🎊</div>
-          <p class="celebration-text">1冊読み終えた自分を褒めよう</p>
-        </div>
         <div class="form-group">
           <label class="form-label">タイトル</label>
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
@@ -162,12 +206,12 @@
             <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
           </div>
         </div>
+        <input type="hidden" id="addBookStatus" value="reading">
         <label class="continue-checkbox">
           <input type="checkbox" id="continueAddCheckbox">
           <span>続けて追加</span>
         </label>
-        <button class="btn btn-primary" id="addBookBtn">読み終えた！</button>
-        <button class="btn btn-text" id="addPastBookBtn">📖 過去に読んだ本を追加</button>
+        <button class="btn btn-primary" id="addBookBtn">追加</button>
       </div>
     </div>
   </div>
@@ -187,6 +231,30 @@
         <div class="form-group">
           <label class="form-label">リンク（任意）</label>
           <input type="url" class="form-input" id="editBookLink" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ステータス</label>
+          <select class="form-input" id="editBookStatus">
+            <option value="reading">📖 読書中</option>
+            <option value="completed">✅ 読了</option>
+            <option value="unread">📚 積読</option>
+            <option value="dropped">⏸️ 中断</option>
+            <option value="wishlist">💭 気になる</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label class="form-label">読み始めた日</label>
+            <input type="date" class="form-input" id="editBookStartedAt">
+          </div>
+          <div class="form-group form-group-half">
+            <label class="form-label">読み終わった日</label>
+            <input type="date" class="form-input" id="editBookCompletedAt">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">メモ（任意）</label>
+          <textarea class="form-input form-textarea" id="editBookNote" placeholder="感想やメモを残せます" rows="3"></textarea>
         </div>
         <button class="btn btn-primary" id="saveEditBtn">保存</button>
         <button class="btn btn-secondary" data-close="editBookModal">キャンセル</button>
