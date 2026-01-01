@@ -722,8 +722,6 @@ export function editBook(id) {
   document.getElementById('editBookTitle').value = book.title;
   document.getElementById('editBookLink').value = book.link || '';
   document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
-  document.getElementById('editBookStartedAt').value = book.startedAt || '';
-  document.getElementById('editBookCompletedAt').value = book.completedAt || '';
   document.getElementById('editBookNote').value = book.note || '';
   document.getElementById('editBookModal').classList.add('active');
 }
@@ -741,8 +739,6 @@ export function saveEditBook() {
     const updates = {
       title,
       status: document.getElementById('editBookStatus').value,
-      startedAt: document.getElementById('editBookStartedAt').value || null,
-      completedAt: document.getElementById('editBookCompletedAt').value || null,
       note: document.getElementById('editBookNote').value.trim() || null
     };
 
