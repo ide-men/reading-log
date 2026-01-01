@@ -113,25 +113,29 @@ export function initializeEventListeners() {
     }
   });
 
-  // 本追加ボタン（各ページ）
-  document.getElementById('addReadingBookBtn').addEventListener('click', () => {
-    addingBookStatus = BOOK_STATUS.READING;
-    document.getElementById('addBookModalTitle').textContent = 'カバンに本を追加';
-    document.getElementById('addBookStatus').value = BOOK_STATUS.READING;
-    openModal('addBookModal');
-  });
+  // 本追加FAB
+  const fab = document.getElementById('addBookFab');
+  fab.addEventListener('click', () => {
+    // 現在のタブに応じてステータスを設定
+    const activeTab = document.querySelector('.nav button.active');
+    const tabName = activeTab?.dataset.tab || 'home';
 
-  document.getElementById('addStudyBookBtn').addEventListener('click', () => {
-    addingBookStatus = BOOK_STATUS.UNREAD;
-    document.getElementById('addBookModalTitle').textContent = '書斎に本を追加';
-    document.getElementById('addBookStatus').value = BOOK_STATUS.UNREAD;
-    openModal('addBookModal');
-  });
+    const statusMap = {
+      home: BOOK_STATUS.READING,
+      study: BOOK_STATUS.UNREAD,
+      store: BOOK_STATUS.WISHLIST
+    };
 
-  document.getElementById('addStoreBookBtn').addEventListener('click', () => {
-    addingBookStatus = BOOK_STATUS.WISHLIST;
-    document.getElementById('addBookModalTitle').textContent = '本屋に本を追加';
-    document.getElementById('addBookStatus').value = BOOK_STATUS.WISHLIST;
+    const titleMap = {
+      home: 'カバンに本を追加',
+      study: '書斎に本を追加',
+      store: '本屋に本を追加'
+    };
+
+    const status = statusMap[tabName] || BOOK_STATUS.READING;
+    addingBookStatus = status;
+    document.getElementById('addBookModalTitle').textContent = titleMap[tabName] || '本を追加';
+    document.getElementById('addBookStatus').value = status;
     openModal('addBookModal');
   });
 
