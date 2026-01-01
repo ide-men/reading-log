@@ -557,9 +557,13 @@ export function renderStoreBooks() {
             <div class="store-book-date">${formatDate(new Date(book.id).toISOString().split('T')[0])} 追加</div>
           </div>
           <div class="store-book-actions">
-            <button class="store-acquire-btn" data-acquire="${book.id}">
-              <span>🛒</span>
-              <span>手に入れた！</span>
+            <button class="store-acquire-btn" data-to-study="${book.id}">
+              <span>📚</span>
+              <span>書斎に入れる</span>
+            </button>
+            <button class="store-acquire-btn secondary" data-to-bag="${book.id}">
+              <span>🎒</span>
+              <span>カバンに入れる</span>
             </button>
           </div>
         </div>
@@ -604,9 +608,13 @@ function renderStoreDetailView(book) {
           <div class="store-detail-date">${dateText}</div>
           ${noteHtml}
           <div class="store-detail-actions">
-            <button class="store-detail-action primary" data-acquire="${book.id}">
-              <span>🛒</span>
-              <span>手に入れた！</span>
+            <button class="store-detail-action primary" data-to-study="${book.id}">
+              <span>📚</span>
+              <span>書斎に入れる</span>
+            </button>
+            <button class="store-detail-action" data-to-bag="${book.id}">
+              <span>🎒</span>
+              <span>カバンに入れる</span>
             </button>
             ${linkBtn}
             <button class="store-detail-action" data-edit="${book.id}">
@@ -697,13 +705,13 @@ export function addBook(status = BOOK_STATUS.READING) {
 // ステータス遷移
 // ========================================
 
-// wishlist → unread（手に入れた！）
+// wishlist → unread（書斎に入れる）
 export function acquireBook(id) {
   const book = stateManager.getBook(id);
   if (!book) return;
 
   // セレブレーションを表示
-  showAcquireCelebration(book);
+  showAcquireCelebration(book, '書斎');
 
   // 少し待ってからステータス更新
   setTimeout(() => {
@@ -713,8 +721,29 @@ export function acquireBook(id) {
   }, 300);
 }
 
+// wishlist → reading（カバンに入れる）
+export function moveToReading(id) {
+  const book = stateManager.getBook(id);
+  if (!book) return;
+
+  // セレブレーションを表示
+  showAcquireCelebration(book, 'カバン');
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // 少し待ってからステータス更新
+  setTimeout(() => {
+    stateManager.updateBook(id, {
+      status: BOOK_STATUS.READING,
+      startedAt: today
+    });
+    saveState();
+    renderBooks();
+  }, 300);
+}
+
 // 本を手に入れた時のセレブレーション
-function showAcquireCelebration(book) {
+function showAcquireCelebration(book, destination = '書斎') {
   const celebration = document.getElementById('acquireCelebration');
   const bookVisual = document.getElementById('acquireBookVisual');
   const bookName = document.getElementById('acquireBookName');
@@ -730,6 +759,14 @@ function showAcquireCelebration(book) {
   }
   bookName.textContent = book.title;
 
+  // ヒントテキストを更新
+  const hintEl = celebration.querySelector('.acquire-hint');
+  if (hintEl) {
+    hintEl.textContent = destination === 'カバン'
+      ? 'カバンに追加されました'
+      : '書斎の積読に追加されました';
+  }
+
   // パーティクルを生成
   particles.innerHTML = '';
   createCelebrationParticles(particles);
@@ -738,9 +775,12 @@ function showAcquireCelebration(book) {
   celebration.classList.add('active');
 
   // 自動で閉じる
+  const toastMessage = destination === 'カバン'
+    ? 'カバンに追加しました！'
+    : '書斎の積読に追加しました！';
   setTimeout(() => {
     celebration.classList.remove('active');
-    showToast('書斎の積読に追加しました！');
+    showToast(toastMessage);
   }, 2000);
 
   // クリックで早めに閉じる

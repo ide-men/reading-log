@@ -22,6 +22,7 @@ import {
   renderStudyBooks,
   renderStoreBooks,
   acquireBook,
+  moveToReading,
   startReadingBook,
   completeBook,
   dropBook,
@@ -419,10 +420,19 @@ export function initializeEventListeners() {
       return;
     }
 
-    const acquireBtn = e.target.closest('[data-acquire]');
-    if (acquireBtn) {
+    // 書斎に入れる
+    const toStudyBtn = e.target.closest('[data-to-study]');
+    if (toStudyBtn) {
       clearStoreSelection();
-      acquireBook(Number(acquireBtn.dataset.acquire));
+      acquireBook(Number(toStudyBtn.dataset.toStudy));
+      return;
+    }
+
+    // カバンに入れる
+    const toBagBtn = e.target.closest('[data-to-bag]');
+    if (toBagBtn) {
+      clearStoreSelection();
+      moveToReading(Number(toBagBtn.dataset.toBag));
       return;
     }
 
