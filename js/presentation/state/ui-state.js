@@ -85,3 +85,36 @@ export function getDetailBookId() {
 export function setDetailBookId(id) {
   stateManager.setDetailBookId(id);
 }
+
+// ========================================
+// 中断確認
+// ========================================
+export function getDroppingBookId() {
+  return stateManager.getDroppingBookId();
+}
+
+export function setDroppingBookId(id) {
+  stateManager.setDroppingBookId(id);
+}
+
+// ========================================
+// 読了時の感想入力
+// ========================================
+export function getReadingNoteBookId() {
+  return stateManager.getReadingNoteBookId();
+}
+
+export function setReadingNoteBookId(id) {
+  stateManager.setReadingNoteBookId(id);
+}
+
+// ========================================
+// 読書終了時の付箋入力
+// ========================================
+export function getReadingBookmarkBookId() {
+  return stateManager.getReadingBookmarkBookId();
+}
+
+export function setReadingBookmarkBookId(id) {
+  stateManager.setReadingBookmarkBookId(id);
+}

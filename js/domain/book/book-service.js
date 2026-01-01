@@ -244,15 +244,21 @@ export function completeBook(id) {
 /**
  * reading → dropped（中断）
  * @param {number} id - 本のID
+ * @param {string|null} [bookmark] - 付箋メモ（どこまで読んだか等）
  * @returns {{ success: boolean, message: string }}
  */
-export function dropBook(id) {
+export function dropBook(id, bookmark = null) {
   const book = bookRepository.getBookById(id);
   if (!book) {
     return { success: false, message: '本が見つかりません' };
   }
 
-  bookRepository.updateBook(id, { status: BOOK_STATUS.DROPPED });
+  const updates = { status: BOOK_STATUS.DROPPED };
+  if (bookmark) {
+    updates.bookmark = bookmark;
+  }
+
+  bookRepository.updateBook(id, updates);
   eventBus.emit(Events.BOOK_STATUS_CHANGED, { id, from: book.status, to: BOOK_STATUS.DROPPED });
 
   return {

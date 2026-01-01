@@ -35,7 +35,10 @@ export function createInitialUI() {
     currentStudyStatus: BOOK_STATUS.UNREAD,  // 書斎の現在のタブ
     editingBookId: null,         // 編集中の本
     deletingBookId: null,        // 削除確認中の本
-    detailBookId: null           // 詳細ダイアログで開いている本
+    detailBookId: null,          // 詳細ダイアログで開いている本
+    droppingBookId: null,        // 中断確認中の本
+    readingNoteBookId: null,     // 読了時の感想入力中の本
+    readingBookmarkBookId: null  // 読書終了時の付箋入力中の本
   };
 }
 
@@ -104,6 +107,18 @@ class StateManager {
   // 詳細ダイアログ
   getDetailBookId() { return this._ui.detailBookId; }
   setDetailBookId(id) { this._ui.detailBookId = id; }
+
+  // 中断確認
+  getDroppingBookId() { return this._ui.droppingBookId; }
+  setDroppingBookId(id) { this._ui.droppingBookId = id; }
+
+  // 読了時の感想入力
+  getReadingNoteBookId() { return this._ui.readingNoteBookId; }
+  setReadingNoteBookId(id) { this._ui.readingNoteBookId = id; }
+
+  // 読書終了時の付箋入力
+  getReadingBookmarkBookId() { return this._ui.readingBookmarkBookId; }
+  setReadingBookmarkBookId(id) { this._ui.readingBookmarkBookId = id; }
 
   // ========================================
   // 永続化状態の getter/setter

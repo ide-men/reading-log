@@ -144,9 +144,15 @@ export function updateSelectedBookInfo() {
 
   const meta = book.startedAt ? getRelativeDate(book.startedAt) : '';
 
+  // 付箋がある場合は「前回: ○○」を表示
+  const bookmarkHtml = book.bookmark
+    ? `<div class="selected-book-bookmark">📑 前回: ${escapeHtml(book.bookmark)}</div>`
+    : '';
+
   infoContainer.innerHTML = `
     <div class="selected-book-title">${escapeHtml(book.title)}</div>
     <div class="selected-book-meta">${meta}</div>
+    ${bookmarkHtml}
   `;
 
   // ボタンを有効化

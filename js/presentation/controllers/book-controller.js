@@ -161,7 +161,8 @@ export function completeBook(id) {
   if (!result.success) return;
 
   showAcquireCelebration(result.book, result.destination, () => {
-    showToast('読了おめでとうございます！');
+    // セレブレーション終了後に感想モーダルを表示
+    openCompleteNoteModal(id, result.book);
   });
 
   setTimeout(() => {
@@ -170,13 +171,56 @@ export function completeBook(id) {
   }, CELEBRATION_CONFIG.statusUpdateDelay);
 }
 
-// reading → dropped（中断）
-export function dropBook(id) {
-  const result = bookService.dropBook(id);
+// 読了時の感想モーダルを開く
+export function openCompleteNoteModal(id, book) {
+  uiState.setReadingNoteBookId(id);
+  document.getElementById('completeNoteBookTitle').textContent = book.title;
+  document.getElementById('completeNoteInput').value = book.note || '';
+  openModal('completeNoteModal');
+}
+
+// 読了感想を保存
+export function saveCompleteNote() {
+  const bookId = uiState.getReadingNoteBookId();
+  if (!bookId) return;
+
+  const note = document.getElementById('completeNoteInput').value.trim() || null;
+  bookService.editBook(bookId, { note });
+
+  closeModal('completeNoteModal');
+  showToast('保存しました');
+  renderBooks();
+}
+
+export function skipCompleteNote() {
+  closeModal('completeNoteModal');
+  showToast('読了おめでとうございます！');
+}
+
+// reading → dropped（中断）- モーダルを開く
+export function openDropBookModal(id) {
+  const book = bookRepository.getBookById(id);
+  if (!book) return;
+
+  uiState.setDroppingBookId(id);
+  document.getElementById('dropBookTitle').textContent = book.title;
+  document.getElementById('bookmarkInput').value = '';
+  openModal('dropBookModal');
+}
+
+// 中断を確定
+export function confirmDropBook() {
+  const droppingBookId = uiState.getDroppingBookId();
+  if (!droppingBookId) return;
+
+  const bookmark = document.getElementById('bookmarkInput').value.trim() || null;
+  const result = bookService.dropBook(droppingBookId, bookmark);
+
   if (result.success) {
     renderBooks();
     showToast(result.message);
   }
+  closeModal('dropBookModal');
 }
 
 // ========================================
@@ -425,6 +469,15 @@ export function initEditDeleteEvents() {
       deleteBook(bookId);
     }
   });
+
+  // 読了感想モーダル
+  document.getElementById('saveCompleteNoteBtn').addEventListener('click', () => {
+    saveCompleteNote();
+  });
+
+  document.getElementById('skipCompleteNoteBtn').addEventListener('click', () => {
+    skipCompleteNote();
+  });
 }
 
 // ========================================
@@ -470,9 +523,13 @@ export function initCarouselEvents() {
   document.getElementById('dropSelectedBtn').addEventListener('click', () => {
     const selectedId = uiState.getSelectedBookId();
     if (selectedId) {
-      dropBook(selectedId);
       closeBookActionsDropdown();
+      openDropBookModal(selectedId);
     }
+  });
+
+  document.getElementById('confirmDropBtn').addEventListener('click', () => {
+    confirmDropBook();
   });
 
   document.getElementById('editSelectedBtn').addEventListener('click', () => {

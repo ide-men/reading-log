@@ -4,10 +4,12 @@
 // ========================================
 import { escapeAttr } from '../../shared/utils.js';
 import * as timerService from '../../domain/timer/timer-service.js';
+import * as bookRepository from '../../domain/book/book-repository.js';
+import * as bookService from '../../domain/book/book-service.js';
 import * as uiState from '../state/ui-state.js';
 import { applyReadingAnimation } from '../effects/animations.js';
 import { renderReadingBooks } from '../views/carousel-view.js';
-import { updateUI } from './navigation.js';
+import { updateUI, openModal, closeModal, showToast } from './navigation.js';
 
 // ========================================
 // 読書開始
@@ -38,11 +40,44 @@ export function handleStartReading() {
 // 読書停止
 // ========================================
 export function handleStopReading() {
+  // 読書中の本のIDを取得（stopReadingを呼ぶ前に取得）
+  const bookId = timerService.getCurrentBookId();
+  const book = bookId ? bookRepository.getBookById(bookId) : null;
+
   timerService.stopReading();
 
   document.getElementById('readingScreen').classList.remove('active');
   updateUI();
   renderReadingBooks();
+
+  // 付箋入力モーダルを表示（どこまで読んだか）
+  if (book) {
+    uiState.setReadingBookmarkBookId(bookId);
+    document.getElementById('readingBookmarkBookTitle').textContent = book.title;
+    document.getElementById('readingBookmarkInput').value = book.bookmark || '';
+    openModal('readingBookmarkModal');
+  }
+}
+
+// ========================================
+// 読書終了時の付箋保存
+// ========================================
+export function saveReadingBookmark() {
+  const bookId = uiState.getReadingBookmarkBookId();
+  if (!bookId) return;
+
+  const bookmark = document.getElementById('readingBookmarkInput').value.trim() || null;
+  bookService.editBook(bookId, { bookmark });
+
+  closeModal('readingBookmarkModal');
+  if (bookmark) {
+    showToast('付箋を貼りました');
+  }
+  renderReadingBooks();
+}
+
+export function skipReadingBookmark() {
+  closeModal('readingBookmarkModal');
 }
 
 // ========================================
@@ -59,6 +94,15 @@ export function initTimerEvents() {
 
   document.getElementById('stopBtn').addEventListener('click', () => {
     handleStopReading();
+  });
+
+  // 読書終了時の付箋モーダル
+  document.getElementById('saveReadingBookmarkBtn').addEventListener('click', () => {
+    saveReadingBookmark();
+  });
+
+  document.getElementById('skipReadingBookmarkBtn').addEventListener('click', () => {
+    skipReadingBookmark();
   });
 }
 

@@ -20,6 +20,7 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
  * @property {string|null} completedAt - 読了日（YYYY-MM-DD）
  * @property {string|null} note - メモ・感想
  * @property {number} readingTime - 累計読書時間（分）
+ * @property {string|null} bookmark - 付箋メモ（中断時のどこまで読んだか等）
  */
 
 // ========================================
@@ -58,7 +59,8 @@ export function createBook({ title, link, note, status = BOOK_STATUS.READING }, 
     startedAt,
     completedAt,
     note: note || null,
-    readingTime: 0
+    readingTime: 0,
+    bookmark: null
   };
 }
 
