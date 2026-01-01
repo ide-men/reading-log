@@ -1,0 +1,81 @@
+/* ==========================================================================
+   Base - Reset & Variables, Base Layout
+   ========================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Colors */
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --elevated: #1a1a25;
+  --accent: #e8a87c;
+  --accent-dark: #d4956a;
+  --accent-glow: rgba(232, 168, 124, 0.25);
+  --text: #f5f5f7;
+  --text-secondary: #c9c9d0;
+  --text-dim: #6b6b7a;
+  --border: rgba(255, 255, 255, 0.06);
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.1);
+  --danger-border: rgba(248, 113, 113, 0.3);
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 8px 20px rgba(0, 0, 0, 0.5);
+
+  /* Layout */
+  --max-width: 430px;
+  --header-height: 60px;
+  --nav-height: 70px;
+}
+
+/* ==========================================================================
+   Base Layout
+   ========================================================================== */
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text-secondary);
+}
+
+.app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}

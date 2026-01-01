@@ -1,0 +1,793 @@
+/* ==========================================================================
+   Shared - Page Headers, Empty States, Mini Books, Book List, Detail Views
+   ========================================================================== */
+
+/* ==========================================================================
+   Page Headers (共通)
+   ========================================================================== */
+
+/* 共通ページヘッダー */
+.page-header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+}
+
+.page-header--compact {
+  padding-bottom: 0;
+}
+
+.page-header__emoji {
+  font-size: 48px;
+  margin-bottom: var(--space-sm);
+}
+
+.page-header__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.page-header__subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+/* 後方互換性のためのエイリアス */
+.bag-header,
+.study-header,
+.store-header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+}
+
+.bag-header {
+  padding-bottom: 0;
+}
+
+.bag-emoji,
+.study-emoji,
+.store-emoji {
+  font-size: 48px;
+  margin-bottom: var(--space-sm);
+}
+
+.bag-title,
+.study-title,
+.store-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bag-subtitle,
+.study-subtitle,
+.store-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+/* ==========================================================================
+   Empty States (共通)
+   ========================================================================== */
+
+/* 共通空状態スタイル */
+.empty-state {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+  width: 100%;
+}
+
+.empty-state__icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-state__text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.empty-state__hint {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* 小サイズバリアント */
+.empty-state--small .empty-state__icon {
+  font-size: 36px;
+}
+
+.empty-state--small {
+  padding: 30px var(--space-xl);
+}
+
+/* 後方互換性のためのエイリアス */
+.empty-shelf,
+.empty-store,
+.empty-reading,
+.empty-carousel,
+.empty-study,
+.empty-study-grid {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+  width: 100%;
+}
+
+.empty-shelf {
+  padding: 30px var(--space-xl);
+  font-size: 14px;
+}
+
+.empty-shelf-icon,
+.empty-store-icon,
+.empty-reading-icon,
+.empty-carousel-icon,
+.empty-study-icon,
+.empty-study-grid-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-shelf-icon {
+  font-size: 36px;
+  opacity: 0.6;
+}
+
+.empty-shelf-text,
+.empty-store-text,
+.empty-reading-text,
+.empty-carousel-text,
+.empty-study-text,
+.empty-study-grid-text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.empty-shelf-text {
+  font-weight: 500;
+}
+
+.empty-shelf-hint,
+.empty-store-hint,
+.empty-reading-hint,
+.empty-carousel-hint,
+.empty-study-hint,
+.empty-study-grid-hint {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.empty-shelf-hint {
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   Mini Book (書斎・本屋共通の棚の本)
+   ========================================================================== */
+
+.mini-book,
+.store-mini-book {
+  min-width: 14px;
+  border-radius: 2px 3px 0 0;
+  cursor: pointer;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease;
+  box-shadow:
+    2px 0 0 rgba(0, 0, 0, 0.3),
+    -1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.mini-book::before,
+.store-mini-book::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  right: 2px;
+  bottom: 4px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  border-radius: 1px;
+}
+
+.mini-book::after,
+.store-mini-book::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 1px;
+}
+
+.mini-book:hover,
+.store-mini-book:hover {
+  transform: translateY(-6px) scale(1.05) !important;
+  z-index: 10;
+  box-shadow:
+    2px 0 0 rgba(0, 0, 0, 0.3),
+    -1px 0 0 rgba(255, 255, 255, 0.1),
+    var(--shadow-lg);
+}
+
+.mini-book.has-cover::before,
+.mini-book.has-cover::after,
+.store-mini-book.has-cover::before,
+.store-mini-book.has-cover::after {
+  display: none;
+}
+
+.mini-book.has-cover,
+.store-mini-book.has-cover {
+  border-radius: 2px 4px 0 0;
+  box-shadow:
+    2px 0 0 rgba(0, 0, 0, 0.4),
+    -1px 0 0 rgba(255, 255, 255, 0.1),
+    var(--shadow-sm);
+}
+
+/* Mini Book Selected States */
+.mini-book.selected,
+.store-mini-book.selected {
+  transform: translateY(-10px) scale(1.1) !important;
+  z-index: 20;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 2px #f59e0b,
+    0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+/* ==========================================================================
+   Book List Items
+   ========================================================================== */
+
+.book-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.book-icon {
+  width: 40px;
+  height: 54px;
+  background: var(--elevated);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.book-icon-emoji {
+  font-size: 20px;
+  z-index: 1;
+}
+
+.book-icon.has-cover .book-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.book-icon.has-cover .book-icon-emoji {
+  display: none;
+}
+
+.book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.book-name {
+  font-size: 14px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-name a,
+.book-name a:link,
+.book-name a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.book-date {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.book-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.book-actions button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 16px;
+  padding: var(--space-sm);
+  cursor: pointer;
+}
+
+/* Book Action Buttons (ステータス遷移) */
+.book-status-action {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.book-status-action.acquire {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+
+.book-status-action.acquire:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.book-status-action.start {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: var(--bg);
+}
+
+.book-status-action.start:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(232, 168, 124, 0.3);
+}
+
+/* Store Book List (本屋) */
+.store-book-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.store-book-item:last-child {
+  border-bottom: none;
+}
+
+/* 書斎・本屋のシェルフにemptyメッセージがある場合、中央配置 */
+.shelf-visual:has(.empty-study),
+.store-shelf-visual:has(.empty-study),
+.shelf-visual:has(.empty-state),
+.store-shelf-visual:has(.empty-state) {
+  justify-content: center;
+  align-items: center;
+}
+
+/* ==========================================================================
+   Detail View (共通 - 書斎・本屋)
+   ========================================================================== */
+
+/* 共通詳細ビュースタイル */
+.detail-view {
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-top: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: slideUp 0.3s ease;
+}
+
+.detail-view__close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+
+.detail-view__close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.detail-view__content {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.detail-view__cover {
+  width: 120px;
+  height: 170px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.detail-view__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-view__cover .book-placeholder {
+  font-size: 48px;
+}
+
+.detail-view__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.detail-view__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.detail-view__date {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.detail-view__note {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: var(--space-md);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+  white-space: pre-wrap;
+}
+
+.detail-view__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.detail-view__action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detail-view__action:hover {
+  background: var(--border);
+}
+
+.detail-view__action--primary {
+  color: white;
+}
+
+.detail-view__action--primary:hover {
+  transform: scale(1.02);
+}
+
+.detail-view__action--danger {
+  color: #ef4444;
+}
+
+.detail-view__action--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* 後方互換性のためのエイリアス - Study Detail */
+.study-detail-view {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-top: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: slideUp 0.3s ease;
+}
+
+.study-detail-close,
+.store-detail-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--bg);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+
+.study-detail-close:hover,
+.store-detail-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.study-detail-content,
+.store-detail-content {
+  display: flex;
+  gap: var(--space-xl);
+}
+
+.study-detail-cover,
+.store-detail-cover {
+  width: 120px;
+  height: 170px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.study-detail-cover img,
+.store-detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.study-detail-cover .book-placeholder,
+.store-detail-cover .book-placeholder {
+  font-size: 48px;
+}
+
+.study-detail-info,
+.store-detail-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.study-detail-title,
+.store-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.study-detail-date,
+.store-detail-date {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.store-detail-date {
+  color: #9a9aaa;
+}
+
+.study-detail-note,
+.store-detail-note {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: var(--space-md);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-sm);
+  white-space: pre-wrap;
+}
+
+.study-detail-actions,
+.store-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.study-detail-action,
+.store-detail-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.study-detail-action:hover,
+.store-detail-action:hover {
+  background: var(--border);
+}
+
+.study-detail-action.primary {
+  background: linear-gradient(135deg, #8B5A2B, #A0522D);
+  color: white;
+}
+
+.study-detail-action.primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
+}
+
+.store-detail-action.primary {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  color: #1a1a25;
+}
+
+.store-detail-action.primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.study-detail-action.danger,
+.store-detail-action.danger {
+  color: #ef4444;
+}
+
+.study-detail-action.danger:hover,
+.store-detail-action.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ==========================================================================
+   Book Detail Modal (書籍詳細ダイアログ)
+   ========================================================================== */
+
+.book-detail-modal {
+  max-width: 380px;
+}
+
+.book-detail-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.book-detail-cover {
+  width: 140px;
+  height: 200px;
+  background: linear-gradient(135deg, #2a2319 0%, #1f1a16 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(139, 90, 43, 0.2);
+}
+
+.book-detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-detail-cover .book-placeholder {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+.book-detail-info {
+  width: 100%;
+  text-align: center;
+}
+
+.book-detail-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: var(--space-md);
+}
+
+.book-detail-meta {
+  font-size: 13px;
+  color: #8b7355;
+  margin-bottom: var(--space-md);
+}
+
+.book-detail-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-align: left;
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: none;
+}
+
+.book-detail-note.has-note {
+  display: block;
+}
+
+.book-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.book-detail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 14px;
+}
+
+.book-detail-btn span:first-child {
+  font-size: 16px;
+}

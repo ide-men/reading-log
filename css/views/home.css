@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Home View - Progress Ring, Main Button, Quote, Reading Books
+   ========================================================================== */
+
+/* ==========================================================================
+   Home Center (Progress Ring Area)
+   ========================================================================== */
+
+.home-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+}
+
+/* ==========================================================================
+   Main Button
+   ========================================================================== */
+
+.main-btn {
+  width: 100%;
+  padding: var(--space-xl) var(--space-2xl);
+  font-size: 18px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  border-radius: 28px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.main-btn:hover {
+  transform: translateY(-2px);
+}
+
+.main-btn:active {
+  transform: scale(0.98) translateY(0);
+}
+
+.main-btn-icon {
+  font-size: 24px;
+  display: inline-block;
+}
+
+.main-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--elevated);
+  color: var(--text-dim);
+}
+
+.main-btn:disabled:hover {
+  transform: none;
+}
+
+/* ==========================================================================
+   Quote
+   ========================================================================== */
+
+.quote-bottom {
+  padding: var(--space-xl);
+  padding-bottom: 10px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.quote-bottom p:first-child {
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.quote-bottom p:last-child {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+/* ==========================================================================
+   Status Tabs (書斎のステータス切り替え)
+   ========================================================================== */
+
+.status-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-xs);
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+}
+
+.status-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-md) var(--space-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-tab:hover {
+  background: var(--elevated);
+}
+
+.status-tab.active {
+  background: var(--elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.status-tab .status-icon {
+  font-size: 20px;
+}
+
+.status-tab .status-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.status-tab.active .status-label {
+  color: var(--text);
+}
+
+.status-tab .status-count {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.status-tab.active .status-count {
+  color: var(--accent);
+}
+
+/* ==========================================================================
+   Reading Books (カバンの読書中本リスト)
+   ========================================================================== */
+
+.reading-books {
+  margin-bottom: var(--space-xl);
+}
+
+.reading-book-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+  display: flex;
+  gap: var(--space-lg);
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reading-book-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.reading-book-cover {
+  width: 50px;
+  height: 70px;
+  background: var(--elevated);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.reading-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reading-book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.reading-book-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reading-book-meta {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.reading-book-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.reading-book-action {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.reading-book-action.complete {
+  background: #10b981;
+  color: white;
+}
+
+.reading-book-action.complete:hover {
+  background: #059669;
+}
+
+.reading-book-action.drop {
+  background: var(--elevated);
+  color: var(--text-dim);
+}
+
+.reading-book-action.drop:hover {
+  background: var(--border);
+}
+
+/* ==========================================================================
+   Home Actions
+   ========================================================================== */
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: 0 var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.add-book-btn {
+  margin-top: 0 !important;
+}
+
+/* Home Actions Fixed (ボタン固定エリア) */
+.home-actions-fixed {
+  padding: var(--space-md) var(--space-xl);
+  padding-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: var(--bg);
+}
+
+.home-actions-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.home-actions-row .btn {
+  flex: 1;
+  padding: var(--space-md);
+  font-size: 13px;
+}

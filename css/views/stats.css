@@ -1,0 +1,274 @@
+/* ==========================================================================
+   Stats View - 統計画面・チャート・カード
+   ========================================================================== */
+
+/* ==========================================================================
+   Stats Grid
+   ========================================================================== */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: var(--space-xl);
+}
+
+.stats-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+.stats-card-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stats-card-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.section-title {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-md);
+}
+
+/* ==========================================================================
+   Week Chart
+   ========================================================================== */
+
+.week-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  height: 100px;
+  padding: var(--space-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.week-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.week-bar-fill {
+  width: 100%;
+  max-width: 24px;
+  background: var(--accent);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  min-height: 4px;
+}
+
+.week-bar-fill.empty {
+  background: var(--elevated);
+}
+
+.week-bar span {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.week-bar.today span {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Impact Card
+   ========================================================================== */
+
+.impact-card {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-radius: var(--radius-3xl);
+  padding: 28px;
+  text-align: center;
+  color: var(--bg);
+  margin-bottom: var(--space-xl);
+}
+
+.impact-value {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.impact-label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: rgba(0, 0, 0, 0.15);
+  padding: 6px var(--space-md);
+  border-radius: var(--radius-2xl);
+  margin-top: var(--space-md);
+}
+
+.streak-fire {
+  font-size: 16px;
+}
+
+.streak-count {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.streak-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Prediction & Style Cards
+   ========================================================================== */
+
+/* Base Card Style (shared by prediction-card and style-card) */
+.prediction-card,
+.style-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  padding: 18px var(--space-xl);
+  margin-bottom: var(--space-md);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prediction-card::before,
+.style-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.08;
+  transition: opacity 0.2s ease;
+}
+
+.prediction-card:hover,
+.style-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.prediction-card:hover::before,
+.style-card:hover::before {
+  opacity: 0.15;
+}
+
+/* Prediction Card Variants */
+.prediction-card-yearly::before {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.prediction-card-title::before {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+/* Style Card Variants */
+.style-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.style-card-focus::before {
+  background: linear-gradient(135deg, #e8a87c 0%, #f0c27b 100%);
+}
+
+.style-card-time::before {
+  background: linear-gradient(135deg, #6b5b95 0%, #a78bfa 100%);
+}
+
+/* Card Content (shared) */
+.prediction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-xs) 0;
+  position: relative;
+  z-index: 1;
+}
+
+.prediction-icon,
+.style-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.prediction-content,
+.style-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.prediction-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.style-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.prediction-label,
+.style-label {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+}
+
+.prediction-hint,
+.style-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   Tip
+   ========================================================================== */
+
+.tip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(232, 168, 124, 0.1);
+  border-radius: var(--radius-xl);
+  padding: 14px var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.tip span:first-child {
+  font-size: 18px;
+}
+
+.tip span:last-child {
+  font-size: 13px;
+}
