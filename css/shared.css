@@ -507,7 +507,6 @@
 /* Book Card - Study Theme */
 .book-card--study {
   background: linear-gradient(135deg, #1f1a16 0%, #2a2319 100%);
-  border: 1px solid rgba(139, 90, 43, 0.2);
 }
 
 .book-card--study::before {
@@ -533,7 +532,6 @@
 /* Book Card - Store Theme */
 .book-card--store {
   background: linear-gradient(135deg, #1a1a25 0%, #252535 100%);
-  border: 1px solid rgba(245, 158, 11, 0.15);
 }
 
 .book-card--store::before {
