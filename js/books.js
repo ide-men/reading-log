@@ -28,6 +28,9 @@ let currentStudyStatus = BOOK_STATUS.COMPLETED;
 // 書斎で選択中の本ID
 let studySelectedBookId = null;
 
+// 本屋で選択中の本ID
+let storeSelectedBookId = null;
+
 export function getEditingBookId() {
   return editingBookId;
 }
@@ -62,6 +65,18 @@ export function setStudySelectedBookId(id) {
 
 export function clearStudySelection() {
   studySelectedBookId = null;
+}
+
+export function getStoreSelectedBookId() {
+  return storeSelectedBookId;
+}
+
+export function setStoreSelectedBookId(id) {
+  storeSelectedBookId = id;
+}
+
+export function clearStoreSelection() {
+  storeSelectedBookId = null;
 }
 
 // ========================================
@@ -306,8 +321,8 @@ export function renderStudyBooks() {
         actionBtn = `
           <div class="study-book-actions">
             <button class="study-action-btn" data-start="${book.id}">
-              <span>📖</span>
-              <span>読み始める！</span>
+              <span>🎒</span>
+              <span>カバンに入れる</span>
             </button>
           </div>`;
       }
@@ -367,8 +382,8 @@ function renderStudyDetailView(book) {
   if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED) {
     actionBtn = `
       <button class="study-detail-action primary" data-start="${book.id}">
-        <span>📖</span>
-        <span>読み始める！</span>
+        <span>🎒</span>
+        <span>カバンに入れる</span>
       </button>`;
   }
 
@@ -468,59 +483,153 @@ export function openBookDetail(id) {
 // ========================================
 export function renderStoreBooks() {
   const books = getBooksByStatus(BOOK_STATUS.WISHLIST);
+  const shelf = document.getElementById('storeShelf');
   const container = document.getElementById('storeBookList');
   const countEl = document.getElementById('wishlistCount');
 
-  if (!container) return;
+  if (!container || !shelf) return;
 
   if (countEl) {
     countEl.textContent = books.length;
   }
 
   if (books.length === 0) {
-    container.innerHTML = `
-      <div class="empty-store">
-        <div class="empty-store-icon">📚</div>
-        <div class="empty-store-text">気になる本はありません</div>
-        <div class="empty-store-hint">読みたい本を見つけたら追加しましょう</div>
+    shelf.innerHTML = `
+      <div class="empty-study">
+        <div class="empty-study-icon">🏪</div>
+        <div class="empty-study-text">気になる本はありません</div>
+        <div class="empty-study-hint">読みたい本を見つけたら追加しましょう</div>
       </div>`;
+    container.innerHTML = '';
     return;
   }
 
-  // グリッドカードレイアウトでレンダリング
-  container.innerHTML = books.map((book, i) => {
-    const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
+  // 本棚表示
+  shelf.innerHTML = books.map((book, i) => {
     const color = BOOK_COLORS[i % BOOK_COLORS.length];
+    const height = 50 + ((i * 17) % 25);
+    const width = book.coverUrl ? 18 + ((i * 2) % 6) : 14 + ((i * 3) % 8);
+    const tilt = ((i * 7) % 5) - 2;
+    const darkerColor = adjustColor(color, -20);
+    const lighterColor = adjustColor(color, 15);
 
-    const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
-      : `<span class="book-placeholder">📖</span>`;
-
-    const linkBtn = link
-      ? `<button class="store-action-btn" data-link="${link}" title="リンクを開く">↗</button>`
-      : '';
+    const bgStyle = book.coverUrl
+      ? `background-color: ${color}; background-image: url('${escapeHtml(book.coverUrl)}'); background-size: cover; background-position: center;`
+      : `background: linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%);`;
+    const hasCoverClass = book.coverUrl ? 'has-cover' : '';
+    const selectedClass = storeSelectedBookId === book.id ? 'selected' : '';
 
     return `
-      <div class="store-book-card" data-book-id="${book.id}">
-        <div class="store-book-cover" style="background-color: ${color}">
+      <div class="store-mini-book ${hasCoverClass} ${selectedClass}" data-book-id="${book.id}" style="
+        height:${height}px;
+        width:${width}px;
+        ${bgStyle}
+        transform: rotate(${tilt}deg);
+      ">
+        <div class="book-tooltip">
+          <div class="tooltip-title">${escapeHtml(book.title)}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // 選択中の本がある場合は詳細ビューを表示
+  const selectedBook = storeSelectedBookId ? books.find(b => b.id === storeSelectedBookId) : null;
+
+  if (selectedBook) {
+    container.innerHTML = renderStoreDetailView(selectedBook);
+  } else {
+    // グリッドカードレイアウトでレンダリング
+    container.innerHTML = `<div class="store-grid">${[...books].reverse().map((book, i) => {
+      const colorIndex = books.length - 1 - i;
+      const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
+
+      const coverHtml = book.coverUrl
+        ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
+        : `<span class="book-placeholder">📖</span>`;
+
+      return `
+        <div class="store-book-card" data-book-id="${book.id}">
+          <div class="store-book-cover" style="background-color: ${color}">
+            ${coverHtml}
+          </div>
+          <div class="store-book-info">
+            <div class="store-book-title">${escapeHtml(book.title)}</div>
+            <div class="store-book-date">${formatDate(new Date(book.id).toISOString().split('T')[0])} 追加</div>
+          </div>
+          <div class="store-book-actions">
+            <button class="store-acquire-btn" data-to-study="${book.id}">
+              <span>📚</span>
+              <span>書斎に入れる</span>
+            </button>
+            <button class="store-acquire-btn secondary" data-to-bag="${book.id}">
+              <span>🎒</span>
+              <span>カバンに入れる</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('')}</div>`;
+  }
+}
+
+// 本屋の詳細ビューをレンダリング
+function renderStoreDetailView(book) {
+  const bookIndex = stateManager.getState().books.findIndex(b => b.id === book.id);
+  const color = BOOK_COLORS[bookIndex % BOOK_COLORS.length];
+
+  const coverHtml = book.coverUrl
+    ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
+    : `<span class="book-placeholder">📖</span>`;
+
+  const dateText = formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+
+  // メモ表示
+  const noteHtml = book.note
+    ? `<div class="store-detail-note">${escapeHtml(book.note)}</div>`
+    : '';
+
+  // リンクボタン
+  const linkBtn = isValidUrl(book.link)
+    ? `<button class="store-detail-action" data-link="${escapeAttr(book.link)}">
+        <span>↗</span>
+        <span>リンクを開く</span>
+      </button>`
+    : '';
+
+  return `
+    <div class="store-detail-view">
+      <button class="store-detail-close" data-close-detail>✕</button>
+      <div class="store-detail-content">
+        <div class="store-detail-cover" style="background-color: ${color}">
           ${coverHtml}
         </div>
-        <div class="store-book-info">
-          <div class="store-book-title">${escapeHtml(book.title)}</div>
-          <div class="store-book-date">${formatDate(new Date(book.id).toISOString().split('T')[0])} 追加</div>
-        </div>
-        <div class="store-book-actions">
-          <button class="store-acquire-btn" data-acquire="${book.id}">
-            <span>✨</span>
-            <span>手に入れた！</span>
-          </button>
-          ${linkBtn}
-          <button class="store-action-btn" data-edit="${book.id}" title="編集">✏️</button>
-          <button class="store-action-btn" data-delete="${book.id}" title="削除">×</button>
+        <div class="store-detail-info">
+          <div class="store-detail-title">${escapeHtml(book.title)}</div>
+          <div class="store-detail-date">${dateText}</div>
+          ${noteHtml}
+          <div class="store-detail-actions">
+            <button class="store-detail-action primary" data-to-study="${book.id}">
+              <span>📚</span>
+              <span>書斎に入れる</span>
+            </button>
+            <button class="store-detail-action" data-to-bag="${book.id}">
+              <span>🎒</span>
+              <span>カバンに入れる</span>
+            </button>
+            ${linkBtn}
+            <button class="store-detail-action" data-edit="${book.id}">
+              <span>✏️</span>
+              <span>編集</span>
+            </button>
+            <button class="store-detail-action danger" data-delete="${book.id}">
+              <span>🗑️</span>
+              <span>削除</span>
+            </button>
+          </div>
         </div>
       </div>
-    `;
-  }).join('');
+    </div>
+  `;
 }
 
 // ========================================
@@ -596,13 +705,13 @@ export function addBook(status = BOOK_STATUS.READING) {
 // ステータス遷移
 // ========================================
 
-// wishlist → unread（手に入れた！）
+// wishlist → unread（書斎に入れる）
 export function acquireBook(id) {
   const book = stateManager.getBook(id);
   if (!book) return;
 
   // セレブレーションを表示
-  showAcquireCelebration(book);
+  showAcquireCelebration(book, '書斎');
 
   // 少し待ってからステータス更新
   setTimeout(() => {
@@ -612,8 +721,29 @@ export function acquireBook(id) {
   }, 300);
 }
 
+// wishlist → reading（カバンに入れる）
+export function moveToReading(id) {
+  const book = stateManager.getBook(id);
+  if (!book) return;
+
+  // セレブレーションを表示
+  showAcquireCelebration(book, 'カバン');
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // 少し待ってからステータス更新
+  setTimeout(() => {
+    stateManager.updateBook(id, {
+      status: BOOK_STATUS.READING,
+      startedAt: today
+    });
+    saveState();
+    renderBooks();
+  }, 300);
+}
+
 // 本を手に入れた時のセレブレーション
-function showAcquireCelebration(book) {
+function showAcquireCelebration(book, destination = '書斎') {
   const celebration = document.getElementById('acquireCelebration');
   const bookVisual = document.getElementById('acquireBookVisual');
   const bookName = document.getElementById('acquireBookName');
@@ -629,6 +759,14 @@ function showAcquireCelebration(book) {
   }
   bookName.textContent = book.title;
 
+  // ヒントテキストを更新
+  const hintEl = celebration.querySelector('.acquire-hint');
+  if (hintEl) {
+    hintEl.textContent = destination === 'カバン'
+      ? 'カバンに追加されました'
+      : '書斎の積読に追加されました';
+  }
+
   // パーティクルを生成
   particles.innerHTML = '';
   createCelebrationParticles(particles);
@@ -637,9 +775,12 @@ function showAcquireCelebration(book) {
   celebration.classList.add('active');
 
   // 自動で閉じる
+  const toastMessage = destination === 'カバン'
+    ? 'カバンに追加しました！'
+    : '書斎の積読に追加しました！';
   setTimeout(() => {
     celebration.classList.remove('active');
-    showToast('書斎の積読に追加しました！');
+    showToast(toastMessage);
   }, 2000);
 
   // クリックで早めに閉じる
