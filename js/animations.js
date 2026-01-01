@@ -2,24 +2,17 @@
 // アニメーション
 // ========================================
 import { BUTTON_ANIMATIONS, READING_ANIMATIONS } from './constants.js';
-import { randomItem } from './utils.js';
+import { randomItem, getTimeSlot } from './utils.js';
 import { calculateStreak } from './stats.js';
 
 export function getButtonAnimation() {
-  const hour = new Date().getHours();
   const streak = calculateStreak();
 
   if (streak >= 3 && Math.random() < 0.3) {
     return randomItem(BUTTON_ANIMATIONS.streak);
   }
 
-  let timeSlot;
-  if (hour >= 5 && hour < 12) timeSlot = 'morning';
-  else if (hour >= 12 && hour < 17) timeSlot = 'afternoon';
-  else if (hour >= 17 && hour < 21) timeSlot = 'evening';
-  else timeSlot = 'night';
-
-  return randomItem(BUTTON_ANIMATIONS[timeSlot]);
+  return randomItem(BUTTON_ANIMATIONS[getTimeSlot()]);
 }
 
 export function updateButtonAnimation() {

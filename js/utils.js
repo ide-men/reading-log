@@ -82,3 +82,21 @@ export function openLink(url, event) {
   if (event) event.preventDefault();
   window.open(url, '_blank');
 }
+
+// ========================================
+// 時間帯判定
+// ========================================
+export function getTimeSlot(hour = new Date().getHours()) {
+  if (hour >= 5 && hour < 12) return 'morning';
+  if (hour >= 12 && hour < 17) return 'afternoon';
+  if (hour >= 17 && hour < 21) return 'evening';
+  return 'night';
+}
+
+// 時間帯のインデックスを返す（統計用: 朝=0, 昼=1, 夜=2, 深夜=3）
+export function getTimeSlotIndex(hour) {
+  if (hour >= 5 && hour < 12) return 0;  // 朝型
+  if (hour >= 12 && hour < 18) return 1; // 昼型
+  if (hour >= 18 && hour < 22) return 2; // 夜型
+  return 3; // 深夜型
+}

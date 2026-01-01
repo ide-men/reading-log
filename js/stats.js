@@ -3,7 +3,7 @@
 // ========================================
 import { CONFIG } from './constants.js';
 import { stateManager } from './state.js';
-import { randomItem } from './utils.js';
+import { randomItem, getTimeSlotIndex } from './utils.js';
 
 // ========================================
 // 統計計算
@@ -110,12 +110,9 @@ function renderReadingInsights() {
 
   if (history.length >= 3) {
     const hours = history.map(h => h.h);
-    const counts = [
-      hours.filter(h => h >= 5 && h < 12).length,
-      hours.filter(h => h >= 12 && h < 18).length,
-      hours.filter(h => h >= 18 && h < 22).length,
-      hours.filter(h => h >= 22 || h < 5).length
-    ];
+    const counts = [0, 0, 0, 0]; // 朝, 昼, 夜, 深夜
+    hours.forEach(h => counts[getTimeSlotIndex(h)]++);
+
     const maxIndex = counts.indexOf(Math.max(...counts));
     const types = [['朝型', '🌅'], ['昼型', '☀️'], ['夜型', '🌙'], ['深夜型', '🌃']];
     document.getElementById('timeType').textContent = types[maxIndex][0];
