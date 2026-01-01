@@ -95,7 +95,8 @@ export function initializeEventListeners() {
   });
 
   // 本の追加・編集
-  document.getElementById('addBookBtn').addEventListener('click', addBook);
+  document.getElementById('addBookBtn').addEventListener('click', () => addBook(false));
+  document.getElementById('addPastBookBtn').addEventListener('click', () => addBook(true));
 
   document.getElementById('saveEditBtn').addEventListener('click', saveEditBook);
 
