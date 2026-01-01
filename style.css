@@ -587,16 +587,18 @@ html, body {
   transition: opacity 0.3s;
 }
 
-.store-book-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 16px 32px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(245, 158, 11, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
+@media (hover: hover) {
+  .store-book-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 16px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(245, 158, 11, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
 
-.store-book-card:hover::before {
-  opacity: 1;
+  .store-book-card:hover::before {
+    opacity: 1;
+  }
 }
 
 /* Book Cover in Store */
@@ -617,8 +619,10 @@ html, body {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.store-book-card:hover .store-book-cover {
-  transform: scale(1.02) rotateY(-3deg);
+@media (hover: hover) {
+  .store-book-card:hover .store-book-cover {
+    transform: scale(1.02) rotateY(-3deg);
+  }
 }
 
 .store-book-cover img {
@@ -2720,16 +2724,18 @@ select.form-input {
   transition: opacity 0.3s;
 }
 
-.study-book-card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 16px 32px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(139, 90, 43, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
+@media (hover: hover) {
+  .study-book-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 16px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(139, 90, 43, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
 
-.study-book-card:hover::before {
-  opacity: 1;
+  .study-book-card:hover::before {
+    opacity: 1;
+  }
 }
 
 /* Book Cover in Study Grid */
@@ -2750,8 +2756,10 @@ select.form-input {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.study-book-card:hover .study-book-cover {
-  transform: scale(1.02) rotateY(-3deg);
+@media (hover: hover) {
+  .study-book-card:hover .study-book-cover {
+    transform: scale(1.02) rotateY(-3deg);
+  }
 }
 
 .study-book-cover img {
