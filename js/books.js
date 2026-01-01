@@ -259,16 +259,14 @@ export function renderStudyBooks() {
       </div>`;
   }).join('');
 
-  // リスト表示
-  bookList.innerHTML = [...books].reverse().map((book, i) => {
-    const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
-    const linkBtn = link ? `<button data-link="${link}">↗</button>` : '';
+  // グリッドカードレイアウトでレンダリング
+  bookList.innerHTML = `<div class="study-grid">${[...books].reverse().map((book, i) => {
     const colorIndex = books.length - 1 - i;
     const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
 
     const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover"><span class="book-icon-emoji">📕</span>`
-      : '<span class="book-icon-emoji">📕</span>';
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
+      : `<span class="book-placeholder">📕</span>`;
 
     // ステータスに応じた日付表示
     let dateText = '';
@@ -280,28 +278,93 @@ export function renderStudyBooks() {
       dateText = formatDate(book.startedAt) + ' 開始';
     }
 
-    // ステータスに応じたアクションボタン
+    // ステータスに応じたアクションボタン（グリッドではステータス変更のみ）
     let actionBtn = '';
     if (currentStudyStatus === BOOK_STATUS.UNREAD || currentStudyStatus === BOOK_STATUS.DROPPED) {
-      actionBtn = `<button class="book-status-action start" data-start="${book.id}">読み始める！</button>`;
+      actionBtn = `
+        <div class="study-book-actions">
+          <button class="study-action-btn" data-start="${book.id}">
+            <span>📖</span>
+            <span>読み始める！</span>
+          </button>
+        </div>`;
     }
 
     return `
-      <div class="book-item">
-        <div class="book-icon${book.coverUrl ? ' has-cover' : ''}" style="background-color: ${color}">${coverHtml}</div>
-        <div class="book-info">
-          <div class="book-name">${escapeHtml(book.title)}</div>
-          <div class="book-date">${dateText}</div>
+      <div class="study-book-card" data-book-id="${book.id}">
+        <div class="study-book-cover" style="background-color: ${color}">
+          ${coverHtml}
         </div>
-        <div class="book-actions">
-          ${actionBtn}
-          ${linkBtn}
-          <button data-edit="${book.id}">✏️</button>
-          <button data-delete="${book.id}">×</button>
+        <div class="study-book-info">
+          <div class="study-book-title">${escapeHtml(book.title)}</div>
+          <div class="study-book-date">${dateText}</div>
         </div>
+        ${actionBtn}
       </div>
     `;
-  }).join('');
+  }).join('')}</div>`;
+}
+
+// ========================================
+// 書籍詳細ダイアログを開く
+// ========================================
+let detailBookId = null;
+
+export function getDetailBookId() {
+  return detailBookId;
+}
+
+export function openBookDetail(id) {
+  const book = stateManager.getBook(id);
+  if (!book) return;
+
+  detailBookId = id;
+
+  // カバー画像
+  const coverEl = document.getElementById('bookDetailCover');
+  if (book.coverUrl) {
+    coverEl.innerHTML = `<img src="${escapeHtml(book.coverUrl)}" alt="">`;
+  } else {
+    coverEl.innerHTML = '<span class="book-placeholder">📕</span>';
+  }
+
+  // タイトル
+  document.getElementById('bookDetailTitle').textContent = book.title;
+
+  // メタ情報
+  let metaText = '';
+  if (book.status === BOOK_STATUS.COMPLETED && book.completedAt) {
+    metaText = formatDate(book.completedAt) + ' 読了';
+  } else if (book.status === BOOK_STATUS.UNREAD) {
+    metaText = formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+  } else if (book.status === BOOK_STATUS.DROPPED && book.startedAt) {
+    metaText = formatDate(book.startedAt) + ' 開始';
+  } else if (book.status === BOOK_STATUS.READING && book.startedAt) {
+    metaText = formatDate(book.startedAt) + ' 開始';
+  }
+  document.getElementById('bookDetailMeta').textContent = metaText;
+
+  // メモ
+  const noteEl = document.getElementById('bookDetailNote');
+  if (book.note) {
+    noteEl.textContent = book.note;
+    noteEl.classList.add('has-note');
+  } else {
+    noteEl.textContent = '';
+    noteEl.classList.remove('has-note');
+  }
+
+  // リンクボタン
+  const linkBtn = document.getElementById('bookDetailLinkBtn');
+  if (isValidUrl(book.link)) {
+    linkBtn.style.display = 'flex';
+    linkBtn.dataset.link = book.link;
+  } else {
+    linkBtn.style.display = 'none';
+  }
+
+  // ダイアログを開く
+  document.getElementById('bookDetailModal').classList.add('active');
 }
 
 // ========================================

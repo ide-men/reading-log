@@ -2458,3 +2458,265 @@ select.form-input {
   }
 }
 
+/* ==========================================================================
+   20. Study Grid Layout (書斎グリッドレイアウト)
+   ========================================================================== */
+
+/* Study Grid */
+.study-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  padding: var(--space-sm) 0;
+  margin-top: var(--space-lg);
+}
+
+/* Study Book Card - 書斎らしい暖かみのあるデザイン */
+.study-book-card {
+  background: linear-gradient(135deg, #1f1a16 0%, #2a2319 100%);
+  border: 1px solid rgba(139, 90, 43, 0.2);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 木目調のテクスチャオーバーレイ */
+.study-book-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b5a2b, #cd853f, #8b5a2b);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.study-book-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(139, 90, 43, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.study-book-card:hover::before {
+  opacity: 1;
+}
+
+/* Book Cover in Study Grid */
+.study-book-cover {
+  width: 100%;
+  aspect-ratio: 2/3;
+  max-height: 160px;
+  background: linear-gradient(135deg, #2a2319 0%, #1f1a16 100%);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(139, 90, 43, 0.15);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.study-book-card:hover .study-book-cover {
+  transform: scale(1.02) rotateY(-3deg);
+}
+
+.study-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.study-book-cover .book-placeholder {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+/* Book Info in Study Grid */
+.study-book-info {
+  width: 100%;
+  text-align: center;
+}
+
+.study-book-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: var(--space-xs);
+}
+
+.study-book-date {
+  font-size: 10px;
+  color: #8b7355;
+}
+
+/* Study Book Actions - ステータス変更ボタンのみ */
+.study-book-actions {
+  width: 100%;
+  margin-top: auto;
+}
+
+.study-action-btn {
+  width: 100%;
+  padding: var(--space-md) var(--space-sm);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  background: linear-gradient(135deg, #8b5a2b, #cd853f);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.study-action-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(139, 90, 43, 0.4);
+}
+
+.study-action-btn:active {
+  transform: scale(0.98);
+}
+
+/* Empty Study Grid State */
+.empty-study-grid {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+}
+
+.empty-study-grid-icon {
+  font-size: 64px;
+  margin-bottom: var(--space-lg);
+  opacity: 0.4;
+}
+
+.empty-study-grid-text {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-study-grid-hint {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   21. Book Detail Modal (書籍詳細ダイアログ)
+   ========================================================================== */
+
+.book-detail-modal {
+  max-width: 380px;
+}
+
+.book-detail-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+.book-detail-cover {
+  width: 140px;
+  height: 200px;
+  background: linear-gradient(135deg, #2a2319 0%, #1f1a16 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(139, 90, 43, 0.2);
+}
+
+.book-detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-detail-cover .book-placeholder {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+.book-detail-info {
+  width: 100%;
+  text-align: center;
+}
+
+.book-detail-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: var(--space-md);
+}
+
+.book-detail-meta {
+  font-size: 13px;
+  color: #8b7355;
+  margin-bottom: var(--space-md);
+}
+
+.book-detail-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-align: left;
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: none;
+}
+
+.book-detail-note.has-note {
+  display: block;
+}
+
+.book-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.book-detail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  font-size: 14px;
+}
+
+.book-detail-btn span:first-child {
+  font-size: 16px;
+}
+
