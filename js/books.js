@@ -248,34 +248,43 @@ export function renderStoreBooks() {
   if (books.length === 0) {
     container.innerHTML = `
       <div class="empty-store">
-        <div class="empty-store-icon">💭</div>
+        <div class="empty-store-icon">📚</div>
         <div class="empty-store-text">気になる本はありません</div>
-        <div class="empty-store-hint">読みたい本をメモしておきましょう</div>
+        <div class="empty-store-hint">読みたい本を見つけたら追加しましょう</div>
       </div>`;
     return;
   }
 
+  // グリッドカードレイアウトでレンダリング
   container.innerHTML = books.map((book, i) => {
     const link = isValidUrl(book.link) ? escapeAttr(book.link) : null;
-    const linkBtn = link ? `<button data-link="${link}">↗</button>` : '';
     const color = BOOK_COLORS[i % BOOK_COLORS.length];
 
     const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="" class="book-cover"><span class="book-icon-emoji">📕</span>`
-      : '<span class="book-icon-emoji">📕</span>';
+      ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
+      : `<span class="book-placeholder">📖</span>`;
+
+    const linkBtn = link
+      ? `<button class="store-action-btn" data-link="${link}" title="リンクを開く">↗</button>`
+      : '';
 
     return `
-      <div class="book-item store-book-item">
-        <div class="book-icon${book.coverUrl ? ' has-cover' : ''}" style="background-color: ${color}">${coverHtml}</div>
-        <div class="book-info">
-          <div class="book-name">${escapeHtml(book.title)}</div>
-          <div class="book-date">${formatDate(new Date(book.id).toISOString().split('T')[0])} 追加</div>
+      <div class="store-book-card" data-book-id="${book.id}">
+        <div class="store-book-cover" style="background-color: ${color}">
+          ${coverHtml}
         </div>
-        <div class="book-actions">
-          <button class="book-status-action acquire" data-acquire="${book.id}">手に入れた！</button>
+        <div class="store-book-info">
+          <div class="store-book-title">${escapeHtml(book.title)}</div>
+          <div class="store-book-date">${formatDate(new Date(book.id).toISOString().split('T')[0])} 追加</div>
+        </div>
+        <div class="store-book-actions">
+          <button class="store-acquire-btn" data-acquire="${book.id}">
+            <span>✨</span>
+            <span>手に入れた！</span>
+          </button>
           ${linkBtn}
-          <button data-edit="${book.id}">✏️</button>
-          <button data-delete="${book.id}">×</button>
+          <button class="store-action-btn" data-edit="${book.id}" title="編集">✏️</button>
+          <button class="store-action-btn" data-delete="${book.id}" title="削除">×</button>
         </div>
       </div>
     `;
@@ -354,10 +363,83 @@ export function addBook(status = BOOK_STATUS.READING) {
 
 // wishlist → unread（手に入れた！）
 export function acquireBook(id) {
-  stateManager.updateBook(id, { status: BOOK_STATUS.UNREAD });
-  saveState();
-  renderBooks();
-  showToast('書斎に追加しました！');
+  const book = stateManager.getBook(id);
+  if (!book) return;
+
+  // セレブレーションを表示
+  showAcquireCelebration(book);
+
+  // 少し待ってからステータス更新
+  setTimeout(() => {
+    stateManager.updateBook(id, { status: BOOK_STATUS.UNREAD });
+    saveState();
+    renderBooks();
+  }, 300);
+}
+
+// 本を手に入れた時のセレブレーション
+function showAcquireCelebration(book) {
+  const celebration = document.getElementById('acquireCelebration');
+  const bookVisual = document.getElementById('acquireBookVisual');
+  const bookName = document.getElementById('acquireBookName');
+  const particles = document.getElementById('acquireParticles');
+
+  if (!celebration) return;
+
+  // 本のビジュアルを設定
+  if (book.coverUrl) {
+    bookVisual.innerHTML = `<img src="${escapeHtml(book.coverUrl)}" alt="">`;
+  } else {
+    bookVisual.innerHTML = '<span class="book-placeholder">📖</span>';
+  }
+  bookName.textContent = book.title;
+
+  // パーティクルを生成
+  particles.innerHTML = '';
+  createCelebrationParticles(particles);
+
+  // 表示
+  celebration.classList.add('active');
+
+  // 自動で閉じる
+  setTimeout(() => {
+    celebration.classList.remove('active');
+    showToast('書斎の積読に追加しました！');
+  }, 2000);
+
+  // クリックで早めに閉じる
+  const closeHandler = () => {
+    celebration.classList.remove('active');
+    celebration.removeEventListener('click', closeHandler);
+  };
+  celebration.addEventListener('click', closeHandler);
+}
+
+// パーティクル生成
+function createCelebrationParticles(container) {
+  const colors = ['#f59e0b', '#fbbf24', '#6366f1', '#8b5cf6', '#ec4899', '#10b981'];
+  const particleCount = 50;
+
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'acquire-particle';
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `-20px`;
+    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.animationDelay = `${Math.random() * 0.5}s`;
+    particle.style.animationDuration = `${1 + Math.random() * 1}s`;
+    container.appendChild(particle);
+  }
+
+  // スパークル追加
+  for (let i = 0; i < 20; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'acquire-sparkle';
+    sparkle.style.left = `${20 + Math.random() * 60}%`;
+    sparkle.style.top = `${20 + Math.random() * 60}%`;
+    sparkle.style.animationDelay = `${Math.random() * 0.8}s`;
+    container.appendChild(sparkle);
+  }
 }
 
 // unread/dropped → reading（読み始める！）
