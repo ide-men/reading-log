@@ -246,6 +246,195 @@
 }
 
 /* ==========================================================================
+   Reading Calendar (草カレンダー)
+   ========================================================================== */
+
+.calendar-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.calendar-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: var(--space-sm);
+}
+
+.calendar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.calendar-grid {
+  display: flex;
+  gap: 4px;
+  min-width: max-content;
+}
+
+.calendar-cell {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.calendar-cell:hover {
+  transform: scale(1.1);
+}
+
+.calendar-cell.today {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.calendar-day {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.calendar-cell.level-0 {
+  background: var(--elevated);
+}
+
+.calendar-cell.level-1 {
+  background: rgba(139, 90, 43, 0.25);
+}
+.calendar-cell.level-1 .calendar-day { color: var(--text); }
+
+.calendar-cell.level-2 {
+  background: rgba(139, 90, 43, 0.45);
+}
+.calendar-cell.level-2 .calendar-day { color: var(--bg); }
+
+.calendar-cell.level-3 {
+  background: rgba(139, 90, 43, 0.7);
+}
+.calendar-cell.level-3 .calendar-day { color: var(--bg); }
+
+.calendar-cell.level-4 {
+  background: var(--accent);
+}
+.calendar-cell.level-4 .calendar-day { color: var(--bg); }
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+.calendar-legend .calendar-cell {
+  width: 14px;
+  height: 14px;
+}
+
+.calendar-legend .calendar-cell:hover {
+  transform: none;
+}
+
+.calendar-legend-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin: 0 2px;
+}
+
+/* ==========================================================================
+   Reading Rhythm Heatmap (ヒートマップ)
+   ========================================================================== */
+
+.rhythm-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.rhythm-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rhythm-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rhythm-row.rhythm-header {
+  margin-bottom: 2px;
+}
+
+.rhythm-label {
+  width: 32px;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rhythm-day {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.rhythm-cell {
+  flex: 1;
+  aspect-ratio: 1;
+  max-height: 28px;
+  border-radius: var(--radius-sm);
+  transition: transform 0.15s ease;
+}
+
+.rhythm-cell:hover {
+  transform: scale(1.1);
+}
+
+.rhythm-cell.level-0 {
+  background: var(--elevated);
+}
+
+.rhythm-cell.level-1 {
+  background: rgba(139, 90, 43, 0.25);
+}
+
+.rhythm-cell.level-2 {
+  background: rgba(139, 90, 43, 0.45);
+}
+
+.rhythm-cell.level-3 {
+  background: rgba(139, 90, 43, 0.7);
+}
+
+.rhythm-cell.level-4 {
+  background: var(--accent);
+}
+
+.rhythm-insight {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+/* ==========================================================================
    Tip
    ========================================================================== */
 
