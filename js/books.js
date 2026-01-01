@@ -160,7 +160,6 @@ export function renderReadingBooks() {
     return `
       <div class="carousel-book${isSelected ? ' selected' : ''}" data-id="${book.id}">
         <div class="carousel-book-cover">${coverHtml}</div>
-        <div class="carousel-book-title">${escapeHtml(book.title)}</div>
       </div>`;
   }).join('');
 

@@ -24,6 +24,23 @@ export function startReading(bookId = null) {
 
   seconds = 0;
   currentBookId = bookId;
+
+  // 読書中の本の情報を表示
+  const bookInfo = document.getElementById('readingBookInfo');
+  const bookCover = document.getElementById('readingBookCover');
+
+  if (bookId) {
+    const book = stateManager.getBook(bookId);
+    if (book && book.coverUrl) {
+      bookInfo.style.display = 'flex';
+      bookCover.style.backgroundImage = `url(${book.coverUrl})`;
+    } else {
+      bookInfo.style.display = 'none';
+    }
+  } else {
+    bookInfo.style.display = 'none';
+  }
+
   applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
   timer = setInterval(() => seconds++, 1000);

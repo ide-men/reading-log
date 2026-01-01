@@ -1993,6 +1993,29 @@ select.form-input {
   margin-bottom: 48px;
 }
 
+.reading-book-info {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.reading-book-cover {
+  width: 80px;
+  height: 120px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.reading-book-cover.has-cover {
+  border: none;
+}
+
 .reading-stop {
   padding: 14px 40px;
   font-size: 14px;
@@ -2368,25 +2391,6 @@ select.form-input {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.carousel-book-title {
-  font-size: 11px;
-  color: var(--text-dim);
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  transition: color 0.3s ease, opacity 0.3s ease;
-  opacity: 0.6;
-}
-
-.carousel-book.selected .carousel-book-title {
-  color: var(--text);
-  font-weight: 600;
-  font-size: 12px;
-  opacity: 1;
 }
 
 /* Empty Carousel */
