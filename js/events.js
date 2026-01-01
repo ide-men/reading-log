@@ -1,7 +1,6 @@
 // ========================================
 // イベントリスナー
 // ========================================
-import { stateManager } from './state.js';
 import { BOOK_STATUS } from './constants.js';
 import {
   exportData,
@@ -15,22 +14,16 @@ import {
   addBook,
   editBook,
   saveEditBook,
-  deleteBook,
   confirmDeleteBook,
   renderBooks,
   renderReadingBooks,
   renderStudyBooks,
   renderStoreBooks,
-  acquireBook,
-  moveToReading,
-  startReadingBook,
   completeBook,
   dropBook,
   setCurrentStudyStatus,
-  getCurrentStudyStatus,
   selectBook,
   getSelectedBookId,
-  openBookDetail,
   getDetailBookId,
   setStudySelectedBookId,
   getStudySelectedBookId,
@@ -50,6 +43,13 @@ import {
   setTabCallbacks
 } from './ui.js';
 import { openLink } from './utils.js';
+import {
+  delegateEvents,
+  studyBookListHandlers,
+  studyBookListFallback,
+  storeBookListHandlers,
+  storeBookListFallback
+} from './event-handlers.js';
 
 export function initializeEventListeners() {
   // タブコールバックを登録
@@ -298,54 +298,12 @@ export function initializeEventListeners() {
   });
 
   // 書斎の本リストのアクション（グリッドカード・詳細ビュー）
-  document.getElementById('studyBookList').addEventListener('click', (e) => {
-    // 詳細ビューの閉じるボタン
-    const closeBtn = e.target.closest('[data-close-detail]');
-    if (closeBtn) {
-      clearStudySelection();
-      renderStudyBooks();
-      return;
-    }
-
-    // 読み始めるボタン
-    const startBtn = e.target.closest('[data-start]');
-    if (startBtn) {
-      e.stopPropagation();
-      clearStudySelection();
-      startReadingBook(Number(startBtn.dataset.start));
-      return;
-    }
-
-    // リンクボタン
-    const linkBtn = e.target.closest('[data-link]');
-    if (linkBtn) {
-      e.preventDefault();
-      openLink(linkBtn.dataset.link);
-      return;
-    }
-
-    // 編集ボタン
-    const editBtn = e.target.closest('[data-edit]');
-    if (editBtn) {
-      clearStudySelection();
-      editBook(Number(editBtn.dataset.edit));
-      return;
-    }
-
-    // 削除ボタン
-    const deleteBtn = e.target.closest('[data-delete]');
-    if (deleteBtn) {
-      clearStudySelection();
-      deleteBook(Number(deleteBtn.dataset.delete));
-      return;
-    }
-
-    // カードをクリックで詳細ダイアログを開く（グリッド時のみ）
-    const card = e.target.closest('.study-book-card');
-    if (card && card.dataset.bookId) {
-      openBookDetail(Number(card.dataset.bookId));
-    }
-  });
+  delegateEvents(
+    document.getElementById('studyBookList'),
+    'click',
+    studyBookListHandlers,
+    studyBookListFallback
+  );
 
   // 書籍詳細ダイアログのアクション
   document.getElementById('bookDetailLinkBtn').addEventListener('click', () => {
@@ -428,58 +386,12 @@ export function initializeEventListeners() {
   });
 
   // 本屋のアクション（グリッドカード・詳細ビュー）
-  document.getElementById('storeBookList').addEventListener('click', (e) => {
-    // 詳細ビューの閉じるボタン
-    const closeBtn = e.target.closest('[data-close-detail]');
-    if (closeBtn) {
-      clearStoreSelection();
-      renderStoreBooks();
-      return;
-    }
-
-    // 書斎に入れる
-    const toStudyBtn = e.target.closest('[data-to-study]');
-    if (toStudyBtn) {
-      clearStoreSelection();
-      acquireBook(Number(toStudyBtn.dataset.toStudy));
-      return;
-    }
-
-    // カバンに入れる
-    const toBagBtn = e.target.closest('[data-to-bag]');
-    if (toBagBtn) {
-      clearStoreSelection();
-      moveToReading(Number(toBagBtn.dataset.toBag));
-      return;
-    }
-
-    const linkBtn = e.target.closest('[data-link]');
-    if (linkBtn) {
-      e.preventDefault();
-      openLink(linkBtn.dataset.link);
-      return;
-    }
-
-    const editBtn = e.target.closest('[data-edit]');
-    if (editBtn) {
-      clearStoreSelection();
-      editBook(Number(editBtn.dataset.edit));
-      return;
-    }
-
-    const deleteBtn = e.target.closest('[data-delete]');
-    if (deleteBtn) {
-      clearStoreSelection();
-      deleteBook(Number(deleteBtn.dataset.delete));
-      return;
-    }
-
-    // カードをクリックで詳細ダイアログを開く（グリッド時のみ）
-    const card = e.target.closest('.store-book-card');
-    if (card && card.dataset.bookId) {
-      openBookDetail(Number(card.dataset.bookId));
-    }
-  });
+  delegateEvents(
+    document.getElementById('storeBookList'),
+    'click',
+    storeBookListHandlers,
+    storeBookListFallback
+  );
 
   // 読書中にページを離れる際の警告
   window.addEventListener('beforeunload', (e) => {
