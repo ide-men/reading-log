@@ -113,6 +113,12 @@
   justify-content: center;
 }
 
+/* カルーセル内の空状態は間隔を狭く */
+.book-carousel .empty-state {
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-md);
+}
+
 .carousel-book {
   flex-shrink: 0;
   width: 110px;
