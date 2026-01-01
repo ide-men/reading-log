@@ -26,7 +26,9 @@ import {
   completeBook,
   dropBook,
   setCurrentStudyStatus,
-  getCurrentStudyStatus
+  getCurrentStudyStatus,
+  selectBook,
+  getSelectedBookId
 } from './books.js';
 import { renderStats } from './stats.js';
 import {
@@ -56,17 +58,26 @@ export function initializeEventListeners() {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 
+  // 読書停止後のコールバック
+  const onReadingStop = () => {
+    updateUI();
+    renderReadingBooks();
+  };
+
   // タイマー
   document.getElementById('startBtn').addEventListener('click', () => {
     if (isTimerRunning()) {
-      stopReading(updateUI);
+      stopReading(onReadingStop);
     } else {
-      startReading();
+      const selectedId = getSelectedBookId();
+      if (selectedId) {
+        startReading(selectedId);
+      }
     }
   });
 
   document.getElementById('stopBtn').addEventListener('click', () => {
-    stopReading(updateUI);
+    stopReading(onReadingStop);
   });
 
   // 設定
@@ -208,18 +219,26 @@ export function initializeEventListeners() {
     renderStudyBooks();
   });
 
-  // カバンのアクションボタン（読み終わった、中断）
-  document.getElementById('readingBooks').addEventListener('click', (e) => {
-    const completeBtn = e.target.closest('[data-complete]');
-    if (completeBtn) {
-      completeBook(Number(completeBtn.dataset.complete));
-      return;
+  // カルーセルのクリックイベント（本の選択）
+  document.getElementById('bookCarousel').addEventListener('click', (e) => {
+    const book = e.target.closest('.carousel-book');
+    if (book && book.dataset.id) {
+      selectBook(Number(book.dataset.id));
     }
+  });
 
-    const dropBtn = e.target.closest('[data-drop]');
-    if (dropBtn) {
-      dropBook(Number(dropBtn.dataset.drop));
-      return;
+  // 選択中の本に対するアクションボタン
+  document.getElementById('completeSelectedBtn').addEventListener('click', () => {
+    const selectedId = getSelectedBookId();
+    if (selectedId) {
+      completeBook(selectedId);
+    }
+  });
+
+  document.getElementById('dropSelectedBtn').addEventListener('click', () => {
+    const selectedId = getSelectedBookId();
+    if (selectedId) {
+      dropBook(selectedId);
     }
   });
 

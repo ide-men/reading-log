@@ -19,6 +19,9 @@ import { showToast, closeModal } from './ui.js';
 let deletingBookId = null;
 let editingBookId = null;
 
+// カルーセルで選択中の本ID
+let selectedBookId = null;
+
 // 書斎の現在選択中のステータス
 let currentStudyStatus = BOOK_STATUS.COMPLETED;
 
@@ -36,6 +39,14 @@ export function getCurrentStudyStatus() {
 
 export function setCurrentStudyStatus(status) {
   currentStudyStatus = status;
+}
+
+export function getSelectedBookId() {
+  return selectedBookId;
+}
+
+export function setSelectedBookId(id) {
+  selectedBookId = id;
 }
 
 // ========================================
@@ -66,43 +77,105 @@ function getRelativeDate(dateStr) {
 }
 
 // ========================================
-// カバン（読書中）のレンダリング
+// カバン（読書中）のレンダリング - カルーセル版
 // ========================================
 export function renderReadingBooks() {
   const books = getBooksByStatus(BOOK_STATUS.READING);
-  const container = document.getElementById('readingBooks');
+  const carousel = document.getElementById('bookCarousel');
+  const infoContainer = document.getElementById('selectedBookInfo');
+  const startBtn = document.getElementById('startBtn');
+  const completeBtn = document.getElementById('completeSelectedBtn');
+  const dropBtn = document.getElementById('dropSelectedBtn');
 
-  if (!container) return;
+  if (!carousel) return;
 
   if (books.length === 0) {
-    container.innerHTML = `
-      <div class="empty-reading">
-        <div class="empty-reading-icon">📖</div>
-        <div class="empty-reading-text">読んでいる本はありません</div>
-        <div class="empty-reading-hint">本を追加して読書を始めましょう</div>
+    carousel.innerHTML = `
+      <div class="empty-carousel">
+        <div class="empty-carousel-icon">📖</div>
+        <div class="empty-carousel-text">読んでいる本はありません</div>
+        <div class="empty-carousel-hint">本を追加して読書を始めましょう</div>
       </div>`;
+    infoContainer.innerHTML = '';
+    startBtn.disabled = true;
+    startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を追加してください</span>';
+    completeBtn.disabled = true;
+    dropBtn.disabled = true;
+    selectedBookId = null;
     return;
   }
 
-  container.innerHTML = books.map(book => {
+  // 選択中の本が削除されていたら最初の本を選択
+  if (!selectedBookId || !books.find(b => b.id === selectedBookId)) {
+    selectedBookId = books[0].id;
+  }
+
+  // カルーセルをレンダリング
+  carousel.innerHTML = books.map(book => {
     const coverHtml = book.coverUrl
       ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
       : '📖';
-    const meta = book.startedAt ? getRelativeDate(book.startedAt) : '';
+    const isSelected = book.id === selectedBookId;
 
     return `
-      <div class="reading-book-card" data-id="${book.id}">
-        <div class="reading-book-cover">${coverHtml}</div>
-        <div class="reading-book-info">
-          <div class="reading-book-title">${escapeHtml(book.title)}</div>
-          <div class="reading-book-meta">${meta}</div>
-        </div>
-        <div class="reading-book-actions">
-          <button class="reading-book-action complete" data-complete="${book.id}">読み終わった！</button>
-          <button class="reading-book-action drop" data-drop="${book.id}">中断</button>
-        </div>
+      <div class="carousel-book${isSelected ? ' selected' : ''}" data-id="${book.id}">
+        <div class="carousel-book-cover">${coverHtml}</div>
+        <div class="carousel-book-title">${escapeHtml(book.title)}</div>
       </div>`;
   }).join('');
+
+  // 選択中の本の情報を表示
+  updateSelectedBookInfo();
+}
+
+// 選択中の本の情報を更新
+export function updateSelectedBookInfo() {
+  const infoContainer = document.getElementById('selectedBookInfo');
+  const startBtn = document.getElementById('startBtn');
+  const completeBtn = document.getElementById('completeSelectedBtn');
+  const dropBtn = document.getElementById('dropSelectedBtn');
+
+  if (!selectedBookId) {
+    infoContainer.innerHTML = '';
+    startBtn.disabled = true;
+    startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を選んでください</span>';
+    completeBtn.disabled = true;
+    dropBtn.disabled = true;
+    return;
+  }
+
+  const book = stateManager.getBook(selectedBookId);
+  if (!book) return;
+
+  const meta = book.startedAt ? getRelativeDate(book.startedAt) : '';
+
+  infoContainer.innerHTML = `
+    <div class="selected-book-title">${escapeHtml(book.title)}</div>
+    <div class="selected-book-meta">${meta}</div>
+  `;
+
+  // ボタンを有効化
+  startBtn.disabled = false;
+  startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>この本を読む</span>';
+  completeBtn.disabled = false;
+  dropBtn.disabled = false;
+}
+
+// カルーセルで本を選択
+export function selectBook(id) {
+  selectedBookId = id;
+
+  // UIを更新
+  const books = document.querySelectorAll('.carousel-book');
+  books.forEach(book => {
+    if (parseInt(book.dataset.id) === id) {
+      book.classList.add('selected');
+    } else {
+      book.classList.remove('selected');
+    }
+  });
+
+  updateSelectedBookInfo();
 }
 
 // ========================================
@@ -320,7 +393,8 @@ export function addBook(status = BOOK_STATUS.READING) {
     status,
     startedAt: status === BOOK_STATUS.READING ? today : null,
     completedAt: null,
-    note: null
+    note: null,
+    readingTime: 0
   };
 
   stateManager.addBook(bookData);

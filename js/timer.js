@@ -9,6 +9,7 @@ import { applyReadingAnimation } from './animations.js';
 // タイマー状態
 let timer = null;
 let seconds = 0;
+let currentBookId = null;
 
 export function isTimerRunning() {
   return timer !== null;
@@ -18,10 +19,11 @@ export function getSeconds() {
   return seconds;
 }
 
-export function startReading() {
+export function startReading(bookId = null) {
   if (timer) return;
 
   seconds = 0;
+  currentBookId = bookId;
   applyReadingAnimation();
   document.getElementById('readingScreen').classList.add('active');
   timer = setInterval(() => seconds++, 1000);
@@ -42,6 +44,16 @@ export function stopReading(onComplete) {
     today: state.stats.today + minutes
   });
 
+  // 本ごとの読書時間を記録
+  if (currentBookId) {
+    const book = stateManager.getBook(currentBookId);
+    if (book) {
+      stateManager.updateBook(currentBookId, {
+        readingTime: (book.readingTime || 0) + minutes
+      });
+    }
+  }
+
   if (minutes >= CONFIG.minSessionMinutes) {
     const currentState = stateManager.getState();
     const updates = {
@@ -56,13 +68,14 @@ export function stopReading(onComplete) {
     stateManager.addHistory({
       d: new Date().toISOString(),
       m: minutes,
-      h: new Date().getHours()
+      h: new Date().getHours(),
+      bookId: currentBookId
     });
   }
 
-  document.getElementById('startBtn').innerHTML =
-    '<span class="main-btn-icon">📖</span><span>読書をはじめる</span>';
+  // ボタンテキストはupdateUI経由でrenderReadingBooksが更新する
   seconds = 0;
+  currentBookId = null;
 
   saveState();
   onComplete();

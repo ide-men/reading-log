@@ -1914,3 +1914,187 @@ select.form-input {
   50% { transform: scale(1.1); opacity: 0.45; }
 }
 
+/* ==========================================================================
+   18. Book Carousel (カバン画面)
+   ========================================================================== */
+
+.book-carousel-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 var(--space-md);
+  min-height: 160px;
+}
+
+.book-carousel {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-xl) var(--space-lg);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-padding: 0 calc(50% - 45px);
+}
+
+.book-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-book {
+  flex-shrink: 0;
+  width: 90px;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.carousel-book:not(.selected) {
+  opacity: 0.5;
+  transform: scale(0.85);
+}
+
+.carousel-book.selected {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.carousel-book-cover {
+  width: 80px;
+  height: 110px;
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.carousel-book.selected .carousel-book-cover {
+  box-shadow: 0 8px 24px rgba(232, 168, 124, 0.4);
+}
+
+.carousel-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-book-title {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: color 0.3s ease;
+}
+
+.carousel-book.selected .carousel-book-title {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Empty Carousel */
+.empty-carousel {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-xl);
+  color: var(--text-dim);
+  width: 100%;
+}
+
+.empty-carousel-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.empty-carousel-text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.empty-carousel-hint {
+  font-size: 13px;
+}
+
+/* Selected Book Info */
+.selected-book-info {
+  padding: 0 var(--space-xl);
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected-book-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.selected-book-meta {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* Home Actions Fixed (ボタン固定エリア) */
+.home-actions-fixed {
+  padding: var(--space-md) var(--space-xl);
+  padding-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  background: var(--bg);
+}
+
+.home-actions-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.home-actions-row .btn {
+  flex: 1;
+  padding: var(--space-md);
+  font-size: 13px;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+  border: none;
+}
+
+.btn-success:disabled,
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.main-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--elevated);
+  color: var(--text-dim);
+}
+
+.main-btn:disabled:hover {
+  transform: none;
+}
+
