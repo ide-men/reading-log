@@ -14,7 +14,6 @@ function runMigrations(loadedState, fromVersion) {
   let currentState = loadedState;
   for (let v = fromVersion + 1; v <= SCHEMA_VERSION; v++) {
     if (migrations[v]) {
-      console.log(`Migrating from v${v - 1} to v${v}...`);
       currentState = migrations[v](currentState);
       currentState.meta.schemaVersion = v;
       currentState.meta.migratedAt = new Date().toISOString();
@@ -110,10 +109,6 @@ export function cleanupHistory() {
   }
 
   stateManager.setHistory(recentHistory);
-
-  if (toArchive.length > 0) {
-    console.log(`Archived ${toArchive.length} history entries`);
-  }
 }
 
 // ========================================
@@ -133,15 +128,6 @@ export function getStorageUsage() {
     usedKB: Math.round(used / 1024 * 10) / 10,
     limitMB: 5
   };
-}
-
-export function checkStorageWarning() {
-  const usage = getStorageUsage();
-  if (usage.percent >= CONFIG.storageWarningPercent) {
-    console.warn(`Storage usage: ${usage.percent}%`);
-    return true;
-  }
-  return false;
 }
 
 export function updateStorageDisplay() {

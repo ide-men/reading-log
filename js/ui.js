@@ -4,7 +4,6 @@
 import { QUOTES } from './constants.js';
 import { randomItem } from './utils.js';
 import { updateButtonAnimation } from './animations.js';
-import { saveState } from './storage.js';
 
 // タブ切り替え時のコールバック
 let tabCallbacks = {};
@@ -43,7 +42,6 @@ export function updateUI() {
   document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
 
   updateButtonAnimation();
-  saveState();
 }
 
 // ========================================

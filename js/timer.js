@@ -97,11 +97,3 @@ export function stopReading(onComplete) {
   saveState();
   onComplete();
 }
-
-export function toggleReading(callbacks) {
-  if (timer) {
-    stopReading(callbacks);
-  } else {
-    startReading();
-  }
-}

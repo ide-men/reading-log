@@ -8,15 +8,6 @@
 export const randomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // ========================================
-// フォーマット
-// ========================================
-export function formatTime(minutes) {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return `${h}:${m.toString().padStart(2, '0')}`;
-}
-
-// ========================================
 // エスケープ
 // ========================================
 export function escapeHtml(str) {
