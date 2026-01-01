@@ -5,7 +5,7 @@
 import { escapeAttr } from '../../shared/utils.js';
 import { eventBus, Events } from '../../shared/event-bus.js';
 import * as timerService from '../../domain/timer/timer-service.js';
-import * as bookRepository from '../../domain/book/book-repository.js';
+import * as uiState from '../state/ui-state.js';
 import { applyReadingAnimation } from '../effects/animations.js';
 import { renderReadingBooks } from '../views/carousel-view.js';
 import { updateUI } from './navigation.js';
@@ -14,7 +14,7 @@ import { updateUI } from './navigation.js';
 // 読書開始
 // ========================================
 export function handleStartReading() {
-  const selectedId = bookRepository.getSelectedBookId();
+  const selectedId = uiState.getSelectedBookId();
   if (!selectedId) return;
 
   const { book } = timerService.startReading(selectedId);

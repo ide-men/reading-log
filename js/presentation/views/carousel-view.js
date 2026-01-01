@@ -4,6 +4,7 @@
 import { BOOK_STATUS, UI_CONFIG } from '../../shared/constants.js';
 import { escapeHtml } from '../../shared/utils.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
+import * as uiState from '../state/ui-state.js';
 import { getRelativeDate } from '../../domain/book/book-entity.js';
 
 // ========================================
@@ -21,7 +22,7 @@ export function renderReadingBooks() {
 
   if (!carousel) return;
 
-  let selectedBookId = bookRepository.getSelectedBookId();
+  let selectedBookId = uiState.getSelectedBookId();
 
   if (books.length === 0) {
     carousel.innerHTML = `
@@ -35,7 +36,7 @@ export function renderReadingBooks() {
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を追加してください</span>';
     completeBtn.disabled = true;
     dropBtn.disabled = true;
-    bookRepository.setSelectedBookId(null);
+    uiState.setSelectedBookId(null);
     if (dotsContainer) {
       dotsContainer.innerHTML = '';
       dotsContainer.classList.remove('visible');
@@ -49,7 +50,7 @@ export function renderReadingBooks() {
   // 選択中の本が削除されていたら最初の本を選択
   if (!selectedBookId || !books.find(b => b.id === selectedBookId)) {
     selectedBookId = books[0].id;
-    bookRepository.setSelectedBookId(selectedBookId);
+    uiState.setSelectedBookId(selectedBookId);
   }
 
   // カルーセルをレンダリング
@@ -121,7 +122,7 @@ export function updateCarouselScrollState() {
 // 選択中の本の情報を更新
 // ========================================
 export function updateSelectedBookInfo() {
-  const selectedBookId = bookRepository.getSelectedBookId();
+  const selectedBookId = uiState.getSelectedBookId();
   const infoContainer = document.getElementById('selectedBookInfo');
   const startBtn = document.getElementById('startBtn');
   const completeBtn = document.getElementById('completeSelectedBtn');
@@ -156,20 +157,49 @@ export function updateSelectedBookInfo() {
 // ========================================
 // カルーセルで本を選択
 // ========================================
-export function selectBook(id) {
-  bookRepository.setSelectedBookId(id);
+export function selectBook(id, scrollToCenter = false) {
+  uiState.setSelectedBookId(id);
 
   // UIを更新
   const books = document.querySelectorAll('.carousel-book');
+  let selectedElement = null;
+
   books.forEach(book => {
     if (parseInt(book.dataset.id) === id) {
       book.classList.add('selected');
+      selectedElement = book;
     } else {
       book.classList.remove('selected');
     }
   });
 
+  // 選択した本を中央にスクロール
+  if (scrollToCenter && selectedElement) {
+    scrollBookToCenter(selectedElement);
+  }
+
   updateSelectedBookInfo();
+}
+
+// ========================================
+// 本を中央にスクロール
+// ========================================
+function scrollBookToCenter(bookElement) {
+  const carousel = document.getElementById('bookCarousel');
+  if (!carousel || !bookElement) return;
+
+  const carouselRect = carousel.getBoundingClientRect();
+  const bookRect = bookElement.getBoundingClientRect();
+
+  // 本の中央とカルーセルの中央のオフセットを計算
+  const bookCenterX = bookRect.left + bookRect.width / 2;
+  const carouselCenterX = carouselRect.left + carouselRect.width / 2;
+  const scrollOffset = bookCenterX - carouselCenterX;
+
+  carousel.scrollBy({
+    left: scrollOffset,
+    behavior: 'smooth'
+  });
 }
 
 // ========================================
@@ -206,7 +236,7 @@ export function selectCenteredBook() {
 
     if (closestBook) {
       const bookId = Number(closestBook.dataset.id);
-      const currentSelectedId = bookRepository.getSelectedBookId();
+      const currentSelectedId = uiState.getSelectedBookId();
 
       if (bookId !== currentSelectedId) {
         selectBook(bookId);
