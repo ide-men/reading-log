@@ -25,6 +25,9 @@ let selectedBookId = null;
 // 書斎の現在選択中のステータス
 let currentStudyStatus = BOOK_STATUS.COMPLETED;
 
+// 書斎で選択中の本ID
+let studySelectedBookId = null;
+
 export function getEditingBookId() {
   return editingBookId;
 }
@@ -47,6 +50,18 @@ export function getSelectedBookId() {
 
 export function setSelectedBookId(id) {
   selectedBookId = id;
+}
+
+export function getStudySelectedBookId() {
+  return studySelectedBookId;
+}
+
+export function setStudySelectedBookId(id) {
+  studySelectedBookId = id;
+}
+
+export function clearStudySelection() {
+  studySelectedBookId = null;
 }
 
 // ========================================
@@ -245,9 +260,10 @@ export function renderStudyBooks() {
       ? `background-color: ${color}; background-image: url('${escapeHtml(book.coverUrl)}'); background-size: cover; background-position: center;`
       : `background: linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%);`;
     const hasCoverClass = book.coverUrl ? 'has-cover' : '';
+    const selectedClass = studySelectedBookId === book.id ? 'selected' : '';
 
     return `
-      <div class="mini-book ${hasCoverClass}" style="
+      <div class="mini-book ${hasCoverClass} ${selectedClass}" data-book-id="${book.id}" style="
         height:${height}px;
         width:${width}px;
         ${bgStyle}
@@ -259,50 +275,130 @@ export function renderStudyBooks() {
       </div>`;
   }).join('');
 
-  // グリッドカードレイアウトでレンダリング
-  bookList.innerHTML = `<div class="study-grid">${[...books].reverse().map((book, i) => {
-    const colorIndex = books.length - 1 - i;
-    const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
+  // 選択中の本がある場合は詳細ビューを表示
+  const selectedBook = studySelectedBookId ? books.find(b => b.id === studySelectedBookId) : null;
 
-    const coverHtml = book.coverUrl
-      ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
-      : `<span class="book-placeholder">📕</span>`;
+  if (selectedBook) {
+    bookList.innerHTML = renderStudyDetailView(selectedBook);
+  } else {
+    // グリッドカードレイアウトでレンダリング
+    bookList.innerHTML = `<div class="study-grid">${[...books].reverse().map((book, i) => {
+      const colorIndex = books.length - 1 - i;
+      const color = BOOK_COLORS[colorIndex % BOOK_COLORS.length];
 
-    // ステータスに応じた日付表示
-    let dateText = '';
-    if (currentStudyStatus === BOOK_STATUS.COMPLETED && book.completedAt) {
-      dateText = formatDate(book.completedAt) + ' 読了';
-    } else if (currentStudyStatus === BOOK_STATUS.UNREAD) {
-      dateText = formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
-    } else if (currentStudyStatus === BOOK_STATUS.DROPPED && book.startedAt) {
-      dateText = formatDate(book.startedAt) + ' 開始';
-    }
+      const coverHtml = book.coverUrl
+        ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
+        : `<span class="book-placeholder">📕</span>`;
 
-    // ステータスに応じたアクションボタン（グリッドではステータス変更のみ）
-    let actionBtn = '';
-    if (currentStudyStatus === BOOK_STATUS.UNREAD || currentStudyStatus === BOOK_STATUS.DROPPED) {
-      actionBtn = `
-        <div class="study-book-actions">
-          <button class="study-action-btn" data-start="${book.id}">
-            <span>📖</span>
-            <span>読み始める！</span>
-          </button>
-        </div>`;
-    }
+      // ステータスに応じた日付表示
+      let dateText = '';
+      if (currentStudyStatus === BOOK_STATUS.COMPLETED && book.completedAt) {
+        dateText = formatDate(book.completedAt) + ' 読了';
+      } else if (currentStudyStatus === BOOK_STATUS.UNREAD) {
+        dateText = formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+      } else if (currentStudyStatus === BOOK_STATUS.DROPPED && book.startedAt) {
+        dateText = formatDate(book.startedAt) + ' 開始';
+      }
 
-    return `
-      <div class="study-book-card" data-book-id="${book.id}">
-        <div class="study-book-cover" style="background-color: ${color}">
+      // ステータスに応じたアクションボタン（グリッドではステータス変更のみ）
+      let actionBtn = '';
+      if (currentStudyStatus === BOOK_STATUS.UNREAD || currentStudyStatus === BOOK_STATUS.DROPPED) {
+        actionBtn = `
+          <div class="study-book-actions">
+            <button class="study-action-btn" data-start="${book.id}">
+              <span>📖</span>
+              <span>読み始める！</span>
+            </button>
+          </div>`;
+      }
+
+      return `
+        <div class="study-book-card" data-book-id="${book.id}">
+          <div class="study-book-cover" style="background-color: ${color}">
+            ${coverHtml}
+          </div>
+          <div class="study-book-info">
+            <div class="study-book-title">${escapeHtml(book.title)}</div>
+            <div class="study-book-date">${dateText}</div>
+          </div>
+          ${actionBtn}
+        </div>
+      `;
+    }).join('')}</div>`;
+  }
+}
+
+// 書斎の詳細ビューをレンダリング
+function renderStudyDetailView(book) {
+  const bookIndex = stateManager.getState().books.findIndex(b => b.id === book.id);
+  const color = BOOK_COLORS[bookIndex % BOOK_COLORS.length];
+
+  const coverHtml = book.coverUrl
+    ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
+    : `<span class="book-placeholder">📕</span>`;
+
+  // ステータスに応じた日付表示
+  let dateText = '';
+  if (book.status === BOOK_STATUS.COMPLETED && book.completedAt) {
+    dateText = formatDate(book.completedAt) + ' 読了';
+  } else if (book.status === BOOK_STATUS.UNREAD) {
+    dateText = formatDate(new Date(book.id).toISOString().split('T')[0]) + ' 追加';
+  } else if (book.status === BOOK_STATUS.DROPPED && book.startedAt) {
+    dateText = formatDate(book.startedAt) + ' 開始';
+  } else if (book.status === BOOK_STATUS.READING && book.startedAt) {
+    dateText = formatDate(book.startedAt) + ' 開始';
+  }
+
+  // メモ表示
+  const noteHtml = book.note
+    ? `<div class="study-detail-note">${escapeHtml(book.note)}</div>`
+    : '';
+
+  // リンクボタン
+  const linkBtn = isValidUrl(book.link)
+    ? `<button class="study-detail-action" data-link="${escapeAttr(book.link)}">
+        <span>↗</span>
+        <span>リンクを開く</span>
+      </button>`
+    : '';
+
+  // ステータスに応じたアクションボタン
+  let actionBtn = '';
+  if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED) {
+    actionBtn = `
+      <button class="study-detail-action primary" data-start="${book.id}">
+        <span>📖</span>
+        <span>読み始める！</span>
+      </button>`;
+  }
+
+  return `
+    <div class="study-detail-view">
+      <button class="study-detail-close" data-close-detail>✕</button>
+      <div class="study-detail-content">
+        <div class="study-detail-cover" style="background-color: ${color}">
           ${coverHtml}
         </div>
-        <div class="study-book-info">
-          <div class="study-book-title">${escapeHtml(book.title)}</div>
-          <div class="study-book-date">${dateText}</div>
+        <div class="study-detail-info">
+          <div class="study-detail-title">${escapeHtml(book.title)}</div>
+          <div class="study-detail-date">${dateText}</div>
+          ${noteHtml}
+          <div class="study-detail-actions">
+            ${actionBtn}
+            ${linkBtn}
+            <button class="study-detail-action" data-edit="${book.id}">
+              <span>✏️</span>
+              <span>編集</span>
+            </button>
+            <button class="study-detail-action danger" data-delete="${book.id}">
+              <span>🗑️</span>
+              <span>削除</span>
+            </button>
+          </div>
         </div>
-        ${actionBtn}
       </div>
-    `;
-  }).join('')}</div>`;
+    </div>
+  `;
 }
 
 // ========================================
