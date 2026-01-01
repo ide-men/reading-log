@@ -12,18 +12,24 @@
 ```
 js/
 ├── app.js           # エントリポイント・初期化
-├── constants.js     # 定数・設定値（TITLES, QUOTES, COLORS等）
-├── state.js         # State Manager（状態管理パターン）
+├── constants.js     # 定数・設定値（QUOTES, COLORS等）
+├── sample-data.js   # サンプル書籍データ
+├── state.js         # State Manager（永続化データ + UI状態）
 ├── storage.js       # 永続化・マイグレーション・バックアップ
 ├── utils.js         # ユーティリティ関数
 ├── timer.js         # 読書タイマー管理
 │
 ├── books.js         # 本モジュールのファサード（再エクスポート）
-├── book-state.js    # 本の選択状態管理
 ├── book-helpers.js  # 本関連の共通ヘルパー関数
-├── book-rendering.js # 本のレンダリング（カバン・書斎・本屋）
+├── book-rendering.js # ビューのファサード（再エクスポート）
 ├── book-crud.js     # 本の追加・編集・削除
 ├── book-status.js   # 本のステータス遷移
+│
+├── views/
+│   ├── carousel-view.js # カバン（カルーセル）のレンダリング
+│   ├── study-view.js    # 書斎のレンダリング
+│   ├── store-view.js    # 本屋のレンダリング
+│   └── shared.js        # 共通レンダリング関数
 │
 ├── stats.js         # 統計計算・グラフ表示
 ├── animations.js    # ボタン・読書画面アニメーション

@@ -1,7 +1,8 @@
 // ========================================
 // Storage & Persistence
 // ========================================
-import { SCHEMA_VERSION, STORAGE_KEYS, CONFIG, SAMPLE_BOOKS } from './constants.js';
+import { SCHEMA_VERSION, STORAGE_KEYS, CONFIG } from './constants.js';
+import { SAMPLE_BOOKS } from './sample-data.js';
 import { stateManager, createInitialState } from './state.js';
 import { extractAsinFromUrl, getAmazonImageUrl } from './utils.js';
 

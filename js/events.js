@@ -312,9 +312,48 @@ function initCarouselEvents() {
 }
 
 // ========================================
+// 共通シェルフイベント設定
+// ========================================
+function initShelfEvents(config) {
+  const { shelfId, bookListId, miniBookClass, handlers, fallback, getSelectedId, setSelectedId, clearSelection, renderFn } = config;
+
+  // ブックリストのイベント委譲
+  delegateEvents(
+    document.getElementById(bookListId),
+    'click',
+    handlers,
+    fallback
+  );
+
+  // シェルフのクリックイベント（デバウンス付き）
+  let lastClickTime = 0;
+  document.getElementById(shelfId).addEventListener('click', (e) => {
+    const now = Date.now();
+    if (now - lastClickTime < UI_CONFIG.debounceInterval) return;
+    lastClickTime = now;
+
+    const miniBook = e.target.closest(`.${miniBookClass}`);
+    if (!miniBook) return;
+
+    const bookId = Number(miniBook.dataset.bookId);
+    if (!bookId) return;
+
+    if (getSelectedId() === bookId) {
+      miniBook.classList.remove('selected');
+      clearSelection();
+      setTimeout(renderFn, 200);
+    } else {
+      setSelectedId(bookId);
+      renderFn();
+    }
+  });
+}
+
+// ========================================
 // 書斎関連
 // ========================================
 function initStudyEvents() {
+  // ステータスタブのイベント
   document.getElementById('studyStatusTabs').addEventListener('click', (e) => {
     const tab = e.target.closest('.status-tab');
     if (!tab) return;
@@ -330,35 +369,17 @@ function initStudyEvents() {
     renderStudyBooks();
   });
 
-  delegateEvents(
-    document.getElementById('studyBookList'),
-    'click',
-    studyBookListHandlers,
-    studyBookListFallback
-  );
-
-  let lastStudyShelfClickTime = 0;
-  document.getElementById('studyShelf').addEventListener('click', (e) => {
-    const now = Date.now();
-    if (now - lastStudyShelfClickTime < UI_CONFIG.debounceInterval) return;
-    lastStudyShelfClickTime = now;
-
-    const miniBook = e.target.closest('.mini-book');
-    if (!miniBook) return;
-
-    const bookId = Number(miniBook.dataset.bookId);
-    if (!bookId) return;
-
-    if (getStudySelectedBookId() === bookId) {
-      miniBook.classList.remove('selected');
-      clearStudySelection();
-      setTimeout(() => {
-        renderStudyBooks();
-      }, 200);
-    } else {
-      setStudySelectedBookId(bookId);
-      renderStudyBooks();
-    }
+  // シェルフイベント
+  initShelfEvents({
+    shelfId: 'studyShelf',
+    bookListId: 'studyBookList',
+    miniBookClass: 'mini-book',
+    handlers: studyBookListHandlers,
+    fallback: studyBookListFallback,
+    getSelectedId: getStudySelectedBookId,
+    setSelectedId: setStudySelectedBookId,
+    clearSelection: clearStudySelection,
+    renderFn: renderStudyBooks
   });
 }
 
@@ -366,35 +387,16 @@ function initStudyEvents() {
 // 本屋関連
 // ========================================
 function initStoreEvents() {
-  delegateEvents(
-    document.getElementById('storeBookList'),
-    'click',
-    storeBookListHandlers,
-    storeBookListFallback
-  );
-
-  let lastStoreShelfClickTime = 0;
-  document.getElementById('storeShelf').addEventListener('click', (e) => {
-    const now = Date.now();
-    if (now - lastStoreShelfClickTime < UI_CONFIG.debounceInterval) return;
-    lastStoreShelfClickTime = now;
-
-    const miniBook = e.target.closest('.store-mini-book');
-    if (!miniBook) return;
-
-    const bookId = Number(miniBook.dataset.bookId);
-    if (!bookId) return;
-
-    if (getStoreSelectedBookId() === bookId) {
-      miniBook.classList.remove('selected');
-      clearStoreSelection();
-      setTimeout(() => {
-        renderStoreBooks();
-      }, 200);
-    } else {
-      setStoreSelectedBookId(bookId);
-      renderStoreBooks();
-    }
+  initShelfEvents({
+    shelfId: 'storeShelf',
+    bookListId: 'storeBookList',
+    miniBookClass: 'store-mini-book',
+    handlers: storeBookListHandlers,
+    fallback: storeBookListFallback,
+    getSelectedId: getStoreSelectedBookId,
+    setSelectedId: setStoreSelectedBookId,
+    clearSelection: clearStoreSelection,
+    renderFn: renderStoreBooks
   });
 }
 
