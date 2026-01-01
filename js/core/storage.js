@@ -1,15 +1,23 @@
 // ========================================
 // Storage & Persistence
+// データの永続化・マイグレーション・バックアップを管理
 // ========================================
-import { SCHEMA_VERSION, STORAGE_KEYS, CONFIG } from './constants.js';
-import { SAMPLE_BOOKS } from './sample-data.js';
-import { stateManager, createInitialState } from './state.js';
-import { extractAsinFromUrl, getAmazonImageUrl } from './utils.js';
+import { SCHEMA_VERSION, STORAGE_KEYS, CONFIG } from '../shared/constants.js';
+import { extractAsinFromUrl, getAmazonImageUrl } from '../shared/utils.js';
+import { eventBus, Events } from '../shared/event-bus.js';
+import { stateManager, createInitialState } from './state-manager.js';
+import { SAMPLE_BOOKS } from '../sample-data.js';
 
 // ========================================
 // マイグレーションインフラ
 // ========================================
 const migrations = {};
+
+// 将来のマイグレーション例:
+// migrations[2] = (state) => {
+//   // V1 -> V2 の変換処理
+//   return { ...state, newField: 'default' };
+// };
 
 function runMigrations(loadedState, fromVersion) {
   let currentState = loadedState;
@@ -26,6 +34,7 @@ function runMigrations(loadedState, fromVersion) {
 // ========================================
 // 状態の読み込み・保存
 // ========================================
+
 export function loadState() {
   try {
     const meta = localStorage.getItem(STORAGE_KEYS.meta);
@@ -77,6 +86,7 @@ export function saveState() {
 // ========================================
 // 履歴クリーンアップ
 // ========================================
+
 export function cleanupHistory() {
   const state = stateManager.getState();
   const now = new Date();
@@ -115,6 +125,7 @@ export function cleanupHistory() {
 // ========================================
 // ストレージ容量管理
 // ========================================
+
 export function getStorageUsage() {
   let used = 0;
   for (const key of Object.values(STORAGE_KEYS)) {
@@ -148,6 +159,7 @@ export function updateStorageDisplay() {
 // ========================================
 // バックアップ・復元
 // ========================================
+
 export function exportData(showToast) {
   const state = stateManager.getState();
   const exportObj = {
@@ -228,6 +240,7 @@ export function importData(file, { showToast, onSuccess }) {
       saveState();
       onSuccess();
       showToast('データを復元しました');
+      eventBus.emit(Events.DATA_IMPORTED);
     } catch (err) {
       console.error('Import failed:', err);
       showToast('インポートに失敗しました', 4000);
@@ -315,4 +328,5 @@ export function resetAllData({ showToast, onSuccess }) {
   saveState();
   onSuccess();
   showToast('リセットしました');
+  eventBus.emit(Events.DATA_RESET);
 }

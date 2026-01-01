@@ -1,9 +1,13 @@
 // ========================================
 // アニメーション
 // ========================================
-import { BUTTON_ANIMATIONS, READING_ANIMATIONS, ANIMATION_CONFIG } from './constants.js';
-import { randomItem, getTimeSlot } from './utils.js';
-import { calculateStreak } from './stats.js';
+import { BUTTON_ANIMATIONS, READING_ANIMATIONS, ANIMATION_CONFIG } from '../../shared/constants.js';
+import { randomItem, getTimeSlot } from '../../shared/utils.js';
+import { calculateStreak } from '../../domain/stats/stats-service.js';
+
+// ========================================
+// ボタンアニメーション
+// ========================================
 
 export function getButtonAnimation() {
   const streak = calculateStreak();
@@ -23,6 +27,10 @@ export function updateButtonAnimation() {
   btnIcon.textContent = config.icon;
   btnIcon.className = `main-btn-icon anim-${config.anim}`;
 }
+
+// ========================================
+// 読書画面アニメーション
+// ========================================
 
 export function applyReadingAnimation() {
   const config = randomItem(READING_ANIMATIONS);

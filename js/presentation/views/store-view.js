@@ -1,17 +1,16 @@
 // ========================================
 // 本屋（ウィッシュリスト）ビュー
 // ========================================
-import { BOOK_STATUS } from '../constants.js';
-import { stateManager } from '../state.js';
-import { getBooksByStatus } from '../book-helpers.js';
+import { BOOK_STATUS } from '../../shared/constants.js';
+import * as bookRepository from '../../domain/book/book-repository.js';
 import { renderShelfContent } from './shared.js';
 
 // ========================================
 // 本屋（ウィッシュリスト）のレンダリング
 // ========================================
 export function renderStoreBooks() {
-  const storeSelectedBookId = stateManager.getStoreSelectedBookId();
-  const books = getBooksByStatus(BOOK_STATUS.WISHLIST);
+  const storeSelectedBookId = bookRepository.getStoreSelectedBookId();
+  const books = bookRepository.getBooksByStatus(BOOK_STATUS.WISHLIST);
   const shelf = document.getElementById('storeShelf');
   const container = document.getElementById('storeBookList');
   const countEl = document.getElementById('wishlistCount');

@@ -1,16 +1,15 @@
 // ========================================
 // 共通レンダリング関数
 // ========================================
-import { BOOK_STATUS } from '../constants.js';
-import { stateManager } from '../state.js';
-import { escapeHtml, escapeAttr, isValidUrl } from '../utils.js';
+import { BOOK_STATUS } from '../../shared/constants.js';
+import { escapeHtml, escapeAttr, isValidUrl } from '../../shared/utils.js';
+import * as bookRepository from '../../domain/book/book-repository.js';
 import {
   getBookDateText,
-  getBookColor,
   getBookColorByIndex,
   createBookCoverHtml,
   renderMiniBookShelf
-} from '../book-helpers.js';
+} from '../../domain/book/book-entity.js';
 
 // ========================================
 // 共通グリッドカードレンダリング
@@ -103,7 +102,7 @@ export function renderShelfContent(options) {
 // 共通詳細ビューレンダリング
 // ========================================
 export function renderDetailView(book, type = 'study') {
-  const color = getBookColor(book);
+  const color = bookRepository.getBookColor(book);
   const placeholder = type === 'store' ? '📖' : '📕';
   const coverHtml = createBookCoverHtml(book, placeholder);
   const dateText = getBookDateText(book);
@@ -175,10 +174,10 @@ export function renderDetailView(book, type = 'study') {
 // 書籍詳細ダイアログを開く
 // ========================================
 export function openBookDetail(id) {
-  const book = stateManager.getBook(id);
+  const book = bookRepository.getBookById(id);
   if (!book) return;
 
-  stateManager.setDetailBookId(id);
+  bookRepository.setDetailBookId(id);
 
   // カバー画像
   const coverEl = document.getElementById('bookDetailCover');
