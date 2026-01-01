@@ -7,7 +7,7 @@ import { openLink } from '../../shared/utils.js';
 import * as bookService from '../../domain/book/book-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
 import { showAcquireCelebration } from '../effects/celebrations.js';
-import { renderReadingBooks, selectBook, updateCarouselScrollState } from '../views/carousel-view.js';
+import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenteredBook } from '../views/carousel-view.js';
 import { renderStudyBooks } from '../views/study-view.js';
 import { renderStoreBooks } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
@@ -434,6 +434,7 @@ export function initCarouselEvents() {
 
   document.getElementById('bookCarousel').addEventListener('scroll', () => {
     updateCarouselScrollState();
+    selectCenteredBook();
   });
 
   document.getElementById('carouselDots').addEventListener('click', (e) => {
