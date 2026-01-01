@@ -169,3 +169,87 @@ const migrations = {};
 
 - 既存プロパティの削除・リネーム・型変更をする場合はマイグレーション関数を用意
 - 新プロパティ追加時はデフォルト値を設定
+
+## CSS設計方針
+
+### ファイル構成
+
+```
+css/
+├── base.css          # リセット・CSS変数・ユーティリティクラス
+├── components.css    # 共通コンポーネント（ボタン・モーダル・フォーム等）
+├── animations.css    # アニメーション定義
+├── shared.css        # ページ横断の共通スタイル（カード・シェルフ等）
+└── views/            # ページ固有のスタイル
+    ├── home.css
+    ├── carousel.css
+    ├── study.css
+    ├── store.css
+    └── stats.css
+```
+
+### 命名規則: BEM
+
+```css
+.block {}
+.block__element {}
+.block--modifier {}
+```
+
+例:
+```css
+.book-card {}
+.book-card__cover {}
+.book-card__title {}
+.book-card--study {}
+.book-card--store {}
+```
+
+### 共通化の原則
+
+**同じ用途のクラスは1つに統一する**
+
+| 用途 | 共通クラス | 修飾子例 |
+|------|-----------|---------|
+| ページ見出し | `.page-header` | `.page-header--compact` |
+| 空状態 | `.empty-state` | `.empty-state--small` |
+| 本棚 | `.shelf` | `#tab-store .shelf` (コンテキスト) |
+| 本カード | `.book-card` | `.book-card--study`, `.book-card--store` |
+| 詳細ビュー | `.detail-view` | `.detail-view--study`, `.detail-view--store` |
+| アクションボタン | `.action-btn` | `.action-btn--primary`, `.action-btn--secondary` |
+| ミニ本 | `.mini-book` | - |
+
+### ユーティリティクラス (base.css)
+
+| クラス | 用途 |
+|--------|------|
+| `.section-title` | セクション見出し |
+| `.text-hint` | ヒントテキスト |
+| `.hover-lift` | ホバー時の浮き上がり効果 |
+| `.flex-center` | Flexbox中央配置 |
+| `.flex-col-center` | Flexbox縦方向中央配置 |
+| `.badge` | バッジ基本スタイル |
+
+### 新規クラス追加時のルール
+
+1. **既存クラスを確認**: 同じ用途のクラスがないか確認
+2. **共通クラス + 修飾子**: ページ固有のスタイルは修飾子で対応
+3. **BEM命名**: `block__element--modifier` 形式を使用
+4. **定義場所**:
+   - 複数ページで使う → `shared.css`
+   - 特定ページのみ → `views/*.css`
+   - ユーティリティ → `base.css`
+
+### テーマカラー
+
+| ページ | プライマリカラー |
+|--------|-----------------|
+| 書斎 (study) | `#8b5a2b` (brown) |
+| 本屋 (store) | `#f59e0b` (amber) |
+| 共通 | `var(--accent)` |
+
+### やってはいけないこと
+
+- ページごとに同じスタイルの別名クラスを作る（例: ❌ `.study-emoji`, `.store-emoji`）
+- 後方互換性のためだけのエイリアス定義を残す
+- インラインスタイルの多用

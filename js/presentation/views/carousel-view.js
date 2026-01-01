@@ -25,10 +25,10 @@ export function renderReadingBooks() {
 
   if (books.length === 0) {
     carousel.innerHTML = `
-      <div class="empty-carousel">
-        <div class="empty-carousel-icon">📖</div>
-        <div class="empty-carousel-text">読んでいる本はありません</div>
-        <div class="empty-carousel-hint">本を追加して読書を始めましょう</div>
+      <div class="empty-state">
+        <div class="empty-state__icon">📖</div>
+        <div class="empty-state__text">読んでいる本はありません</div>
+        <div class="empty-state__hint">本を追加して読書を始めましょう</div>
       </div>`;
     infoContainer.innerHTML = '';
     startBtn.disabled = true;
