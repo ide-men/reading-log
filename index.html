@@ -95,17 +95,23 @@
   <!-- 本屋タブ -->
   <div class="tab" id="tab-store">
     <div class="store-header">
-      <div class="store-emoji">📚</div>
-      <div class="store-title">Book Store</div>
-      <div class="store-subtitle">気になっている本</div>
+      <div class="store-emoji">🏪</div>
+      <div class="store-title">本屋</div>
+      <div class="store-subtitle">気になる本</div>
     </div>
 
     <div class="store-stats">
       <span class="store-count" id="wishlistCount">0</span>
-      <span class="store-label">冊の本が待っています</span>
+      <span class="store-label">冊の本を見つけた</span>
     </div>
 
-    <div class="store-grid" id="storeBookList"></div>
+    <div class="store-shelf-container">
+      <div class="store-shelf-board">
+        <div class="store-shelf-visual" id="storeShelf"></div>
+      </div>
+    </div>
+
+    <div id="storeBookList"></div>
   </div>
 
   <!-- 本を手に入れた時のセレブレーション -->
