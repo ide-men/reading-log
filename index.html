@@ -469,6 +469,29 @@
     </div>
   </div>
 
+  <!-- 読書終了モーダル -->
+  <div class="modal-overlay" id="readingNoteModal" role="dialog" aria-modal="true" aria-labelledby="readingNoteModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="readingNoteModalTitle">📝 おつかれさまでした！</h2>
+        <button class="modal-close" data-close="readingNoteModal" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="drop-book-info">
+          <div class="drop-book-title" id="readingNoteBookTitle"></div>
+        </div>
+        <div class="form-group">
+          <textarea class="form-input form-textarea" id="readingNoteInput" placeholder="今日読んだ感想やメモ..." rows="3"></textarea>
+          <div class="form-hint">一言残せます（任意）</div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="skipReadingNoteBtn">スキップ</button>
+          <button class="btn btn-primary" id="saveReadingNoteBtn">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

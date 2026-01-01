@@ -96,3 +96,14 @@ export function getDroppingBookId() {
 export function setDroppingBookId(id) {
   stateManager.setDroppingBookId(id);
 }
+
+// ========================================
+// 読書終了時の感想入力
+// ========================================
+export function getReadingNoteBookId() {
+  return stateManager.getReadingNoteBookId();
+}
+
+export function setReadingNoteBookId(id) {
+  stateManager.setReadingNoteBookId(id);
+}

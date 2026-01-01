@@ -36,7 +36,8 @@ export function createInitialUI() {
     editingBookId: null,         // 編集中の本
     deletingBookId: null,        // 削除確認中の本
     detailBookId: null,          // 詳細ダイアログで開いている本
-    droppingBookId: null         // 中断確認中の本
+    droppingBookId: null,        // 中断確認中の本
+    readingNoteBookId: null      // 読書終了時の感想入力中の本
   };
 }
 
@@ -109,6 +110,10 @@ class StateManager {
   // 中断確認
   getDroppingBookId() { return this._ui.droppingBookId; }
   setDroppingBookId(id) { this._ui.droppingBookId = id; }
+
+  // 読書終了時の感想入力
+  getReadingNoteBookId() { return this._ui.readingNoteBookId; }
+  setReadingNoteBookId(id) { this._ui.readingNoteBookId = id; }
 
   // ========================================
   // 永続化状態の getter/setter

@@ -4,10 +4,12 @@
 // ========================================
 import { escapeAttr } from '../../shared/utils.js';
 import * as timerService from '../../domain/timer/timer-service.js';
+import * as bookRepository from '../../domain/book/book-repository.js';
+import * as bookService from '../../domain/book/book-service.js';
 import * as uiState from '../state/ui-state.js';
 import { applyReadingAnimation } from '../effects/animations.js';
 import { renderReadingBooks } from '../views/carousel-view.js';
-import { updateUI } from './navigation.js';
+import { updateUI, openModal, closeModal, showToast } from './navigation.js';
 
 // ========================================
 // 読書開始
@@ -38,11 +40,42 @@ export function handleStartReading() {
 // 読書停止
 // ========================================
 export function handleStopReading() {
+  // 読書中の本のIDを取得（stopReadingを呼ぶ前に取得）
+  const bookId = timerService.getCurrentBookId();
+  const book = bookId ? bookRepository.getBookById(bookId) : null;
+
   timerService.stopReading();
 
   document.getElementById('readingScreen').classList.remove('active');
   updateUI();
   renderReadingBooks();
+
+  // 感想入力モーダルを表示
+  if (book) {
+    uiState.setReadingNoteBookId(bookId);
+    document.getElementById('readingNoteBookTitle').textContent = book.title;
+    document.getElementById('readingNoteInput').value = book.note || '';
+    openModal('readingNoteModal');
+  }
+}
+
+// ========================================
+// 読書終了時の感想保存
+// ========================================
+export function saveReadingNote() {
+  const bookId = uiState.getReadingNoteBookId();
+  if (!bookId) return;
+
+  const note = document.getElementById('readingNoteInput').value.trim() || null;
+  bookService.editBook(bookId, { note });
+
+  closeModal('readingNoteModal');
+  showToast('保存しました');
+  renderReadingBooks();
+}
+
+export function skipReadingNote() {
+  closeModal('readingNoteModal');
 }
 
 // ========================================
@@ -59,6 +92,15 @@ export function initTimerEvents() {
 
   document.getElementById('stopBtn').addEventListener('click', () => {
     handleStopReading();
+  });
+
+  // 読書終了時の感想モーダル
+  document.getElementById('saveReadingNoteBtn').addEventListener('click', () => {
+    saveReadingNote();
+  });
+
+  document.getElementById('skipReadingNoteBtn').addEventListener('click', () => {
+    skipReadingNote();
   });
 }
 
