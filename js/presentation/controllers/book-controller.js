@@ -471,8 +471,33 @@ export function initCarouselEvents() {
     const selectedId = uiState.getSelectedBookId();
     if (selectedId) {
       dropBook(selectedId);
+      closeBookActionsDropdown();
     }
   });
+
+  // ⋮メニューの開閉
+  const menuBtn = document.getElementById('bookActionsMenuBtn');
+  const dropdown = document.getElementById('bookActionsDropdown');
+
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+  });
+
+  // メニュー外クリックで閉じる
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.home-actions-menu')) {
+      closeBookActionsDropdown();
+    }
+  });
+}
+
+// ドロップダウンを閉じる
+function closeBookActionsDropdown() {
+  const dropdown = document.getElementById('bookActionsDropdown');
+  if (dropdown) {
+    dropdown.classList.remove('open');
+  }
 }
 
 // ========================================

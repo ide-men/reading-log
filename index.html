@@ -61,7 +61,15 @@
       </button>
       <div class="home-actions-row">
         <button class="btn btn-success" id="completeSelectedBtn" disabled>読み終わった！</button>
-        <button class="btn btn-secondary" id="dropSelectedBtn" disabled>中断</button>
+        <div class="home-actions-menu">
+          <button class="btn btn-secondary home-actions-menu-btn" id="bookActionsMenuBtn" disabled aria-label="その他のアクション">⋮</button>
+          <div class="home-actions-dropdown" id="bookActionsDropdown">
+            <button class="home-actions-dropdown-item" id="dropSelectedBtn">
+              <span>⏸️</span>
+              <span>中断する</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
