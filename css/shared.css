@@ -350,7 +350,7 @@
   align-items: flex-end;
   gap: var(--space-xs);
   min-height: 80px;
-  padding: var(--space-md) var(--space-sm) 0;
+  padding: var(--space-md) 100px 0 var(--space-sm);
   width: fit-content;
   min-width: 100%;
   position: relative;
