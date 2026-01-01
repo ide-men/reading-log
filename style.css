@@ -1076,6 +1076,21 @@ html, body {
   animation: feedbackIn 0.4s ease;
 }
 
+.add-book-feedback.fade-out {
+  animation: feedbackOut 0.3s ease forwards;
+}
+
+@keyframes feedbackOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
 .feedback-check {
   width: 28px;
   height: 28px;

@@ -10,7 +10,7 @@ import {
   updateStorageDisplay
 } from './storage.js';
 import { isTimerRunning, getSeconds, startReading, stopReading } from './timer.js';
-import { addBook, editBook, saveEditBook, deleteBook, confirmDeleteBook, renderBooks, resetContinueAddCount } from './books.js';
+import { addBook, editBook, saveEditBook, deleteBook, confirmDeleteBook, renderBooks } from './books.js';
 import { renderStats } from './stats.js';
 import {
   switchTab,
@@ -84,7 +84,6 @@ export function initializeEventListeners() {
   fab.style.cssText = 'position:fixed;bottom:90px;right:20px;width:56px;height:56px;border-radius:50%;font-size:28px;z-index:50;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
   fab.textContent = '+';
   fab.addEventListener('click', () => {
-    resetContinueAddCount();
     openModal('addBookModal');
   });
   document.body.appendChild(fab);
@@ -146,10 +145,6 @@ export function initializeEventListeners() {
   document.querySelectorAll('[data-close]').forEach(btn => {
     btn.addEventListener('click', () => {
       closeModal(btn.dataset.close);
-      // 本追加モーダルの場合はカウンターをリセット
-      if (btn.dataset.close === 'addBookModal') {
-        resetContinueAddCount();
-      }
     });
   });
 
@@ -158,10 +153,6 @@ export function initializeEventListeners() {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
         overlay.classList.remove('active');
-        // 本追加モーダルの場合はカウンターをリセット
-        if (overlay.id === 'addBookModal') {
-          resetContinueAddCount();
-        }
       }
     });
   });
