@@ -7,17 +7,11 @@
    ========================================================================== */
 
 .header {
-  position: fixed;
-  top: var(--header-offset);
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - var(--header-offset) * 2);
-  max-width: calc(var(--max-width) - var(--header-offset) * 2);
-  z-index: 50;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: var(--space-md) var(--space-lg);
+  margin: var(--header-offset) var(--header-offset) 0;
   background: rgba(var(--surface-rgb), 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -199,7 +193,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--content-top-padding) var(--space-xl) 100px;
+  padding: var(--space-md) var(--space-xl) 100px;
   -webkit-overflow-scrolling: touch;
 }
 
