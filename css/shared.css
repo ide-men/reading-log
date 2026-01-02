@@ -651,9 +651,7 @@
 }
 
 .book-card__date {
-  font-size: 11px;
-  color: #8b7355;
-  font-weight: 500;
+  display: none;
 }
 
 .book-card__actions {
@@ -925,9 +923,7 @@
 }
 
 .detail-view__date {
-  font-size: 13px;
-  color: var(--text-dim);
-  font-weight: 500;
+  display: none;
 }
 
 .detail-view__bookmark {
