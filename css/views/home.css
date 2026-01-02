@@ -351,7 +351,7 @@
 }
 
 .home-actions-row .btn {
-  flex: 1;
+  flex: 3;
   padding: var(--space-gutter) var(--space-md);
   font-size: 13px;
   font-weight: 600;
@@ -386,11 +386,11 @@
 /* アクションメニュー（⋮ボタン＋ドロップダウン） - モダンデザイン */
 .home-actions-menu {
   position: relative;
+  flex: 1;
 }
 
 .home-actions-menu-btn {
-  flex: none !important;
-  width: 40px;
+  width: 100%;
   height: auto;
   padding: var(--space-gutter) 0 !important;
   font-size: 18px;
@@ -500,7 +500,6 @@
   }
 
   .home-actions-menu-btn {
-    width: 44px;
     padding: var(--space-md) 0 !important;
     border-radius: 14px !important;
   }
@@ -580,7 +579,6 @@
   }
 
   .home-actions-menu-btn {
-    width: 48px;
     padding: var(--space-form) 0 !important;
     border-radius: 16px !important;
   }
