@@ -33,10 +33,24 @@
   margin-top: var(--space-xs);
 }
 
-/* ヒントマーク（タイトル下に配置） */
-.page-header__hint {
-  display: inline-flex;
-  margin-top: var(--space-sm);
+/* インラインヘッダー（左寄せ横並び） */
+.page-header--inline {
+  text-align: left;
+  padding: var(--space-lg) 0 var(--space-md);
+}
+
+.page-header__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.page-header__icon {
+  font-size: 24px;
+}
+
+.page-header--inline .page-header__title {
+  font-size: 18px;
 }
 
 
