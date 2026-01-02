@@ -30,6 +30,7 @@ import {
   initOnboardingEvents,
   showOnboardingIfNeeded
 } from './presentation/controllers/onboarding-controller.js';
+import { initTermHintEvents } from './presentation/controllers/term-hint-controller.js';
 
 // ========================================
 // 全イベントリスナー初期化
@@ -46,6 +47,7 @@ function initializeEventListeners() {
   initStoreEvents();
   initReunionEvents();
   initOnboardingEvents();
+  initTermHintEvents();
   initBeforeUnloadEvent();
 }
 
