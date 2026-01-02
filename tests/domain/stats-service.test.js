@@ -5,6 +5,7 @@ import {
   getBasicStats,
   getWeekChartData,
   getMonthCalendarData,
+  getThreeMonthCalendarData,
   getReadingRhythmData,
   getReadingInsights,
   // 純粋関数版（モック不要）
@@ -13,6 +14,7 @@ import {
   getBasicStatsPure,
   getWeekChartDataPure,
   getMonthCalendarDataPure,
+  getThreeMonthCalendarDataPure,
   getReadingRhythmDataPure,
   getReadingInsightsPure,
 } from '../../js/domain/stats/stats-service.js';
@@ -199,6 +201,76 @@ describe('getMonthCalendarData', () => {
 
     expect(today.level).toBeGreaterThan(0);
     expect(maxMinutes).toBeGreaterThanOrEqual(30);
+  });
+});
+
+describe('getThreeMonthCalendarData', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('3ヶ月分のデータを返す', () => {
+    stateManager.getState.mockReturnValue({ history: [] });
+    const { months } = getThreeMonthCalendarData();
+
+    expect(months).toHaveLength(3);
+    expect(months[0].month).toBe(4); // 4月
+    expect(months[1].month).toBe(5); // 5月
+    expect(months[2].month).toBe(6); // 6月
+  });
+
+  it('各月に週データが含まれる', () => {
+    stateManager.getState.mockReturnValue({ history: [] });
+    const { months } = getThreeMonthCalendarData();
+
+    for (const month of months) {
+      expect(month.weeks.length).toBeGreaterThan(0);
+      for (const week of month.weeks) {
+        expect(week).toHaveLength(7);
+      }
+    }
+  });
+
+  it('今日のセルにisTodayフラグがある', () => {
+    stateManager.getState.mockReturnValue({ history: [] });
+    const { months } = getThreeMonthCalendarData();
+
+    const currentMonth = months[2]; // 6月
+    let foundToday = false;
+    for (const week of currentMonth.weeks) {
+      for (const day of week) {
+        if (day.isToday) {
+          expect(day.dayOfMonth).toBe(15);
+          foundToday = true;
+        }
+      }
+    }
+    expect(foundToday).toBe(true);
+  });
+
+  it('読書履歴のレベルを正しく計算', () => {
+    stateManager.getState.mockReturnValue({
+      history: [{ d: '2024-06-15T10:00:00', m: 60 }],
+    });
+
+    const { months, maxMinutes } = getThreeMonthCalendarData();
+    expect(maxMinutes).toBeGreaterThanOrEqual(30);
+
+    const currentMonth = months[2];
+    let todayLevel = null;
+    for (const week of currentMonth.weeks) {
+      for (const day of week) {
+        if (day.isToday) {
+          todayLevel = day.level;
+        }
+      }
+    }
+    expect(todayLevel).toBeGreaterThan(0);
   });
 });
 
@@ -434,6 +506,91 @@ describe('純粋関数版（モック不要）', () => {
       const insights = getReadingInsightsPure(state);
       expect(insights.readingType).toBe('朝型');
       expect(insights.readingTypeIcon).toBe('🌅');
+    });
+  });
+
+  describe('getThreeMonthCalendarDataPure', () => {
+    const now = new Date('2024-06-15T12:00:00');
+
+    it('3ヶ月分のデータを返す', () => {
+      const { months } = getThreeMonthCalendarDataPure([], now);
+
+      expect(months).toHaveLength(3);
+      expect(months[0].month).toBe(4); // 4月
+      expect(months[1].month).toBe(5); // 5月
+      expect(months[2].month).toBe(6); // 6月
+    });
+
+    it('各月に週データが含まれ、すべて7日分', () => {
+      const { months } = getThreeMonthCalendarDataPure([], now);
+
+      for (const month of months) {
+        expect(month.weeks.length).toBeGreaterThan(0);
+        for (const week of month.weeks) {
+          expect(week).toHaveLength(7);
+        }
+      }
+    });
+
+    it('月初の空白セルが正しく設定される', () => {
+      // 2024年6月1日は土曜日（dayOfWeek: 6）
+      const { months } = getThreeMonthCalendarDataPure([], now);
+      const june = months[2];
+      const firstWeek = june.weeks[0];
+
+      // 土曜日の前の6セルは空白
+      for (let i = 0; i < 6; i++) {
+        expect(firstWeek[i].isEmpty).toBe(true);
+      }
+      // 土曜日（6番目）は1日
+      expect(firstWeek[6].isEmpty).toBe(false);
+      expect(firstWeek[6].dayOfMonth).toBe(1);
+    });
+
+    it('今日のセルにisTodayフラグがある', () => {
+      const { months } = getThreeMonthCalendarDataPure([], now);
+
+      const currentMonth = months[2];
+      let foundToday = false;
+      for (const week of currentMonth.weeks) {
+        for (const day of week) {
+          if (day.isToday) {
+            expect(day.dayOfMonth).toBe(15);
+            foundToday = true;
+          }
+        }
+      }
+      expect(foundToday).toBe(true);
+    });
+
+    it('読書履歴のレベルを正しく計算', () => {
+      const history = [{ d: '2024-06-15T10:00:00', m: 60 }];
+      const { months, maxMinutes } = getThreeMonthCalendarDataPure(history, now);
+
+      expect(maxMinutes).toBeGreaterThanOrEqual(30);
+
+      const currentMonth = months[2];
+      let todayLevel = null;
+      for (const week of currentMonth.weeks) {
+        for (const day of week) {
+          if (day.isToday) {
+            todayLevel = day.level;
+          }
+        }
+      }
+      expect(todayLevel).toBeGreaterThan(0);
+    });
+
+    it('年をまたぐ場合も正しく処理', () => {
+      const januaryNow = new Date('2024-01-15T12:00:00');
+      const { months } = getThreeMonthCalendarDataPure([], januaryNow);
+
+      expect(months[0].year).toBe(2023);
+      expect(months[0].month).toBe(11); // 11月
+      expect(months[1].year).toBe(2023);
+      expect(months[1].month).toBe(12); // 12月
+      expect(months[2].year).toBe(2024);
+      expect(months[2].month).toBe(1); // 1月
     });
   });
 });

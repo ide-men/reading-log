@@ -35,22 +35,50 @@ function renderWeekChart() {
 }
 
 // ========================================
-// 読書カレンダーのレンダリング（草カレンダー）
+// 読書カレンダーのレンダリング（3ヶ月カレンダー形式）
 // ========================================
 function renderCalendar() {
-  const { days } = statsService.getMonthCalendarData();
+  const { months } = statsService.getThreeMonthCalendarData();
   const container = document.getElementById('calendarGrid');
+  const dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
 
-  container.innerHTML = days.map(d => `
-    <div class="calendar-cell level-${d.level}${d.isToday ? ' today' : ''}"
-         data-date="${d.date}"
-         data-minutes="${d.minutes}"
-         title="${d.dayOfMonth}日: ${d.minutes}分">
-      <span class="calendar-day">${d.dayOfMonth}</span>
-    </div>
-  `).join('');
+  let html = '';
 
-  // 右端（今日）にスクロール
+  for (const monthData of months) {
+    html += `
+      <div class="calendar-month">
+        <div class="calendar-month-header">${monthData.year}年${monthData.monthName}</div>
+        <div class="calendar-weekdays">
+          ${dayLabels.map((label, i) => `<span class="calendar-weekday${i === 0 ? ' sunday' : i === 6 ? ' saturday' : ''}">${label}</span>`).join('')}
+        </div>
+        <div class="calendar-weeks">
+          ${monthData.weeks.map(week => `
+            <div class="calendar-week">
+              ${week.map(day => {
+                if (day.isEmpty) {
+                  return '<span class="calendar-cell empty"></span>';
+                }
+                const isSunday = day.dayOfWeek === 0;
+                const isSaturday = day.dayOfWeek === 6;
+                return `
+                  <span class="calendar-cell level-${day.level}${day.isToday ? ' today' : ''}${isSunday ? ' sunday' : ''}${isSaturday ? ' saturday' : ''}"
+                        data-date="${day.date}"
+                        data-minutes="${day.minutes}"
+                        title="${day.dayOfMonth}日: ${day.minutes}分">
+                    <span class="calendar-day">${day.dayOfMonth}</span>
+                  </span>
+                `;
+              }).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+
+  // 今月（最後の月）が見えるようにスクロール
   const scroll = document.getElementById('calendarScroll');
   scroll.scrollLeft = scroll.scrollWidth;
 }
