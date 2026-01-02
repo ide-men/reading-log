@@ -146,7 +146,7 @@ export function updateSelectedBookInfo() {
 
   // 付箋がある場合は「前回: ○○」を表示
   const bookmarkHtml = book.bookmark
-    ? `<div class="selected-book-bookmark">📑 前回: ${escapeHtml(book.bookmark)}</div>`
+    ? `<div class="selected-book-bookmark">前回: ${escapeHtml(book.bookmark)}</div>`
     : '';
 
   infoContainer.innerHTML = `
