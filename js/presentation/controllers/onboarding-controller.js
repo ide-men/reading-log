@@ -105,3 +105,12 @@ export function showOnboardingIfNeeded() {
     openModal(MODAL_ID);
   }
 }
+
+/**
+ * オンボーディングを強制表示（設定から呼び出し用）
+ */
+export function showOnboarding() {
+  currentStep = 1;
+  updateStepDisplay();
+  openModal(MODAL_ID);
+}
