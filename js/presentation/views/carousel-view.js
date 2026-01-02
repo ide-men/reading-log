@@ -59,9 +59,9 @@ export function renderReadingBooks() {
       : '📖';
     const isSelected = book.id === selectedBookId;
 
-    // 選択中の本に付箋があれば吹き出しで表示
-    const bookmarkHtml = isSelected && book.bookmark
-      ? `<div class="carousel-book-balloon">${escapeHtml(book.bookmark)}</div>`
+    // 栞がある本には栞を表示（選択時のみCSSで可視化）
+    const bookmarkHtml = book.bookmark
+      ? `<div class="carousel-book-bookmark${isSelected ? ' animate' : ''}">${escapeHtml(book.bookmark)}</div>`
       : '';
 
     return `
@@ -147,7 +147,7 @@ export function updateSelectedBookInfo() {
   const book = bookRepository.getBookById(selectedBookId);
   if (!book) return;
 
-  // 本の名前・開始日は表示しない（付箋は別の場所で表示）
+  // 本の名前・開始日は表示しない（栞は別の場所で表示）
   infoContainer.innerHTML = '';
 
   // ボタンを有効化
@@ -170,11 +170,25 @@ export function selectBook(id, scrollToCenter = false) {
   let selectedElement = null;
 
   books.forEach(book => {
-    if (parseInt(book.dataset.id) === id) {
+    const bookId = parseInt(book.dataset.id);
+    const bookmark = book.querySelector('.carousel-book-bookmark');
+
+    if (bookId === id) {
       book.classList.add('selected');
       selectedElement = book;
+      // 栞のアニメーションを発火
+      if (bookmark) {
+        bookmark.classList.remove('animate');
+        // リフローを強制してアニメーションをリセット
+        void bookmark.offsetWidth;
+        bookmark.classList.add('animate');
+      }
     } else {
       book.classList.remove('selected');
+      // 非選択の本の栞からanimate クラスを除去
+      if (bookmark) {
+        bookmark.classList.remove('animate');
+      }
     }
   });
 

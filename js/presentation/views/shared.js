@@ -119,10 +119,10 @@ export function renderDetailView(book, type = 'study') {
   const dateText = getBookDateText(book);
   const modifier = type === 'store' ? 'detail-view--store' : 'detail-view--study';
 
-  // 付箋メモ表示（中断本のみ）
+  // 栞メモ表示（中断本のみ）
   const bookmarkHtml = (book.status === BOOK_STATUS.DROPPED && book.bookmark)
     ? `<div class="detail-view__bookmark">
-        <span class="detail-view__bookmark-icon">📑</span>
+        <span class="detail-view__bookmark-icon">🔖</span>
         <span class="detail-view__bookmark-text">${escapeHtml(book.bookmark)}</span>
       </div>`
     : '';
