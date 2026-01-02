@@ -469,7 +469,7 @@
 .book-card__cover {
   width: 100%;
   aspect-ratio: 2/3;
-  max-height: 160px;
+  max-height: 200px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -947,7 +947,7 @@
   }
 
   .book-card__cover {
-    max-height: 180px;
+    max-height: 220px;
   }
 
   .book-card__title {
@@ -1003,7 +1003,7 @@
   }
 
   .book-card__cover {
-    max-height: 200px;
+    max-height: 240px;
   }
 
   .book-card__title {
