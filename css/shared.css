@@ -546,9 +546,7 @@
 
 .book-card--study .book-card__cover {
   background: linear-gradient(135deg, #2a2319 0%, #1f1a16 100%);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    inset 0 0 0 1px rgba(139, 90, 43, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Book Card - Store Theme */
@@ -571,9 +569,7 @@
 
 .book-card--store .book-card__cover {
   background: linear-gradient(135deg, #252535 0%, #1a1a25 100%);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    inset 0 0 0 1px rgba(245, 158, 11, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .book-card--store .book-card__date {

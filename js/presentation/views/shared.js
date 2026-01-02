@@ -7,7 +7,6 @@ import * as bookRepository from '../../domain/book/book-repository.js';
 import * as uiState from '../state/ui-state.js';
 import {
   getBookDateText,
-  getBookColorByIndex,
   createBookCoverHtml,
   renderMiniBookShelf
 } from '../../domain/book/book-entity.js';
@@ -50,8 +49,6 @@ export function renderBookGrid(books, type = 'study') {
   };
 
   return `<div class="book-grid">${[...books].reverse().map((book, i) => {
-    const colorIndex = books.length - 1 - i;
-    const color = getBookColorByIndex(colorIndex);
     const coverHtml = createBookCoverHtml(book, placeholder);
     const dateText = getBookDateText(book);
     const reunion = isReunionBook(book);
@@ -60,7 +57,7 @@ export function renderBookGrid(books, type = 'study') {
     return `
       <div class="book-card ${modifier}" data-book-id="${book.id}" ${reunion ? 'data-reunion="true"' : ''}>
         ${reunionBadge}
-        <div class="book-card__cover" style="background-color: ${color}">
+        <div class="book-card__cover">
           ${coverHtml}
         </div>
         <div class="book-card__info">
@@ -117,7 +114,6 @@ export function renderShelfContent(options) {
 // 共通詳細ビューレンダリング
 // ========================================
 export function renderDetailView(book, type = 'study') {
-  const color = bookRepository.getBookColor(book);
   const placeholder = type === 'store' ? '📖' : '📕';
   const coverHtml = createBookCoverHtml(book, placeholder);
   const dateText = getBookDateText(book);
@@ -184,7 +180,7 @@ export function renderDetailView(book, type = 'study') {
     <div class="detail-view ${modifier}">
       <button class="detail-view__close" data-close-detail>✕</button>
       <div class="detail-view__content">
-        <div class="detail-view__cover" style="background-color: ${color}">
+        <div class="detail-view__cover">
           ${coverHtml}
         </div>
         <div class="detail-view__info">
