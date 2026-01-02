@@ -30,7 +30,6 @@ import {
   initOnboardingEvents,
   showOnboardingIfNeeded
 } from './presentation/controllers/onboarding-controller.js';
-import { initGlossaryEvents } from './presentation/controllers/glossary-controller.js';
 
 // ========================================
 // 全イベントリスナー初期化
@@ -47,7 +46,6 @@ function initializeEventListeners() {
   initStoreEvents();
   initReunionEvents();
   initOnboardingEvents();
-  initGlossaryEvents();
   initBeforeUnloadEvent();
 }
 
