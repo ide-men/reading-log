@@ -387,6 +387,7 @@
 .home-actions-menu {
   position: relative;
   flex: 1;
+  display: flex;
 }
 
 .home-actions-menu-btn {

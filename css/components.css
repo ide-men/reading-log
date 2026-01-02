@@ -10,23 +10,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-lg) var(--space-xl);
-  background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-lg) 0;
+  background: transparent;
+  border-bottom: none;
+  /* コンテンツ内に配置されるためマージン調整不要 */
 }
 
 .header h1 {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-
-.header h1 span:last-child {
-  color: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, #f5c5a0 50%, var(--accent-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 20px rgba(232, 168, 124, 0.3);
 }
 
 .header-logo {
@@ -856,12 +857,11 @@ select.form-input {
 
 @media (min-width: 600px) {
   .header {
-    padding: var(--space-lg) var(--space-xl);
-    border-radius: var(--radius-3xl);
+    padding: var(--space-lg) 0;
   }
 
   .header h1 {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .header-btn {
@@ -937,11 +937,11 @@ select.form-input {
 
 @media (min-width: 1024px) {
   .header {
-    padding: var(--space-xl) var(--space-2xl);
+    padding: var(--space-xl) 0;
   }
 
   .header h1 {
-    font-size: 22px;
+    font-size: 26px;
   }
 
   .header-btn {
@@ -1343,9 +1343,9 @@ select.form-input {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  font-size: 10px;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-dim);
   background: linear-gradient(145deg, var(--elevated), var(--surface));
@@ -1367,9 +1367,9 @@ select.form-input {
 }
 
 .term-hint--small {
-  width: 16px;
-  height: 16px;
-  font-size: 9px;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
   margin-left: 4px;
 }
 
