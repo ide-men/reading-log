@@ -51,7 +51,7 @@ export function handleStopReading() {
   updateUI();
   renderReadingBooks();
 
-  // 付箋入力モーダルを表示（どこまで読んだか）
+  // 栞入力モーダルを表示（どこまで読んだか）
   if (book) {
     stateManager.setReadingBookmarkBookId(bookId);
     document.getElementById('readingBookmarkBookTitle').textContent = book.title;
@@ -64,7 +64,7 @@ export function handleStopReading() {
 }
 
 // ========================================
-// 読書終了時の付箋保存
+// 読書終了時の栞保存
 // ========================================
 export function saveReadingBookmark() {
   const bookId = stateManager.getReadingBookmarkBookId();
@@ -75,7 +75,7 @@ export function saveReadingBookmark() {
 
   closeModal('readingBookmarkModal');
   if (bookmark) {
-    showToast('付箋を貼りました');
+    showToast('栞を挟みました');
   }
   renderReadingBooks();
 }
@@ -100,7 +100,7 @@ export function initTimerEvents() {
     handleStopReading();
   });
 
-  // 読書終了時の付箋モーダル
+  // 読書終了時の栞モーダル
   document.getElementById('saveReadingBookmarkBtn').addEventListener('click', () => {
     saveReadingBookmark();
   });

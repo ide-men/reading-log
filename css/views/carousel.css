@@ -240,7 +240,7 @@
   object-fit: contain;
 }
 
-/* Selected Book Info - 非表示（付箋は吹き出しで表示） */
+/* Selected Book Info - 非表示（栞は選択時のみ表示） */
 .selected-book-info {
   display: none;
 }

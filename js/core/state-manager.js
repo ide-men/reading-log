@@ -38,7 +38,7 @@ export function createInitialUI() {
     detailBookId: null,          // 詳細ダイアログで開いている本
     droppingBookId: null,        // 中断確認中の本
     readingNoteBookId: null,     // 読了時の感想入力中の本
-    readingBookmarkBookId: null  // 読書終了時の付箋入力中の本
+    readingBookmarkBookId: null  // 読書終了時の栞入力中の本
   };
 }
 
@@ -116,7 +116,7 @@ class StateManager {
   getReadingNoteBookId() { return this._ui.readingNoteBookId; }
   setReadingNoteBookId(id) { this._ui.readingNoteBookId = id; }
 
-  // 読書終了時の付箋入力
+  // 読書終了時の栞入力
   getReadingBookmarkBookId() { return this._ui.readingBookmarkBookId; }
   setReadingBookmarkBookId(id) { this._ui.readingBookmarkBookId = id; }
 

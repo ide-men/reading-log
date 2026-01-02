@@ -156,7 +156,7 @@ describe('StateManager', () => {
       expect(stateManager.getReadingNoteBookId()).toBe(50);
     });
 
-    it('読書終了時の付箋入力', () => {
+    it('読書終了時の栞入力', () => {
       stateManager.setReadingBookmarkBookId(60);
       expect(stateManager.getReadingBookmarkBookId()).toBe(60);
     });

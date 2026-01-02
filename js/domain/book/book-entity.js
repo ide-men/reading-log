@@ -28,7 +28,7 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
  * @property {string|null} completionNote - 読了時の感想（何が変わった？）
  * @property {Reflection[]} reflections - 振り返りの履歴
  * @property {number} readingTime - 累計読書時間（分）
- * @property {string|null} bookmark - 付箋メモ（中断時のどこまで読んだか等）
+ * @property {string|null} bookmark - 栞メモ（どこまで読んだか等）
  */
 
 // ========================================

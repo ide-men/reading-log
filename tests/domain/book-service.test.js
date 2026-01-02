@@ -234,7 +234,7 @@ describe('book-service.js', () => {
       expect(result.message).toBe('本を中断しました');
     });
 
-    it('付箋メモを保存', () => {
+    it('栞メモを保存', () => {
       mockBooks.set(1, { id: 1, title: 'テスト', status: BOOK_STATUS.READING });
 
       dropBook(1, '3章まで読んだ');

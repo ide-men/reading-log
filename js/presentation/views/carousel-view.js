@@ -59,7 +59,7 @@ export function renderReadingBooks() {
       : '📖';
     const isSelected = book.id === selectedBookId;
 
-    // 付箋がある本には栞を表示（選択時のみCSSで可視化）
+    // 栞がある本には栞を表示（選択時のみCSSで可視化）
     const bookmarkHtml = book.bookmark
       ? `<div class="carousel-book-bookmark${isSelected ? ' animate' : ''}">${escapeHtml(book.bookmark)}</div>`
       : '';
@@ -147,7 +147,7 @@ export function updateSelectedBookInfo() {
   const book = bookRepository.getBookById(selectedBookId);
   if (!book) return;
 
-  // 本の名前・開始日は表示しない（付箋は別の場所で表示）
+  // 本の名前・開始日は表示しない（栞は別の場所で表示）
   infoContainer.innerHTML = '';
 
   // ボタンを有効化
