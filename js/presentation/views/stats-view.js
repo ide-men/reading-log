@@ -35,8 +35,10 @@ function renderWeekChart() {
 }
 
 // ========================================
-// 読書カレンダーのレンダリング（3ヶ月カレンダー形式）
+// 読書カレンダーのレンダリング（1ヶ月表示・スワイプ切り替え）
 // ========================================
+let currentCalendarMonthIndex = 2; // 今月（最後の月）から開始
+
 function renderCalendar() {
   const { months } = statsService.getThreeMonthCalendarData();
   const container = document.getElementById('calendarGrid');
@@ -44,12 +46,13 @@ function renderCalendar() {
 
   let html = '';
 
-  for (const monthData of months) {
+  for (let i = 0; i < months.length; i++) {
+    const monthData = months[i];
     html += `
-      <div class="calendar-month">
+      <div class="calendar-month" data-month-index="${i}">
         <div class="calendar-month-header">${monthData.year}年${monthData.monthName}</div>
         <div class="calendar-weekdays">
-          ${dayLabels.map((label, i) => `<span class="calendar-weekday${i === 0 ? ' sunday' : i === 6 ? ' saturday' : ''}">${label}</span>`).join('')}
+          ${dayLabels.map((label, j) => `<span class="calendar-weekday${j === 0 ? ' sunday' : j === 6 ? ' saturday' : ''}">${label}</span>`).join('')}
         </div>
         <div class="calendar-weeks">
           ${monthData.weeks.map(week => `
@@ -78,9 +81,56 @@ function renderCalendar() {
 
   container.innerHTML = html;
 
-  // 今月（最後の月）が見えるようにスクロール
+  // ドットインジケーターを追加
   const scroll = document.getElementById('calendarScroll');
-  scroll.scrollLeft = scroll.scrollWidth;
+  let dotsContainer = document.getElementById('calendarDots');
+  if (!dotsContainer) {
+    dotsContainer = document.createElement('div');
+    dotsContainer.id = 'calendarDots';
+    dotsContainer.className = 'calendar-dots';
+    scroll.parentNode.appendChild(dotsContainer);
+  }
+  dotsContainer.innerHTML = months.map((_, i) =>
+    `<span class="calendar-dot${i === currentCalendarMonthIndex ? ' active' : ''}" data-index="${i}"></span>`
+  ).join('');
+
+  // 今月（最後の月）が見えるようにスクロール
+  requestAnimationFrame(() => {
+    const monthWidth = scroll.scrollWidth / months.length;
+    scroll.scrollLeft = currentCalendarMonthIndex * monthWidth;
+  });
+
+  // スクロールイベントでドット更新
+  scroll.addEventListener('scroll', handleCalendarScroll, { passive: true });
+
+  // ドットクリックでジャンプ
+  dotsContainer.addEventListener('click', (e) => {
+    const dot = e.target.closest('.calendar-dot');
+    if (dot) {
+      const index = parseInt(dot.dataset.index, 10);
+      const monthWidth = scroll.scrollWidth / months.length;
+      scroll.scrollTo({ left: index * monthWidth, behavior: 'smooth' });
+    }
+  });
+}
+
+function handleCalendarScroll() {
+  const scroll = document.getElementById('calendarScroll');
+  const dotsContainer = document.getElementById('calendarDots');
+  if (!scroll || !dotsContainer) return;
+
+  const monthElements = scroll.querySelectorAll('.calendar-month');
+  if (monthElements.length === 0) return;
+
+  const monthWidth = scroll.scrollWidth / monthElements.length;
+  const newIndex = Math.round(scroll.scrollLeft / monthWidth);
+
+  if (newIndex !== currentCalendarMonthIndex && newIndex >= 0 && newIndex < monthElements.length) {
+    currentCalendarMonthIndex = newIndex;
+    dotsContainer.querySelectorAll('.calendar-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === newIndex);
+    });
+  }
 }
 
 // ========================================

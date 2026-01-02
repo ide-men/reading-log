@@ -3,7 +3,7 @@
 // 統計計算のビジネスロジック（UI操作なし）
 // ========================================
 import { CONFIG, UI_CONFIG } from '../../shared/constants.js';
-import { getTimeSlotIndex } from '../../shared/utils.js';
+import { getTimeSlotIndex, toLocalDateString } from '../../shared/utils.js';
 import { stateManager } from '../../core/state-manager.js';
 
 // ========================================
@@ -102,7 +102,7 @@ export function getWeekChartDataPure(history, now = new Date()) {
   for (let i = 6; i >= 0; i--) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toLocalDateString(date);
     const minutes = minutesByDate[dateStr] || 0;
     max = Math.max(max, minutes);
     data.push({
@@ -138,11 +138,12 @@ export function getMonthCalendarDataPure(history, now = new Date()) {
   // 過去1ヶ月のデータを生成
   const days = [];
   let maxMinutes = 30; // 最小スケール
+  const todayStr = toLocalDateString(now);
 
   for (let i = 29; i >= 0; i--) {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = toLocalDateString(date);
     const minutes = minutesByDate[dateStr] || 0;
     maxMinutes = Math.max(maxMinutes, minutes);
 
@@ -151,7 +152,7 @@ export function getMonthCalendarDataPure(history, now = new Date()) {
       dayOfMonth: date.getDate(),
       dayOfWeek: date.getDay(),
       minutes,
-      isToday: i === 0
+      isToday: dateStr === todayStr
     });
   }
 
@@ -180,8 +181,8 @@ export function getThreeMonthCalendarDataPure(history, now = new Date()) {
     minutesByDate[dateStr] = (minutesByDate[dateStr] || 0) + h.m;
   }
 
-  // 今日の日付文字列
-  const todayStr = now.toISOString().split('T')[0];
+  // 今日の日付文字列（ローカルタイムゾーン）
+  const todayStr = toLocalDateString(now);
 
   // 3ヶ月分のデータを生成（今月、先月、先々月）
   const months = [];
@@ -210,7 +211,7 @@ export function getThreeMonthCalendarDataPure(history, now = new Date()) {
     // 各日のデータ
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = toLocalDateString(date);
       const minutes = minutesByDate[dateStr] || 0;
       maxMinutes = Math.max(maxMinutes, minutes);
 
