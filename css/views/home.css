@@ -344,6 +344,13 @@
   margin-top: var(--space-sm);
 }
 
+/* 可視状態では子要素もクリック可能にする */
+.home-actions-row--visible .btn,
+.home-actions-row--visible .home-actions-menu,
+.home-actions-row--visible .home-actions-menu-btn {
+  pointer-events: auto;
+}
+
 .home-actions-row .btn {
   flex: 1;
   padding: 10px var(--space-md);

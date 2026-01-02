@@ -2,7 +2,12 @@
    Study View - 書斎固有のスタイル
    ========================================================================== */
 
-/* Status Tabs は components.css に定義済み */
+/* Status Tabs は home.css に定義済み */
+
+/* 書斎画面のヘッダー下マージン（統計画面と統一） */
+#tab-study .status-tabs {
+  margin-top: var(--space-xl);
+}
 
 /* 書斎ヒントテキスト */
 .study-hint {
