@@ -29,15 +29,20 @@ function updateStepDisplay() {
 
   // ボタンテキストの更新
   const nextBtn = document.getElementById('onboardingNext');
-  const skipBtn = document.getElementById('onboardingSkip');
+  const backBtn = document.getElementById('onboardingBack');
   const totalSteps = getTotalSteps();
 
   if (currentStep === totalSteps) {
     nextBtn.textContent = 'はじめる';
-    skipBtn.style.display = 'none';
   } else {
     nextBtn.textContent = '次へ';
-    skipBtn.style.display = '';
+  }
+
+  // 最初のステップでは戻るボタンを非表示
+  if (currentStep === 1) {
+    backBtn.style.display = 'none';
+  } else {
+    backBtn.style.display = '';
   }
 }
 
@@ -71,12 +76,13 @@ function goToNextStep() {
 }
 
 /**
- * オンボーディングをスキップ
+ * 前のステップに戻る
  */
-function skipOnboarding() {
-  markOnboardingCompleted();
-  closeModal(MODAL_ID);
-  currentStep = 1;
+function goToPrevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    updateStepDisplay();
+  }
 }
 
 /**
@@ -84,14 +90,14 @@ function skipOnboarding() {
  */
 export function initOnboardingEvents() {
   const nextBtn = document.getElementById('onboardingNext');
-  const skipBtn = document.getElementById('onboardingSkip');
+  const backBtn = document.getElementById('onboardingBack');
 
   if (nextBtn) {
     nextBtn.addEventListener('click', goToNextStep);
   }
 
-  if (skipBtn) {
-    skipBtn.addEventListener('click', skipOnboarding);
+  if (backBtn) {
+    backBtn.addEventListener('click', goToPrevStep);
   }
 }
 
