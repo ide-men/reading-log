@@ -81,7 +81,7 @@
 
 .store-count {
   font-size: 36px;
-  font-weight: 800;
+  font-weight: var(--weight-bold);
   background: linear-gradient(135deg, var(--color-store-light), var(--color-store));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -92,9 +92,9 @@
 }
 
 .store-label {
-  font-size: 14px;
+  font-size: var(--font-lg);
   color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  font-weight: var(--weight-normal);
   position: relative;
   z-index: 1;
   letter-spacing: 0.02em;

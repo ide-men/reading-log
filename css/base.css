@@ -67,6 +67,15 @@
   --layout-fab-offset: 24px;
   --layout-modal-padding: 28px;
 
+  /* Typography */
+  --font-sm: 12px;
+  --font-md: 14px;
+  --font-lg: 16px;
+  --font-xl: 18px;
+  --weight-normal: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
   /* Border Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -123,7 +132,7 @@ html, body {
 
 /* Section Title */
 .section-title {
-  font-size: 12px;
+  font-size: var(--font-md);
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -132,7 +141,7 @@ html, body {
 
 /* Hint Text */
 .text-hint {
-  font-size: 11px;
+  font-size: var(--font-md);
   color: var(--text-dim);
 }
 
@@ -167,7 +176,7 @@ html, body {
   gap: var(--space-xs);
   padding: var(--space-compact) var(--space-md);
   border-radius: var(--radius-full);
-  font-size: 12px;
+  font-size: var(--font-md);
 }
 
 .badge--subtle {
