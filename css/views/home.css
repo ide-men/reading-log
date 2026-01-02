@@ -102,7 +102,6 @@
 .status-tabs {
   display: flex;
   gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
   padding: var(--space-sm);
   background: rgba(var(--surface-rgb), 0.6);
   backdrop-filter: blur(16px);
