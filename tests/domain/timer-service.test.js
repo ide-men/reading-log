@@ -236,3 +236,100 @@ describe('timer-service.js', () => {
     });
   });
 });
+
+// ========================================
+// TimerServiceクラスのテスト（依存性注入パターン）
+// vi.resetModules()が不要で、より高速・明示的なテスト
+// ========================================
+import { TimerService, createTimerService } from '../../js/domain/timer/timer-service.js';
+import { Events } from '../../js/shared/event-bus.js';
+
+describe('TimerService クラス（依存性注入）', () => {
+  let timer;
+  let mockDeps;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+
+    // モックを直接渡す（vi.mockが不要）
+    mockDeps = {
+      getBook: vi.fn(),
+      getState: vi.fn(() => ({
+        stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null },
+        books: []
+      })),
+      updateStats: vi.fn(),
+      updateBook: vi.fn(),
+      addHistory: vi.fn(),
+      save: vi.fn(),
+      emit: vi.fn(),
+      now: vi.fn(() => new Date('2024-06-15T12:00:00'))
+    };
+
+    timer = createTimerService(mockDeps);
+  });
+
+  afterEach(() => {
+    timer.reset();
+    vi.useRealTimers();
+  });
+
+  it('初期状態ではタイマー停止中', () => {
+    expect(timer.isTimerRunning()).toBe(false);
+    expect(timer.getSeconds()).toBe(0);
+    expect(timer.getCurrentBookId()).toBeNull();
+  });
+
+  it('タイマー開始時にイベントを発行', () => {
+    timer.startReading(1);
+
+    expect(mockDeps.emit).toHaveBeenCalledWith(Events.TIMER_STARTED, {
+      bookId: 1,
+      book: undefined
+    });
+  });
+
+  it('タイマー停止時に正しいDateを使用', () => {
+    const fixedDate = new Date('2024-06-15T14:30:00');
+    mockDeps.now.mockReturnValue(fixedDate);
+    mockDeps.getState.mockReturnValue({
+      stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null }
+    });
+
+    timer.startReading();
+    vi.advanceTimersByTime(CONFIG.minSessionMinutes * 60000);
+    timer.stopReading();
+
+    expect(mockDeps.addHistory).toHaveBeenCalledWith(
+      expect.objectContaining({
+        d: fixedDate.toISOString(),
+        h: 14
+      })
+    );
+  });
+
+  it('本の読書時間が更新される', () => {
+    const testBook = { id: 42, title: 'テスト本', readingTime: 10 };
+    mockDeps.getBook.mockReturnValue(testBook);
+    mockDeps.getState.mockReturnValue({
+      stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null }
+    });
+
+    timer.startReading(42);
+    vi.advanceTimersByTime(180000); // 3分
+    timer.stopReading();
+
+    expect(mockDeps.updateBook).toHaveBeenCalledWith(42, { readingTime: 13 });
+  });
+
+  it('reset()でタイマー状態がクリアされる', () => {
+    timer.startReading(1);
+    vi.advanceTimersByTime(5000);
+
+    timer.reset();
+
+    expect(timer.isTimerRunning()).toBe(false);
+    expect(timer.getSeconds()).toBe(0);
+    expect(timer.getCurrentBookId()).toBeNull();
+  });
+});
