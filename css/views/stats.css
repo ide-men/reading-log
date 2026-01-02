@@ -257,19 +257,19 @@
 
 /* Prediction Card Variants */
 .prediction-card-yearly::before {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
 }
 
 .prediction-card-yearly::after {
-  background: linear-gradient(180deg, #10b981, #34d399);
+  background: linear-gradient(180deg, var(--success), var(--success-light));
 }
 
 .prediction-card-title::before {
-  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  background: linear-gradient(135deg, var(--color-store) 0%, var(--color-store-light) 100%);
 }
 
 .prediction-card-title::after {
-  background: linear-gradient(180deg, #f59e0b, #fbbf24);
+  background: linear-gradient(180deg, var(--color-store), var(--color-store-light));
 }
 
 /* Style Card Variants */
@@ -417,7 +417,7 @@
 }
 
 .calendar-weekday.sunday {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .calendar-weekday.saturday {
@@ -484,7 +484,7 @@
 
 /* 日曜・土曜の日付色 */
 .calendar-cell.sunday .calendar-day {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .calendar-cell.saturday .calendar-day {

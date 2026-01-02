@@ -158,7 +158,7 @@
   transform: translateX(-50%);
   width: 24px;
   height: 3px;
-  background: linear-gradient(90deg, #8b5a2b, #cd853f);
+  background: linear-gradient(90deg, var(--color-study), var(--color-study-light));
   border-radius: var(--radius-full);
 }
 
@@ -192,8 +192,8 @@
 }
 
 .status-tab.active .status-count {
-  color: #cd853f;
-  text-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
+  color: var(--color-study-light);
+  text-shadow: 0 2px 8px rgba(var(--color-study-rgb), 0.3);
 }
 
 /* ==========================================================================
@@ -278,12 +278,12 @@
 }
 
 .reading-book-action.complete {
-  background: #10b981;
+  background: var(--success);
   color: white;
 }
 
 .reading-book-action.complete:hover {
-  background: #059669;
+  background: var(--success-dark);
 }
 
 .reading-book-action.drop {
@@ -358,7 +358,7 @@
 }
 
 .home-actions-row .btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
   box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
 }
 
