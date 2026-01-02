@@ -33,10 +33,12 @@
     <main class="content" role="main">
       <!-- ホームタブ（カバン） -->
       <section class="tab active" id="tab-home" role="tabpanel" aria-labelledby="nav-home">
-    <div class="page-header page-header--compact">
-      <div class="page-header__emoji">🎒</div>
-      <div class="page-header__title">カバン<button class="term-hint" data-term="bag" aria-label="カバンの説明を見る">?</button></div>
-      <div class="page-header__subtitle">今日はどの本を読む？</div>
+    <div class="page-header page-header--compact page-header--inline">
+      <div class="page-header__row">
+        <span class="page-header__icon">🎒</span>
+        <span class="page-header__title">カバン</span>
+        <button class="term-hint" data-term="bag" aria-label="カバンの説明を見る">?</button>
+      </div>
     </div>
 
     <div class="book-carousel-container">
@@ -85,30 +87,28 @@
 
       <!-- 書斎タブ -->
       <section class="tab" id="tab-study" role="tabpanel" aria-labelledby="nav-study">
-    <div class="page-header">
-      <div class="page-header__emoji">📚</div>
-      <div class="page-header__title">書斎<button class="term-hint" data-term="study" aria-label="書斎の説明を見る">?</button></div>
-      <div class="page-header__subtitle">積読も読了も、ひと目でわかる</div>
-    </div>
-
-    <div class="study-hint">
-      📖 紙の本、電子書籍、借りて返した本、手放した本...なんでも記録OK
+    <div class="page-header page-header--inline">
+      <div class="page-header__row">
+        <span class="page-header__icon">🏠</span>
+        <span class="page-header__title">書斎</span>
+        <button class="term-hint" data-term="study" aria-label="書斎の説明を見る">?</button>
+      </div>
     </div>
 
     <div class="status-tabs" id="studyStatusTabs">
       <button class="status-tab" data-status="completed">
         <span class="status-icon">✅</span>
-        <span class="status-label">読了<button class="term-hint term-hint--small" data-term="completed" aria-label="読了の説明を見る">?</button></span>
+        <span class="status-label">読了</span>
         <span class="status-count" id="completedCount">0</span>
       </button>
       <button class="status-tab active" data-status="unread">
         <span class="status-icon">📚</span>
-        <span class="status-label">積読<button class="term-hint term-hint--small" data-term="unread" aria-label="積読の説明を見る">?</button></span>
+        <span class="status-label">積読</span>
         <span class="status-count" id="unreadCount">0</span>
       </button>
       <button class="status-tab" data-status="dropped">
         <span class="status-icon">⏸️</span>
-        <span class="status-label">中断<button class="term-hint term-hint--small" data-term="dropped" aria-label="中断の説明を見る">?</button></span>
+        <span class="status-label">中断</span>
         <span class="status-count" id="droppedCount">0</span>
       </button>
     </div>
@@ -124,10 +124,12 @@
 
       <!-- 本屋タブ -->
       <section class="tab" id="tab-store" role="tabpanel" aria-labelledby="nav-store">
-    <div class="page-header">
-      <div class="page-header__emoji">🏪</div>
-      <div class="page-header__title">本屋<button class="term-hint" data-term="store" aria-label="本屋の説明を見る">?</button></div>
-      <div class="page-header__subtitle">気になった本を忘れない</div>
+    <div class="page-header page-header--inline">
+      <div class="page-header__row">
+        <span class="page-header__icon">🏪</span>
+        <span class="page-header__title">本屋</span>
+        <button class="term-hint" data-term="store" aria-label="本屋の説明を見る">?</button>
+      </div>
     </div>
 
     <div class="store-stats">
@@ -177,7 +179,7 @@
     <h3 class="section-title">今週の読書</h3>
     <div class="week-chart" id="weekChart"></div>
 
-    <h3 class="section-title">📅 読書カレンダー<button class="term-hint" data-term="calendar" aria-label="読書カレンダーの説明を見る">?</button></h3>
+    <h3 class="section-title">📅 読書カレンダー</h3>
     <div class="calendar-container">
       <div class="calendar-scroll" id="calendarScroll">
         <div class="calendar-grid" id="calendarGrid"></div>
@@ -243,7 +245,7 @@
 
     <nav class="nav" role="tablist" aria-label="メインナビゲーション">
       <button class="active" id="nav-home" data-tab="home" role="tab" aria-selected="true" aria-controls="tab-home"><span aria-hidden="true">🎒</span><span>カバン</span></button>
-      <button id="nav-study" data-tab="study" role="tab" aria-selected="false" aria-controls="tab-study"><span aria-hidden="true">📚</span><span>書斎</span></button>
+      <button id="nav-study" data-tab="study" role="tab" aria-selected="false" aria-controls="tab-study"><span aria-hidden="true">🏠</span><span>書斎</span></button>
       <button id="nav-store" data-tab="store" role="tab" aria-selected="false" aria-controls="tab-store"><span aria-hidden="true">🏪</span><span>本屋</span></button>
       <button id="nav-stats" data-tab="stats" role="tab" aria-selected="false" aria-controls="tab-stats"><span aria-hidden="true">📊</span><span>統計</span></button>
     </nav>
@@ -628,7 +630,7 @@
               <span class="onboarding-tab-desc">今読んでいる本</span>
             </div>
             <div class="onboarding-tab-item">
-              <span class="onboarding-tab-icon">📚</span>
+              <span class="onboarding-tab-icon">🏠</span>
               <span class="onboarding-tab-name">書斎</span>
               <span class="onboarding-tab-desc">紙も電子も、なんでも</span>
             </div>
@@ -703,10 +705,10 @@
           </div>
           <div class="glossary-item">
             <div class="glossary-term">
-              <span class="glossary-icon">📚</span>
+              <span class="glossary-icon">🏠</span>
               <span class="glossary-name">書斎</span>
             </div>
-            <div class="glossary-desc">あなたの本棚。読了・積読・中断した本をまとめて管理できます。紙の本も電子書籍もOK。</div>
+            <div class="glossary-desc">あなたの本棚。紙の本も電子書籍もなんでも記録OK。📚積読・✅読了・⏸️中断の3つで管理できます。</div>
           </div>
           <div class="glossary-item">
             <div class="glossary-term">
