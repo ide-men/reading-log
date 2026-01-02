@@ -4,6 +4,15 @@
 
 /* Status Tabs は components.css に定義済み */
 
+/* 書斎ヒントテキスト */
+.study-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin: -0.5rem 0 1rem;
+  padding: 0 1rem;
+}
+
 /* 書斎グリッド用のEmpty State追加スタイル */
 .book-grid .empty-state {
   grid-column: 1 / -1;
