@@ -270,8 +270,8 @@
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
         </div>
         <div class="form-group">
-          <label class="form-label">一言（任意）</label>
-          <input type="text" class="form-input" id="bookCommentInput" placeholder="例：友人におすすめされた本">
+          <label class="form-label">なぜこの本？（任意）</label>
+          <input type="text" class="form-input" id="bookCommentInput" placeholder="例：友人のおすすめ、書店で目に留まった">
         </div>
         <div class="form-group">
           <button class="link-toggle" id="linkToggle">
@@ -336,8 +336,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">メモ（任意）</label>
-          <textarea class="form-input form-textarea" id="editBookNote" placeholder="感想やメモを残せます" rows="3"></textarea>
+          <label class="form-label">きっかけ（任意）</label>
+          <textarea class="form-input form-textarea" id="editBookNote" placeholder="なぜこの本を手に取った？" rows="3"></textarea>
         </div>
         <button class="btn btn-primary" id="saveEditBtn">保存</button>
         <button class="btn btn-secondary" data-close="editBookModal">キャンセル</button>
@@ -530,12 +530,51 @@
           <div class="drop-book-title" id="completeNoteBookTitle"></div>
         </div>
         <div class="form-group">
-          <textarea class="form-input form-textarea" id="completeNoteInput" placeholder="この本の感想..." rows="3"></textarea>
-          <div class="form-hint">感想を残せます（任意）</div>
+          <label class="form-label">何が変わった？</label>
+          <textarea class="form-input form-textarea" id="completeNoteInput" placeholder="この本で得た気づきや変化..." rows="3"></textarea>
+          <div class="form-hint">読んで変わったことを残せます（任意）</div>
         </div>
         <div class="modal-actions">
           <button class="btn btn-secondary" id="skipCompleteNoteBtn">スキップ</button>
           <button class="btn btn-primary" id="saveCompleteNoteBtn">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 再会モーダル -->
+  <div class="modal-overlay" id="reunionModal" role="dialog" aria-modal="true" aria-labelledby="reunionModalTitle">
+    <div class="modal reunion-modal">
+      <div class="modal-header">
+        <h2 id="reunionModalTitle">📚 久しぶりの再会</h2>
+        <button class="modal-close" data-close="reunionModal" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="reunion-book-title" id="reunionBookTitle"></div>
+
+        <div class="reunion-section" id="reunionTriggerSection">
+          <div class="reunion-section-label">📌 きっかけ</div>
+          <div class="reunion-section-content" id="reunionTriggerNote"></div>
+        </div>
+
+        <div class="reunion-section" id="reunionCompletionSection">
+          <div class="reunion-section-label">✨ 読了時の感想</div>
+          <div class="reunion-section-content" id="reunionCompletionNote"></div>
+        </div>
+
+        <div class="reunion-section" id="reunionReflectionsSection">
+          <div class="reunion-section-label">🔄 過去の振り返り</div>
+          <div class="reunion-reflections-list" id="reunionReflectionsList"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">今はどう思う？</label>
+          <textarea class="form-input form-textarea" id="reunionInput" placeholder="あれから変わったこと、新しい気づき..." rows="3"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="skipReunionBtn">また今度</button>
+          <button class="btn btn-primary" id="saveReunionBtn">記録する</button>
         </div>
       </div>
     </div>

@@ -33,6 +33,9 @@ import {
   startReadingBook,
   completeBook,
   dropBook,
+  saveCompletionNote,
+  addReflection,
+  getBooksForReunion,
   getBookById,
   getBooksByStatus,
   getAllBooks
@@ -244,6 +247,101 @@ describe('book-service.js', () => {
 
       expect(result.success).toBe(false);
       expect(result.message).toBe('本が見つかりません');
+    });
+  });
+
+  describe('saveCompletionNote', () => {
+    it('読了時の感想を保存', () => {
+      mockBooks.set(1, { id: 1, title: 'テスト', status: BOOK_STATUS.COMPLETED });
+
+      const result = saveCompletionNote(1, '素晴らしい本だった');
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('保存しました');
+      expect(mockBooks.get(1).completionNote).toBe('素晴らしい本だった');
+    });
+
+    it('存在しない本はエラー', () => {
+      const result = saveCompletionNote(999, 'メモ');
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('本が見つかりません');
+    });
+  });
+
+  describe('addReflection', () => {
+    it('振り返りを追加', () => {
+      mockBooks.set(1, { id: 1, title: 'テスト', status: BOOK_STATUS.COMPLETED, reflections: [] });
+
+      const result = addReflection(1, '今読み返すと違う視点が見えた');
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('振り返りを保存しました');
+      expect(mockBooks.get(1).reflections).toHaveLength(1);
+      expect(mockBooks.get(1).reflections[0].note).toBe('今読み返すと違う視点が見えた');
+    });
+
+    it('複数の振り返りを追加', () => {
+      mockBooks.set(1, {
+        id: 1,
+        title: 'テスト',
+        status: BOOK_STATUS.COMPLETED,
+        reflections: [{ date: '2024-01-01', note: '最初の振り返り' }]
+      });
+
+      addReflection(1, '2回目の振り返り');
+
+      expect(mockBooks.get(1).reflections).toHaveLength(2);
+    });
+
+    it('存在しない本はエラー', () => {
+      const result = addReflection(999, 'メモ');
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('本が見つかりません');
+    });
+  });
+
+  describe('getBooksForReunion', () => {
+    it('3ヶ月以上前に読了した本を取得', () => {
+      const fourMonthsAgo = new Date();
+      fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+      mockBooks.set(1, {
+        id: 1,
+        title: '古い本',
+        status: BOOK_STATUS.COMPLETED,
+        completedAt: fourMonthsAgo.toISOString().split('T')[0]
+      });
+      mockBooks.set(2, {
+        id: 2,
+        title: '新しい本',
+        status: BOOK_STATUS.COMPLETED,
+        completedAt: oneMonthAgo.toISOString().split('T')[0]
+      });
+
+      const reunionBooks = getBooksForReunion();
+
+      expect(reunionBooks).toHaveLength(1);
+      expect(reunionBooks[0].title).toBe('古い本');
+    });
+
+    it('読了以外のステータスは除外', () => {
+      const fourMonthsAgo = new Date();
+      fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+
+      mockBooks.set(1, {
+        id: 1,
+        title: '読書中',
+        status: BOOK_STATUS.READING,
+        completedAt: fourMonthsAgo.toISOString().split('T')[0]
+      });
+
+      const reunionBooks = getBooksForReunion();
+
+      expect(reunionBooks).toHaveLength(0);
     });
   });
 

@@ -28,11 +28,11 @@ const ADD_BOOK_MESSAGES = {
  * @param {Object} params - 本のデータ
  * @param {string} params.title - タイトル
  * @param {string} [params.link] - リンク
- * @param {string} [params.note] - メモ
+ * @param {string} [params.triggerNote] - きっかけ
  * @param {string} [params.status] - ステータス
  * @returns {{ success: boolean, message: string, book?: Book, shortUrlWarning?: boolean }}
  */
-export function addBook({ title, link, note, status = BOOK_STATUS.READING }) {
+export function addBook({ title, link, triggerNote, status = BOOK_STATUS.READING }) {
   // バリデーション
   const validation = validateBookTitle(title);
   if (!validation.valid) {
@@ -44,7 +44,7 @@ export function addBook({ title, link, note, status = BOOK_STATUS.READING }) {
 
   // 本を作成
   const book = createBook(
-    { title, link, note, status },
+    { title, link, triggerNote, status },
     { onShortUrl: () => { shortUrlWarning = true; } }
   );
 
@@ -70,7 +70,8 @@ export function addBook({ title, link, note, status = BOOK_STATUS.READING }) {
  * @param {string} [updates.title] - タイトル
  * @param {string} [updates.link] - リンク
  * @param {string} [updates.status] - ステータス
- * @param {string} [updates.note] - メモ
+ * @param {string} [updates.triggerNote] - きっかけ
+ * @param {string} [updates.completionNote] - 読了時の感想
  * @returns {{ success: boolean, message: string, shortUrlWarning?: boolean }}
  */
 export function editBook(id, updates) {
@@ -265,6 +266,71 @@ export function dropBook(id, bookmark = null) {
     success: true,
     message: '本を中断しました'
   };
+}
+
+// ========================================
+// 振り返り
+// ========================================
+
+/**
+ * 読了時の感想を保存する
+ * @param {number} id - 本のID
+ * @param {string} completionNote - 読了時の感想
+ * @returns {{ success: boolean, message: string }}
+ */
+export function saveCompletionNote(id, completionNote) {
+  const book = bookRepository.getBookById(id);
+  if (!book) {
+    return { success: false, message: '本が見つかりません' };
+  }
+
+  bookRepository.updateBook(id, { completionNote: completionNote || null });
+
+  return {
+    success: true,
+    message: '保存しました'
+  };
+}
+
+/**
+ * 振り返りを追加する
+ * @param {number} id - 本のID
+ * @param {string} note - 振り返りメモ
+ * @returns {{ success: boolean, message: string }}
+ */
+export function addReflection(id, note) {
+  const book = bookRepository.getBookById(id);
+  if (!book) {
+    return { success: false, message: '本が見つかりません' };
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  const reflections = book.reflections || [];
+  reflections.push({ date: today, note });
+
+  bookRepository.updateBook(id, { reflections });
+
+  return {
+    success: true,
+    message: '振り返りを保存しました'
+  };
+}
+
+/**
+ * 再会対象の本を取得する（読了から3ヶ月以上経過）
+ * @param {number} [months=3] - 経過月数
+ * @returns {Book[]}
+ */
+export function getBooksForReunion(months = 3) {
+  const completedBooks = bookRepository.getBooksByStatus(BOOK_STATUS.COMPLETED);
+  const now = new Date();
+  const thresholdDate = new Date(now.setMonth(now.getMonth() - months));
+
+  return completedBooks.filter(book => {
+    if (!book.completedAt) return false;
+    const completedDate = new Date(book.completedAt);
+    return completedDate <= thresholdDate;
+  });
 }
 
 // ========================================

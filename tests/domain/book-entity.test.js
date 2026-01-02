@@ -69,19 +69,21 @@ describe('createBook', () => {
 
     expect(book.link).toBeNull();
     expect(book.coverUrl).toBeNull();
-    expect(book.note).toBeNull();
+    expect(book.triggerNote).toBeNull();
+    expect(book.completionNote).toBeNull();
+    expect(book.reflections).toEqual([]);
     expect(book.readingTime).toBe(0);
     expect(book.bookmark).toBeNull();
   });
 
-  it('リンクとメモを設定できる', () => {
+  it('リンクときっかけを設定できる', () => {
     const book = createBook(
-      { title: '本', link: 'https://example.com', note: 'メモ' },
+      { title: '本', link: 'https://example.com', triggerNote: 'きっかけ' },
       { now: () => new Date('2024-01-01') }
     );
 
     expect(book.link).toBe('https://example.com');
-    expect(book.note).toBe('メモ');
+    expect(book.triggerNote).toBe('きっかけ');
   });
 });
 

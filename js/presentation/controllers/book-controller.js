@@ -21,9 +21,9 @@ import { initModalValidation, updateButtonState } from '../utils/modal-validatio
 export function addBook(status = BOOK_STATUS.READING) {
   const title = document.getElementById('bookInput').value.trim();
   const link = document.getElementById('linkInput').value.trim();
-  const note = document.getElementById('bookCommentInput').value.trim();
+  const triggerNote = document.getElementById('bookCommentInput').value.trim();
 
-  const result = bookService.addBook({ title, link, note, status });
+  const result = bookService.addBook({ title, link, triggerNote, status });
 
   if (!result.success) {
     showToast(result.message);
@@ -62,7 +62,7 @@ export function editBook(id) {
   document.getElementById('editBookTitle').value = book.title;
   document.getElementById('editBookLink').value = book.link || '';
   document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
-  document.getElementById('editBookNote').value = book.note || '';
+  document.getElementById('editBookNote').value = book.triggerNote || '';
   openModal('editBookModal');
 
   // バリデーション状態を更新
@@ -74,9 +74,9 @@ export function saveEditBook() {
   const title = document.getElementById('editBookTitle').value.trim();
   const link = document.getElementById('editBookLink').value.trim() || null;
   const status = document.getElementById('editBookStatus').value;
-  const note = document.getElementById('editBookNote').value.trim() || null;
+  const triggerNote = document.getElementById('editBookNote').value.trim() || null;
 
-  const result = bookService.editBook(editingBookId, { title, link, status, note });
+  const result = bookService.editBook(editingBookId, { title, link, status, triggerNote });
 
   if (!result.success) {
     showToast(result.message);
@@ -179,7 +179,7 @@ export function completeBook(id) {
 export function openCompleteNoteModal(id, book) {
   uiState.setReadingNoteBookId(id);
   document.getElementById('completeNoteBookTitle').textContent = book.title;
-  document.getElementById('completeNoteInput').value = book.note || '';
+  document.getElementById('completeNoteInput').value = book.completionNote || '';
   openModal('completeNoteModal');
 
   // バリデーション状態を更新（任意のみなので入力がない場合は非活性）
@@ -191,8 +191,8 @@ export function saveCompleteNote() {
   const bookId = uiState.getReadingNoteBookId();
   if (!bookId) return;
 
-  const note = document.getElementById('completeNoteInput').value.trim() || null;
-  bookService.editBook(bookId, { note });
+  const completionNote = document.getElementById('completeNoteInput').value.trim() || null;
+  bookService.saveCompletionNote(bookId, completionNote);
 
   closeModal('completeNoteModal');
   showToast('保存しました');
@@ -262,6 +262,14 @@ const studyBookListHandlers = [
     handler: () => {
       uiState.clearStudySelection();
       renderStudyBooks();
+    }
+  },
+  {
+    selector: '[data-reunion]',
+    stopPropagation: true,
+    handler: (e, target) => {
+      uiState.clearStudySelection();
+      openReunionModal(Number(target.dataset.reunion));
     }
   },
   {
@@ -665,5 +673,95 @@ export function initStoreEvents() {
     setSelectedId: uiState.setStoreSelectedBookId,
     clearSelection: uiState.clearStoreSelection,
     renderFn: renderStoreBooks
+  });
+}
+
+// ========================================
+// 再会モーダル
+// ========================================
+let reunionBookId = null;
+
+export function openReunionModal(id) {
+  const book = bookRepository.getBookById(id);
+  if (!book) return;
+
+  reunionBookId = id;
+
+  // タイトル
+  document.getElementById('reunionBookTitle').textContent = book.title;
+
+  // きっかけ
+  const triggerSection = document.getElementById('reunionTriggerSection');
+  const triggerNote = document.getElementById('reunionTriggerNote');
+  if (book.triggerNote) {
+    triggerNote.textContent = book.triggerNote;
+    triggerSection.style.display = 'block';
+  } else {
+    triggerSection.style.display = 'none';
+  }
+
+  // 読了時の感想
+  const completionSection = document.getElementById('reunionCompletionSection');
+  const completionNote = document.getElementById('reunionCompletionNote');
+  if (book.completionNote) {
+    completionNote.textContent = book.completionNote;
+    completionSection.style.display = 'block';
+  } else {
+    completionSection.style.display = 'none';
+  }
+
+  // 過去の振り返り
+  const reflectionsSection = document.getElementById('reunionReflectionsSection');
+  const reflectionsList = document.getElementById('reunionReflectionsList');
+  if (book.reflections && book.reflections.length > 0) {
+    reflectionsList.innerHTML = book.reflections.map(r => `
+      <div class="reflection-item">
+        <span class="reflection-date">${r.date}</span>
+        <p class="reflection-note">${r.note}</p>
+      </div>
+    `).join('');
+    reflectionsSection.style.display = 'block';
+  } else {
+    reflectionsSection.style.display = 'none';
+  }
+
+  // 入力欄クリア
+  document.getElementById('reunionInput').value = '';
+
+  openModal('reunionModal');
+
+  // バリデーション状態を更新
+  updateButtonState('saveReunionBtn', [], ['reunionInput']);
+}
+
+export function saveReunion() {
+  if (!reunionBookId) return;
+
+  const note = document.getElementById('reunionInput').value.trim();
+  if (!note) {
+    closeModal('reunionModal');
+    return;
+  }
+
+  const result = bookService.addReflection(reunionBookId, note);
+
+  closeModal('reunionModal');
+  showToast(result.message);
+  renderBooks();
+}
+
+export function skipReunion() {
+  closeModal('reunionModal');
+}
+
+export function initReunionEvents() {
+  document.getElementById('saveReunionBtn').addEventListener('click', saveReunion);
+  document.getElementById('skipReunionBtn').addEventListener('click', skipReunion);
+
+  initModalValidation({
+    modalId: 'reunionModal',
+    buttonId: 'saveReunionBtn',
+    requiredFields: [],
+    optionalFields: ['reunionInput']
   });
 }

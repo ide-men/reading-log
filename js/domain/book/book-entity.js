@@ -10,6 +10,12 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
 // ========================================
 
 /**
+ * @typedef {Object} Reflection
+ * @property {string} date - 振り返り日（YYYY-MM-DD）
+ * @property {string} note - その時の気づき
+ */
+
+/**
  * @typedef {Object} Book
  * @property {number} id - ユニークID（タイムスタンプ）
  * @property {string} title - 本のタイトル
@@ -18,7 +24,9 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
  * @property {string} status - ステータス（BOOK_STATUS値）
  * @property {string|null} startedAt - 読み始めた日（YYYY-MM-DD）
  * @property {string|null} completedAt - 読了日（YYYY-MM-DD）
- * @property {string|null} note - メモ・感想
+ * @property {string|null} triggerNote - きっかけ（なぜこの本？）
+ * @property {string|null} completionNote - 読了時の感想（何が変わった？）
+ * @property {Reflection[]} reflections - 振り返りの履歴
  * @property {number} readingTime - 累計読書時間（分）
  * @property {string|null} bookmark - 付箋メモ（中断時のどこまで読んだか等）
  */
@@ -38,12 +46,12 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
  * @param {Object} params - 本のデータ
  * @param {string} params.title - タイトル
  * @param {string} [params.link] - リンク
- * @param {string} [params.note] - メモ
+ * @param {string} [params.triggerNote] - きっかけ
  * @param {string} [params.status] - ステータス
  * @param {CreateBookOptions} [options] - オプション
  * @returns {Book}
  */
-export function createBook({ title, link, note, status = BOOK_STATUS.READING }, options = {}) {
+export function createBook({ title, link, triggerNote, status = BOOK_STATUS.READING }, options = {}) {
   const { onShortUrl = null, now = () => new Date() } = options;
   const currentDate = now();
   const coverUrl = getCoverUrlFromLink(link, onShortUrl);
@@ -66,7 +74,9 @@ export function createBook({ title, link, note, status = BOOK_STATUS.READING }, 
     status,
     startedAt,
     completedAt,
-    note: note || null,
+    triggerNote: triggerNote || null,
+    completionNote: null,
+    reflections: [],
     readingTime: 0,
     bookmark: null
   };
