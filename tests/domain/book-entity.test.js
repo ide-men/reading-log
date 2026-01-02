@@ -60,9 +60,9 @@ describe('createBook', () => {
     expect(book.completedAt).toBe('2024-12-25');
   });
 
-  it('積読ステータスでは日付が設定されない', () => {
+  it('未読ステータスでは日付が設定されない', () => {
     const book = createBook(
-      { title: '積読本', status: BOOK_STATUS.UNREAD },
+      { title: '未読本', status: BOOK_STATUS.UNREAD },
       { now: () => new Date('2024-01-01') }
     );
 
@@ -200,7 +200,7 @@ describe('getBookDateText', () => {
     expect(getBookDateText(book)).toBe('2024/6/1 開始');
   });
 
-  it('積読は追加日を表示', () => {
+  it('未読は追加日を表示', () => {
     const book = createUnreadBook({ id: DEFAULT_TEST_TIMESTAMP });
     expect(getBookDateText(book)).toBe('2024/6/15 追加');
   });

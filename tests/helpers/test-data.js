@@ -61,7 +61,7 @@ export function createCompletedBook(overrides = {}) {
 }
 
 /**
- * 積読の本を作成
+ * 未読の本を作成
  * @param {Object} overrides - 上書きするプロパティ
  * @returns {Object} 本オブジェクト
  */

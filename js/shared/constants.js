@@ -8,7 +8,7 @@ export const SCHEMA_VERSION = 1;
 export const BOOK_STATUS = {
   READING: 'reading',      // 今読んでいる（カバン）
   COMPLETED: 'completed',  // 読み終わった（書斎）
-  UNREAD: 'unread',        // 積読（書斎）
+  UNREAD: 'unread',        // 未読（書斎）
   DROPPED: 'dropped',      // 中断（書斎）
   WISHLIST: 'wishlist'     // 気になる（本屋）
 };
@@ -17,7 +17,7 @@ export const BOOK_STATUS = {
 export const STATUS_CONFIG = {
   [BOOK_STATUS.READING]: { label: '読書中', icon: '📖', color: '#e8a87c' },
   [BOOK_STATUS.COMPLETED]: { label: '読了', icon: '✅', color: '#10b981' },
-  [BOOK_STATUS.UNREAD]: { label: '積読', icon: '📚', color: '#6366f1' },
+  [BOOK_STATUS.UNREAD]: { label: '未読', icon: '📚', color: '#6366f1' },
   [BOOK_STATUS.DROPPED]: { label: '中断', icon: '⏸️', color: '#6b7280' },
   [BOOK_STATUS.WISHLIST]: { label: '気になる', icon: '💭', color: '#f59e0b' }
 };
