@@ -8,6 +8,7 @@ import {
   getTimeSlot,
   getTimeSlotIndex,
   escapeAttr,
+  toLocalDateString,
 } from '../../js/shared/utils.js';
 
 describe('adjustColor', () => {
@@ -127,5 +128,22 @@ describe('escapeAttr', () => {
     expect(escapeAttr('"test"')).toBe('&quot;test&quot;');
     expect(escapeAttr("it's")).toBe("it&#39;s");
     expect(escapeAttr('a & b')).toBe('a &amp; b');
+  });
+});
+
+describe('toLocalDateString', () => {
+  it('DateオブジェクトからYYYY-MM-DD形式の文字列を返す', () => {
+    const date = new Date(2026, 0, 2); // 2026年1月2日（ローカルタイム）
+    expect(toLocalDateString(date)).toBe('2026-01-02');
+  });
+
+  it('月・日が1桁の場合はゼロパディング', () => {
+    const date = new Date(2025, 4, 5); // 2025年5月5日
+    expect(toLocalDateString(date)).toBe('2025-05-05');
+  });
+
+  it('月末の日付を正しく処理', () => {
+    const date = new Date(2025, 11, 31); // 2025年12月31日
+    expect(toLocalDateString(date)).toBe('2025-12-31');
   });
 });

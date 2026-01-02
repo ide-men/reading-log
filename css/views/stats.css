@@ -246,7 +246,7 @@
 }
 
 /* ==========================================================================
-   Reading Calendar (3ヶ月カレンダー形式)
+   Reading Calendar (1ヶ月表示・スワイプ切り替え)
    ========================================================================== */
 
 .calendar-container {
@@ -261,7 +261,9 @@
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-bottom: var(--space-sm);
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .calendar-scroll::-webkit-scrollbar {
@@ -270,14 +272,16 @@
 
 .calendar-grid {
   display: flex;
-  gap: var(--space-lg);
-  min-width: max-content;
+  gap: 0;
 }
 
 /* 各月のコンテナ */
 .calendar-month {
   flex-shrink: 0;
-  min-width: 200px;
+  width: 100%;
+  scroll-snap-align: start;
+  padding: 0 var(--space-xs);
+  box-sizing: border-box;
 }
 
 /* 月のヘッダー */
@@ -351,6 +355,19 @@
 .calendar-cell.today {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+  position: relative;
+}
+
+.calendar-cell.today::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
 }
 
 .calendar-day {
@@ -408,8 +425,6 @@
   justify-content: flex-end;
   gap: 4px;
   margin-top: var(--space-sm);
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--border);
 }
 
 .calendar-legend .calendar-cell {
@@ -427,6 +442,33 @@
   font-size: 10px;
   color: var(--text-dim);
   margin: 0 2px;
+}
+
+/* ドットインジケーター */
+.calendar-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+.calendar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--elevated);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.calendar-dot:hover {
+  transform: scale(1.2);
+}
+
+.calendar-dot.active {
+  background: var(--accent);
 }
 
 /* ==========================================================================
