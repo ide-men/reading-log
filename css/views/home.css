@@ -331,7 +331,6 @@
   transform: translateY(20px);
   pointer-events: none;
   max-height: 0;
-  overflow: hidden;
   transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease, margin 0.3s ease;
   margin-top: 0;
 }
@@ -352,7 +351,7 @@
 }
 
 .home-actions-row .btn {
-  flex: 1;
+  flex: 3;
   padding: var(--space-gutter) var(--space-md);
   font-size: 13px;
   font-weight: 600;
@@ -387,13 +386,13 @@
 /* アクションメニュー（⋮ボタン＋ドロップダウン） - モダンデザイン */
 .home-actions-menu {
   position: relative;
+  flex: 1;
 }
 
 .home-actions-menu-btn {
-  flex: none !important;
-  width: 40px;
-  height: 40px;
-  padding: 0 !important;
+  width: 100%;
+  height: auto;
+  padding: var(--space-gutter) 0 !important;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -501,8 +500,7 @@
   }
 
   .home-actions-menu-btn {
-    width: 44px;
-    height: 44px;
+    padding: var(--space-md) 0 !important;
     border-radius: 14px !important;
   }
 
@@ -581,8 +579,7 @@
   }
 
   .home-actions-menu-btn {
-    width: 48px;
-    height: 48px;
+    padding: var(--space-form) 0 !important;
     border-radius: 16px !important;
   }
 
