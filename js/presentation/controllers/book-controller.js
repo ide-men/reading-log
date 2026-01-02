@@ -6,7 +6,7 @@ import { BOOK_STATUS, UI_CONFIG, CELEBRATION_CONFIG } from '../../shared/constan
 import { openLink } from '../../shared/utils.js';
 import * as bookService from '../../domain/book/book-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
-import * as uiState from '../state/ui-state.js';
+import { stateManager } from '../../core/state-manager.js';
 import { showAcquireCelebration } from '../effects/celebrations.js';
 import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenteredBook } from '../views/carousel-view.js';
 import { renderStudyBooks } from '../views/study-view.js';
@@ -58,7 +58,7 @@ export function editBook(id) {
   const book = bookRepository.getBookById(id);
   if (!book) return;
 
-  uiState.setEditingBookId(id);
+  stateManager.setEditingBookId(id);
   document.getElementById('editBookTitle').value = book.title;
   document.getElementById('editBookLink').value = book.link || '';
   document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
@@ -70,7 +70,7 @@ export function editBook(id) {
 }
 
 export function saveEditBook() {
-  const editingBookId = uiState.getEditingBookId();
+  const editingBookId = stateManager.getEditingBookId();
   const title = document.getElementById('editBookTitle').value.trim();
   const link = document.getElementById('editBookLink').value.trim() || null;
   const status = document.getElementById('editBookStatus').value;
@@ -99,13 +99,13 @@ export function deleteBook(id) {
   const book = bookRepository.getBookById(id);
   if (!book) return;
 
-  uiState.setDeletingBookId(id);
+  stateManager.setDeletingBookId(id);
   document.getElementById('deleteBookTitle').textContent = `「${book.title}」`;
   openModal('deleteConfirm');
 }
 
 export function confirmDeleteBook() {
-  const deletingBookId = uiState.getDeletingBookId();
+  const deletingBookId = stateManager.getDeletingBookId();
   const result = bookService.deleteBook(deletingBookId);
 
   if (result.success) {
@@ -177,7 +177,7 @@ export function completeBook(id) {
 
 // 読了時の感想モーダルを開く
 export function openCompleteNoteModal(id, book) {
-  uiState.setReadingNoteBookId(id);
+  stateManager.setReadingNoteBookId(id);
   document.getElementById('completeNoteBookTitle').textContent = book.title;
   document.getElementById('completeNoteInput').value = book.completionNote || '';
   openModal('completeNoteModal');
@@ -188,7 +188,7 @@ export function openCompleteNoteModal(id, book) {
 
 // 読了感想を保存
 export function saveCompleteNote() {
-  const bookId = uiState.getReadingNoteBookId();
+  const bookId = stateManager.getReadingNoteBookId();
   if (!bookId) return;
 
   const completionNote = document.getElementById('completeNoteInput').value.trim() || null;
@@ -209,7 +209,7 @@ export function openDropBookModal(id) {
   const book = bookRepository.getBookById(id);
   if (!book) return;
 
-  uiState.setDroppingBookId(id);
+  stateManager.setDroppingBookId(id);
   document.getElementById('dropBookTitle').textContent = book.title;
   document.getElementById('bookmarkInput').value = '';
   openModal('dropBookModal');
@@ -220,7 +220,7 @@ export function openDropBookModal(id) {
 
 // 中断を確定
 export function confirmDropBook() {
-  const droppingBookId = uiState.getDroppingBookId();
+  const droppingBookId = stateManager.getDroppingBookId();
   if (!droppingBookId) return;
 
   const bookmark = document.getElementById('bookmarkInput').value.trim() || null;
@@ -260,7 +260,7 @@ const studyBookListHandlers = [
   {
     selector: '[data-close-detail]',
     handler: () => {
-      uiState.clearStudySelection();
+      stateManager.clearStudySelection();
       renderStudyBooks();
     }
   },
@@ -268,7 +268,7 @@ const studyBookListHandlers = [
     selector: '[data-reunion]',
     stopPropagation: true,
     handler: (e, target) => {
-      uiState.clearStudySelection();
+      stateManager.clearStudySelection();
       openReunionModal(Number(target.dataset.reunion));
     }
   },
@@ -276,7 +276,7 @@ const studyBookListHandlers = [
     selector: '[data-start]',
     stopPropagation: true,
     handler: (e, target) => {
-      uiState.clearStudySelection();
+      stateManager.clearStudySelection();
       startReadingBook(Number(target.dataset.start));
     }
   },
@@ -290,14 +290,14 @@ const studyBookListHandlers = [
   {
     selector: '[data-edit]',
     handler: (e, target) => {
-      uiState.clearStudySelection();
+      stateManager.clearStudySelection();
       editBook(Number(target.dataset.edit));
     }
   },
   {
     selector: '[data-delete]',
     handler: (e, target) => {
-      uiState.clearStudySelection();
+      stateManager.clearStudySelection();
       deleteBook(Number(target.dataset.delete));
     }
   }
@@ -317,21 +317,21 @@ const storeBookListHandlers = [
   {
     selector: '[data-close-detail]',
     handler: () => {
-      uiState.clearStoreSelection();
+      stateManager.clearStoreSelection();
       renderStoreBooks();
     }
   },
   {
     selector: '[data-to-study]',
     handler: (e, target) => {
-      uiState.clearStoreSelection();
+      stateManager.clearStoreSelection();
       acquireBook(Number(target.dataset.toStudy));
     }
   },
   {
     selector: '[data-to-bag]',
     handler: (e, target) => {
-      uiState.clearStoreSelection();
+      stateManager.clearStoreSelection();
       moveToReading(Number(target.dataset.toBag));
     }
   },
@@ -345,14 +345,14 @@ const storeBookListHandlers = [
   {
     selector: '[data-edit]',
     handler: (e, target) => {
-      uiState.clearStoreSelection();
+      stateManager.clearStoreSelection();
       editBook(Number(target.dataset.edit));
     }
   },
   {
     selector: '[data-delete]',
     handler: (e, target) => {
-      uiState.clearStoreSelection();
+      stateManager.clearStoreSelection();
       deleteBook(Number(target.dataset.delete));
     }
   }
@@ -484,7 +484,7 @@ export function initEditDeleteEvents() {
   });
 
   document.getElementById('bookDetailEditBtn').addEventListener('click', () => {
-    const bookId = uiState.getDetailBookId();
+    const bookId = stateManager.getDetailBookId();
     if (bookId) {
       closeModal('bookDetailModal');
       editBook(bookId);
@@ -492,7 +492,7 @@ export function initEditDeleteEvents() {
   });
 
   document.getElementById('bookDetailDeleteBtn').addEventListener('click', () => {
-    const bookId = uiState.getDetailBookId();
+    const bookId = stateManager.getDetailBookId();
     if (bookId) {
       closeModal('bookDetailModal');
       deleteBook(bookId);
@@ -565,14 +565,14 @@ export function initCarouselEvents() {
   });
 
   document.getElementById('completeSelectedBtn').addEventListener('click', () => {
-    const selectedId = uiState.getSelectedBookId();
+    const selectedId = stateManager.getSelectedBookId();
     if (selectedId) {
       completeBook(selectedId);
     }
   });
 
   document.getElementById('dropSelectedBtn').addEventListener('click', () => {
-    const selectedId = uiState.getSelectedBookId();
+    const selectedId = stateManager.getSelectedBookId();
     if (selectedId) {
       closeBookActionsDropdown();
       openDropBookModal(selectedId);
@@ -584,7 +584,7 @@ export function initCarouselEvents() {
   });
 
   document.getElementById('editSelectedBtn').addEventListener('click', () => {
-    const selectedId = uiState.getSelectedBookId();
+    const selectedId = stateManager.getSelectedBookId();
     if (selectedId) {
       closeBookActionsDropdown();
       editBook(selectedId);
@@ -592,7 +592,7 @@ export function initCarouselEvents() {
   });
 
   document.getElementById('openLinkSelectedBtn').addEventListener('click', () => {
-    const selectedId = uiState.getSelectedBookId();
+    const selectedId = stateManager.getSelectedBookId();
     if (selectedId) {
       const book = bookRepository.getBookById(selectedId);
       if (book && book.link) {
@@ -641,8 +641,8 @@ export function initStudyEvents() {
     document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
 
-    uiState.clearStudySelection();
-    uiState.setCurrentStudyStatus(status);
+    stateManager.clearStudySelection();
+    stateManager.setCurrentStudyStatus(status);
     renderStudyBooks();
   });
 
@@ -652,9 +652,9 @@ export function initStudyEvents() {
     miniBookClass: 'mini-book',
     handlers: studyBookListHandlers,
     fallback: studyBookListFallback,
-    getSelectedId: uiState.getStudySelectedBookId,
-    setSelectedId: uiState.setStudySelectedBookId,
-    clearSelection: uiState.clearStudySelection,
+    getSelectedId: stateManager.getStudySelectedBookId,
+    setSelectedId: stateManager.setStudySelectedBookId,
+    clearSelection: stateManager.clearStudySelection,
     renderFn: renderStudyBooks
   });
 }
@@ -669,9 +669,9 @@ export function initStoreEvents() {
     miniBookClass: 'mini-book',
     handlers: storeBookListHandlers,
     fallback: storeBookListFallback,
-    getSelectedId: uiState.getStoreSelectedBookId,
-    setSelectedId: uiState.setStoreSelectedBookId,
-    clearSelection: uiState.clearStoreSelection,
+    getSelectedId: stateManager.getStoreSelectedBookId,
+    setSelectedId: stateManager.setStoreSelectedBookId,
+    clearSelection: stateManager.clearStoreSelection,
     renderFn: renderStoreBooks
   });
 }

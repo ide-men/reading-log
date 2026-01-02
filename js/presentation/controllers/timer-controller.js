@@ -6,7 +6,7 @@ import { escapeAttr } from '../../shared/utils.js';
 import * as timerService from '../../domain/timer/timer-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
 import * as bookService from '../../domain/book/book-service.js';
-import * as uiState from '../state/ui-state.js';
+import { stateManager } from '../../core/state-manager.js';
 import { applyReadingAnimation } from '../effects/animations.js';
 import { renderReadingBooks } from '../views/carousel-view.js';
 import { updateUI, openModal, closeModal, showToast } from './navigation.js';
@@ -16,7 +16,7 @@ import { initModalValidation, updateButtonState } from '../utils/modal-validatio
 // 読書開始
 // ========================================
 export function handleStartReading() {
-  const selectedId = uiState.getSelectedBookId();
+  const selectedId = stateManager.getSelectedBookId();
   if (!selectedId) return;
 
   const { book } = timerService.startReading(selectedId);
@@ -53,7 +53,7 @@ export function handleStopReading() {
 
   // 付箋入力モーダルを表示（どこまで読んだか）
   if (book) {
-    uiState.setReadingBookmarkBookId(bookId);
+    stateManager.setReadingBookmarkBookId(bookId);
     document.getElementById('readingBookmarkBookTitle').textContent = book.title;
     document.getElementById('readingBookmarkInput').value = book.bookmark || '';
     openModal('readingBookmarkModal');
@@ -67,7 +67,7 @@ export function handleStopReading() {
 // 読書終了時の付箋保存
 // ========================================
 export function saveReadingBookmark() {
-  const bookId = uiState.getReadingBookmarkBookId();
+  const bookId = stateManager.getReadingBookmarkBookId();
   if (!bookId) return;
 
   const bookmark = document.getElementById('readingBookmarkInput').value.trim() || null;
