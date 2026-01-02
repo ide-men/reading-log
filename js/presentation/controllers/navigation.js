@@ -15,6 +15,7 @@ import { renderReadingBooks } from '../views/carousel-view.js';
 import { renderStudyBooks } from '../views/study-view.js';
 import { renderStoreBooks } from '../views/store-view.js';
 import { renderStats } from '../views/stats-view.js';
+import { showOnboarding } from './onboarding-controller.js';
 
 // ========================================
 // タブコールバック
@@ -125,6 +126,11 @@ export function initSettingsEvents() {
   document.getElementById('settingsBtn').addEventListener('click', () => {
     updateStorageDisplay();
     openModal('settingsModal');
+  });
+
+  document.getElementById('showOnboardingBtn').addEventListener('click', () => {
+    closeModal('settingsModal');
+    showOnboarding();
   });
 
   document.getElementById('exportBtn').addEventListener('click', () => {
