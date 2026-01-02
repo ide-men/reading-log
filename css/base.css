@@ -86,6 +86,10 @@
   --max-width: 430px;
   --header-height: 60px;
   --nav-height: 70px;
+
+  /* Fixed element spacing */
+  --header-offset: 12px;
+  --content-top-padding: calc(var(--header-height) + var(--header-offset) + 8px);
 }
 
 /* ==========================================================================
