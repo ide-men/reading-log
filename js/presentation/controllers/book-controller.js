@@ -479,6 +479,21 @@ export function initAddBookEvents() {
     requiredFields: ['bookInput'],
     optionalFields: []
   });
+
+  // タイトル入力時にAmazon検索リンクを更新
+  const bookInput = document.getElementById('bookInput');
+  const amazonSearchLink = document.getElementById('amazonSearchLink');
+
+  bookInput.addEventListener('input', () => {
+    const title = bookInput.value.trim();
+    if (title) {
+      const searchUrl = `https://www.amazon.co.jp/s?k=${encodeURIComponent(title)}`;
+      amazonSearchLink.href = searchUrl;
+      amazonSearchLink.style.display = 'inline-block';
+    } else {
+      amazonSearchLink.style.display = 'none';
+    }
+  });
 }
 
 // ========================================
