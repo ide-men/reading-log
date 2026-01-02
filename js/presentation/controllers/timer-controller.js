@@ -23,7 +23,6 @@ export function handleStartReading() {
 
   // 読書画面を表示
   const bookCover = document.getElementById('readingBookCover');
-  const titleEl = document.getElementById('readingTitle');
 
   if (book && book.coverUrl) {
     bookCover.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" alt="">`;
@@ -31,13 +30,6 @@ export function handleStartReading() {
   } else {
     bookCover.innerHTML = '<span class="reading-book__icon">📖</span>';
     bookCover.classList.remove('has-cover');
-  }
-
-  // 本のタイトルを表示
-  if (book && book.title) {
-    titleEl.textContent = book.title;
-  } else {
-    titleEl.textContent = '読書中';
   }
 
   applyReadingAnimation();

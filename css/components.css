@@ -851,19 +851,11 @@ select.form-input {
   text-align: center;
 }
 
-.reading-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-  margin: 0 0 var(--space-sm);
-  letter-spacing: 0.02em;
-}
-
 .reading-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text-dim);
   margin: 0;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 /* Footer */
@@ -1070,12 +1062,8 @@ select.form-input {
     font-size: 64px;
   }
 
-  .reading-title {
-    font-size: 28px;
-  }
-
   .reading-subtitle {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .reading-orb--1 {
@@ -1177,12 +1165,8 @@ select.form-input {
     inset: -60px;
   }
 
-  .reading-title {
-    font-size: 32px;
-  }
-
   .reading-subtitle {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .reading-end-btn {
