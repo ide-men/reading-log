@@ -11,13 +11,22 @@ import {
   getMiniBookStyle,
 } from '../../js/domain/book/book-entity.js';
 import { BOOK_STATUS, BOOK_COLORS } from '../../js/shared/constants.js';
+import {
+  setupFakeTimers,
+  teardownFakeTimers,
+  createCompletedBook,
+  createReadingBook,
+  createUnreadBook,
+  createDroppedBook,
+  createWishlistBook,
+  DEFAULT_TEST_DATE,
+  DEFAULT_TEST_TIMESTAMP
+} from '../helpers/index.js';
 
-// ========================================
-// createBook（Date注入によるテスト）
-// ========================================
 describe('createBook', () => {
+  const fixedDate = new Date(DEFAULT_TEST_DATE);
+
   it('決定論的なIDと日付を生成できる', () => {
-    const fixedDate = new Date('2024-06-15T12:00:00');
     const book = createBook(
       { title: 'テスト本' },
       { now: () => fixedDate }
@@ -30,10 +39,10 @@ describe('createBook', () => {
   });
 
   it('読書中ステータスでstartedAtが設定される', () => {
-    const fixedDate = new Date('2024-03-20T10:00:00');
+    const date = new Date('2024-03-20T10:00:00');
     const book = createBook(
       { title: '読書中の本', status: BOOK_STATUS.READING },
-      { now: () => fixedDate }
+      { now: () => date }
     );
 
     expect(book.startedAt).toBe('2024-03-20');
@@ -41,10 +50,10 @@ describe('createBook', () => {
   });
 
   it('読了ステータスでcompletedAtが設定される', () => {
-    const fixedDate = new Date('2024-12-25T15:30:00');
+    const date = new Date('2024-12-25T15:30:00');
     const book = createBook(
       { title: '読了本', status: BOOK_STATUS.COMPLETED },
-      { now: () => fixedDate }
+      { now: () => date }
     );
 
     expect(book.startedAt).toBeNull();
@@ -127,7 +136,6 @@ describe('isValidStatus', () => {
 
 describe('formatDate', () => {
   it('日付をフォーマット', () => {
-    // ja-JP形式: YYYY/MM/DD
     expect(formatDate('2024-01-15')).toBe('2024/1/15');
     expect(formatDate('2024-12-31')).toBe('2024/12/31');
   });
@@ -140,14 +148,8 @@ describe('formatDate', () => {
 });
 
 describe('getRelativeDate', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('今日', () => {
     expect(getRelativeDate('2024-06-15')).toBe('今日から');
@@ -185,55 +187,31 @@ describe('getBookCreatedDateStr', () => {
 });
 
 describe('getBookDateText', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('読了本は読了日を表示', () => {
-    const book = {
-      id: Date.now(),
-      status: BOOK_STATUS.COMPLETED,
-      completedAt: '2024-06-10',
-    };
+    const book = createCompletedBook({ id: DEFAULT_TEST_TIMESTAMP, completedAt: '2024-06-10' });
     expect(getBookDateText(book)).toBe('2024/6/10 読了');
   });
 
   it('読書中は開始日を表示', () => {
-    const book = {
-      id: Date.now(),
-      status: BOOK_STATUS.READING,
-      startedAt: '2024-06-01',
-    };
+    const book = createReadingBook({ id: DEFAULT_TEST_TIMESTAMP, startedAt: '2024-06-01' });
     expect(getBookDateText(book)).toBe('2024/6/1 開始');
   });
 
   it('積読は追加日を表示', () => {
-    const book = {
-      id: new Date('2024-06-15T12:00:00').getTime(),
-      status: BOOK_STATUS.UNREAD,
-    };
+    const book = createUnreadBook({ id: DEFAULT_TEST_TIMESTAMP });
     expect(getBookDateText(book)).toBe('2024/6/15 追加');
   });
 
   it('中断は開始日を表示', () => {
-    const book = {
-      id: Date.now(),
-      status: BOOK_STATUS.DROPPED,
-      startedAt: '2024-05-15',
-    };
+    const book = createDroppedBook({ id: DEFAULT_TEST_TIMESTAMP, startedAt: '2024-05-15' });
     expect(getBookDateText(book)).toBe('2024/5/15 開始');
   });
 
   it('気になるは追加日を表示', () => {
-    const book = {
-      id: new Date('2024-06-15T12:00:00').getTime(),
-      status: BOOK_STATUS.WISHLIST,
-    };
+    const book = createWishlistBook({ id: DEFAULT_TEST_TIMESTAMP });
     expect(getBookDateText(book)).toBe('2024/6/15 追加');
   });
 });
@@ -260,6 +238,4 @@ describe('getMiniBookStyle', () => {
     expect(style.width).toBeGreaterThan(0);
     expect(style.bgStyle).toContain('linear-gradient');
   });
-
-  // 表紙ありのテストはescapeHtmlがDOM依存のためスキップ
 });

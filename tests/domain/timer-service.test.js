@@ -1,9 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CONFIG } from '../../js/shared/constants.js';
+import {
+  setupFakeTimers,
+  teardownFakeTimers,
+  createTimerDependenciesMock,
+  createTestBook,
+  createTestStats
+} from '../helpers/index.js';
 
 // stateManagerをモック
 const mockState = {
-  stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null },
+  stats: createTestStats(),
   books: []
 };
 
@@ -22,12 +29,10 @@ vi.mock('../../js/core/state-manager.js', () => ({
   }
 }));
 
-// storageをモック
 vi.mock('../../js/core/storage.js', () => ({
   saveState: vi.fn()
 }));
 
-// eventBusをモック
 vi.mock('../../js/shared/event-bus.js', () => ({
   eventBus: { emit: vi.fn() },
   Events: {
@@ -38,29 +43,23 @@ vi.mock('../../js/shared/event-bus.js', () => ({
   }
 }));
 
-// テスト前にモジュールをリセットするために動的インポート
 let timerService;
 
 describe('timer-service.js', () => {
   beforeEach(async () => {
-    vi.useFakeTimers();
+    setupFakeTimers();
     vi.clearAllMocks();
-
-    // 状態をリセット
-    mockState.stats = { total: 0, today: 0, sessions: 0, firstSessionDate: null };
+    mockState.stats = createTestStats();
     mockState.books = [];
-
-    // モジュールをリセットして再インポート
     vi.resetModules();
     timerService = await import('../../js/domain/timer/timer-service.js');
   });
 
   afterEach(() => {
-    // タイマーが動いていたらキャンセル
     if (timerService.isTimerRunning()) {
       timerService.cancelReading();
     }
-    vi.useRealTimers();
+    teardownFakeTimers();
   });
 
   describe('isTimerRunning', () => {
@@ -81,9 +80,7 @@ describe('timer-service.js', () => {
 
     it('タイマー動作中は秒数が増加', () => {
       timerService.startReading();
-
-      vi.advanceTimersByTime(5000); // 5秒経過
-
+      vi.advanceTimersByTime(5000);
       expect(timerService.getSeconds()).toBe(5);
     });
   });
@@ -94,9 +91,8 @@ describe('timer-service.js', () => {
     });
 
     it('本を指定して開始するとそのIDが返る', () => {
-      mockState.books = [{ id: 42, title: 'Test Book' }];
+      mockState.books = [createTestBook({ id: 42, title: 'Test Book' })];
       timerService.startReading(42);
-
       expect(timerService.getCurrentBookId()).toBe(42);
     });
   });
@@ -104,18 +100,14 @@ describe('timer-service.js', () => {
   describe('getFormattedTime', () => {
     it('秒数をMM:SS形式でフォーマット', () => {
       timerService.startReading();
-
       expect(timerService.getFormattedTime()).toBe('0:00');
-
-      vi.advanceTimersByTime(65000); // 65秒 = 1:05
-
+      vi.advanceTimersByTime(65000);
       expect(timerService.getFormattedTime()).toBe('1:05');
     });
 
     it('10分以上も正しくフォーマット', () => {
       timerService.startReading();
-      vi.advanceTimersByTime(600000); // 600秒 = 10:00
-
+      vi.advanceTimersByTime(600000);
       expect(timerService.getFormattedTime()).toBe('10:00');
     });
   });
@@ -123,23 +115,19 @@ describe('timer-service.js', () => {
   describe('startReading', () => {
     it('タイマーを開始する', () => {
       const result = timerService.startReading();
-
       expect(timerService.isTimerRunning()).toBe(true);
       expect(result.book).toBeNull();
     });
 
     it('本を指定して開始', () => {
-      mockState.books = [{ id: 1, title: 'Test Book' }];
-
+      mockState.books = [createTestBook({ id: 1, title: 'Test Book' })];
       const result = timerService.startReading(1);
-
       expect(result.book.title).toBe('Test Book');
     });
 
     it('既に動作中の場合は何もしない', () => {
       timerService.startReading();
       const result = timerService.startReading();
-
       expect(result.book).toBeNull();
     });
   });
@@ -147,10 +135,8 @@ describe('timer-service.js', () => {
   describe('stopReading', () => {
     it('タイマーを停止する', () => {
       timerService.startReading();
-      vi.advanceTimersByTime(60000); // 1分
-
+      vi.advanceTimersByTime(60000);
       const result = timerService.stopReading();
-
       expect(timerService.isTimerRunning()).toBe(false);
       expect(result.minutes).toBe(1);
     });
@@ -158,59 +144,45 @@ describe('timer-service.js', () => {
     it('最低セッション時間未満は無効', () => {
       timerService.startReading();
       vi.advanceTimersByTime((CONFIG.minSessionMinutes - 1) * 60000);
-
       const result = timerService.stopReading();
-
       expect(result.isValidSession).toBe(false);
     });
 
     it('最低セッション時間以上は有効', () => {
       timerService.startReading();
       vi.advanceTimersByTime(CONFIG.minSessionMinutes * 60000);
-
       const result = timerService.stopReading();
-
       expect(result.isValidSession).toBe(true);
     });
 
     it('タイマーが動いていない場合', () => {
       const result = timerService.stopReading();
-
       expect(result.minutes).toBe(0);
       expect(result.isValidSession).toBe(false);
     });
 
     it('統計が更新される', async () => {
       const { stateManager } = await import('../../js/core/state-manager.js');
-
       timerService.startReading();
-      vi.advanceTimersByTime(600000); // 10分
-
+      vi.advanceTimersByTime(600000);
       timerService.stopReading();
-
       expect(stateManager.updateStats).toHaveBeenCalled();
     });
 
     it('本の読書時間が更新される', async () => {
       const { stateManager } = await import('../../js/core/state-manager.js');
-      mockState.books = [{ id: 1, title: 'Test', readingTime: 0 }];
-
+      mockState.books = [createTestBook({ id: 1, readingTime: 0 })];
       timerService.startReading(1);
-      vi.advanceTimersByTime(120000); // 2分
-
+      vi.advanceTimersByTime(120000);
       timerService.stopReading();
-
       expect(stateManager.updateBook).toHaveBeenCalledWith(1, { readingTime: 2 });
     });
 
     it('有効セッションで履歴が追加される', async () => {
       const { stateManager } = await import('../../js/core/state-manager.js');
-
       timerService.startReading();
       vi.advanceTimersByTime(CONFIG.minSessionMinutes * 60000);
-
       timerService.stopReading();
-
       expect(stateManager.addHistory).toHaveBeenCalled();
     });
   });
@@ -218,12 +190,9 @@ describe('timer-service.js', () => {
   describe('cancelReading', () => {
     it('タイマーをキャンセル（統計に記録しない）', async () => {
       const { stateManager } = await import('../../js/core/state-manager.js');
-
       timerService.startReading();
-      vi.advanceTimersByTime(600000); // 10分
-
+      vi.advanceTimersByTime(600000);
       timerService.cancelReading();
-
       expect(timerService.isTimerRunning()).toBe(false);
       expect(timerService.getSeconds()).toBe(0);
       expect(stateManager.updateStats).not.toHaveBeenCalled();
@@ -231,17 +200,13 @@ describe('timer-service.js', () => {
 
     it('タイマーが動いていない場合は何もしない', () => {
       timerService.cancelReading();
-
       expect(timerService.isTimerRunning()).toBe(false);
     });
   });
 });
 
-// ========================================
 // TimerServiceクラスのテスト（依存性注入パターン）
-// vi.resetModules()が不要で、より高速・明示的なテスト
-// ========================================
-import { TimerService, createTimerService } from '../../js/domain/timer/timer-service.js';
+import { createTimerService } from '../../js/domain/timer/timer-service.js';
 import { Events } from '../../js/shared/event-bus.js';
 
 describe('TimerService クラス（依存性注入）', () => {
@@ -249,29 +214,14 @@ describe('TimerService クラス（依存性注入）', () => {
   let mockDeps;
 
   beforeEach(() => {
-    vi.useFakeTimers();
-
-    // モックを直接渡す（vi.mockが不要）
-    mockDeps = {
-      getBook: vi.fn(),
-      getState: vi.fn(() => ({
-        stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null },
-        books: []
-      })),
-      updateStats: vi.fn(),
-      updateBook: vi.fn(),
-      addHistory: vi.fn(),
-      save: vi.fn(),
-      emit: vi.fn(),
-      now: vi.fn(() => new Date('2024-06-15T12:00:00'))
-    };
-
+    setupFakeTimers();
+    mockDeps = createTimerDependenciesMock();
     timer = createTimerService(mockDeps);
   });
 
   afterEach(() => {
     timer.reset();
-    vi.useRealTimers();
+    teardownFakeTimers();
   });
 
   it('初期状態ではタイマー停止中', () => {
@@ -282,7 +232,6 @@ describe('TimerService クラス（依存性注入）', () => {
 
   it('タイマー開始時にイベントを発行', () => {
     timer.startReading(1);
-
     expect(mockDeps.emit).toHaveBeenCalledWith(Events.TIMER_STARTED, {
       bookId: 1,
       book: undefined
@@ -292,9 +241,7 @@ describe('TimerService クラス（依存性注入）', () => {
   it('タイマー停止時に正しいDateを使用', () => {
     const fixedDate = new Date('2024-06-15T14:30:00');
     mockDeps.now.mockReturnValue(fixedDate);
-    mockDeps.getState.mockReturnValue({
-      stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null }
-    });
+    mockDeps.getState.mockReturnValue({ stats: createTestStats() });
 
     timer.startReading();
     vi.advanceTimersByTime(CONFIG.minSessionMinutes * 60000);
@@ -309,14 +256,12 @@ describe('TimerService クラス（依存性注入）', () => {
   });
 
   it('本の読書時間が更新される', () => {
-    const testBook = { id: 42, title: 'テスト本', readingTime: 10 };
+    const testBook = createTestBook({ id: 42, readingTime: 10 });
     mockDeps.getBook.mockReturnValue(testBook);
-    mockDeps.getState.mockReturnValue({
-      stats: { total: 0, today: 0, sessions: 0, firstSessionDate: null }
-    });
+    mockDeps.getState.mockReturnValue({ stats: createTestStats() });
 
     timer.startReading(42);
-    vi.advanceTimersByTime(180000); // 3分
+    vi.advanceTimersByTime(180000);
     timer.stopReading();
 
     expect(mockDeps.updateBook).toHaveBeenCalledWith(42, { readingTime: 13 });
@@ -325,7 +270,6 @@ describe('TimerService クラス（依存性注入）', () => {
   it('reset()でタイマー状態がクリアされる', () => {
     timer.startReading(1);
     vi.advanceTimersByTime(5000);
-
     timer.reset();
 
     expect(timer.isTimerRunning()).toBe(false);

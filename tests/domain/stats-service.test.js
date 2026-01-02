@@ -10,17 +10,22 @@ import {
   getReadingInsights,
   // 純粋関数版（モック不要）
   calculateStreakPure,
-  calculateYearlyPredictionPure,
   getBasicStatsPure,
   getWeekChartDataPure,
-  getMonthCalendarDataPure,
   getThreeMonthCalendarDataPure,
   getReadingRhythmDataPure,
   getReadingInsightsPure,
 } from '../../js/domain/stats/stats-service.js';
 import { stateManager } from '../../js/core/state-manager.js';
+import {
+  setupFakeTimers,
+  teardownFakeTimers,
+  createHistoryEntry,
+  createConsecutiveHistory,
+  createTestBook,
+  DEFAULT_TEST_DATE
+} from '../helpers/index.js';
 
-// stateManagerをモック
 vi.mock('../../js/core/state-manager.js', () => ({
   stateManager: {
     getState: vi.fn(),
@@ -28,14 +33,8 @@ vi.mock('../../js/core/state-manager.js', () => ({
 }));
 
 describe('calculateStreak', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('履歴がない場合は0', () => {
     stateManager.getState.mockReturnValue({ history: [] });
@@ -44,18 +43,14 @@ describe('calculateStreak', () => {
 
   it('今日だけ読んだ場合は1', () => {
     stateManager.getState.mockReturnValue({
-      history: [{ d: '2024-06-15T10:00:00', m: 30 }],
+      history: [createHistoryEntry()],
     });
     expect(calculateStreak()).toBe(1);
   });
 
   it('連続3日読んだ場合は3', () => {
     stateManager.getState.mockReturnValue({
-      history: [
-        { d: '2024-06-13T10:00:00', m: 30 },
-        { d: '2024-06-14T10:00:00', m: 30 },
-        { d: '2024-06-15T10:00:00', m: 30 },
-      ],
+      history: createConsecutiveHistory(3),
     });
     expect(calculateStreak()).toBe(3);
   });
@@ -63,8 +58,8 @@ describe('calculateStreak', () => {
   it('今日読んでいない場合は昨日からカウント', () => {
     stateManager.getState.mockReturnValue({
       history: [
-        { d: '2024-06-13T10:00:00', m: 30 },
-        { d: '2024-06-14T10:00:00', m: 30 },
+        createHistoryEntry({ date: '2024-06-13T10:00:00' }),
+        createHistoryEntry({ date: '2024-06-14T10:00:00' }),
       ],
     });
     expect(calculateStreak()).toBe(2);
@@ -73,9 +68,9 @@ describe('calculateStreak', () => {
   it('途切れた場合はリセット', () => {
     stateManager.getState.mockReturnValue({
       history: [
-        { d: '2024-06-10T10:00:00', m: 30 },
-        { d: '2024-06-14T10:00:00', m: 30 },
-        { d: '2024-06-15T10:00:00', m: 30 },
+        createHistoryEntry({ date: '2024-06-10T10:00:00' }),
+        createHistoryEntry({ date: '2024-06-14T10:00:00' }),
+        createHistoryEntry({ date: '2024-06-15T10:00:00' }),
       ],
     });
     expect(calculateStreak()).toBe(2);
@@ -83,14 +78,8 @@ describe('calculateStreak', () => {
 });
 
 describe('calculateYearlyPrediction', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('データがない場合は--冊', () => {
     expect(calculateYearlyPrediction([], [])).toBe('--冊');
@@ -98,22 +87,16 @@ describe('calculateYearlyPrediction', () => {
   });
 
   it('予測を計算', () => {
-    const books = [{ id: 1 }, { id: 2 }, { id: 3 }];
-    const history = [{ d: '2024-06-01T10:00:00', m: 30 }];
+    const books = [createTestBook({ id: 1 }), createTestBook({ id: 2 }), createTestBook({ id: 3 })];
+    const history = [createHistoryEntry({ date: '2024-06-01T10:00:00' })];
     const result = calculateYearlyPrediction(books, history);
     expect(result).toMatch(/^\d+冊$/);
   });
 });
 
 describe('getBasicStats', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('基本統計を取得', () => {
     stateManager.getState.mockReturnValue({
@@ -123,7 +106,7 @@ describe('getBasicStats', () => {
         sessions: 5,
         firstSessionDate: '2024-06-01T10:00:00',
       },
-      history: [{ d: '2024-06-15T10:00:00', m: 30 }],
+      history: [createHistoryEntry()],
     });
 
     const stats = getBasicStats();
@@ -138,14 +121,8 @@ describe('getBasicStats', () => {
 });
 
 describe('getWeekChartData', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00')); // 土曜日
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('7日分のデータを返す', () => {
     stateManager.getState.mockReturnValue({ history: [] });
@@ -158,9 +135,9 @@ describe('getWeekChartData', () => {
   it('履歴データを集計', () => {
     stateManager.getState.mockReturnValue({
       history: [
-        { d: '2024-06-15T10:00:00', m: 30 },
-        { d: '2024-06-15T14:00:00', m: 20 },
-        { d: '2024-06-14T10:00:00', m: 45 },
+        createHistoryEntry({ date: '2024-06-15T10:00:00', m: 30 }),
+        createHistoryEntry({ date: '2024-06-15T14:00:00', m: 20 }),
+        createHistoryEntry({ date: '2024-06-14T10:00:00', m: 45 }),
       ],
     });
 
@@ -174,14 +151,8 @@ describe('getWeekChartData', () => {
 });
 
 describe('getMonthCalendarData', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('30日分のデータを返す', () => {
     stateManager.getState.mockReturnValue({ history: [] });
@@ -193,7 +164,7 @@ describe('getMonthCalendarData', () => {
 
   it('レベルを計算', () => {
     stateManager.getState.mockReturnValue({
-      history: [{ d: '2024-06-15T10:00:00', m: 60 }],
+      history: [createHistoryEntry({ m: 60 })],
     });
 
     const { days, maxMinutes } = getMonthCalendarData();
@@ -205,23 +176,17 @@ describe('getMonthCalendarData', () => {
 });
 
 describe('getThreeMonthCalendarData', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('3ヶ月分のデータを返す', () => {
     stateManager.getState.mockReturnValue({ history: [] });
     const { months } = getThreeMonthCalendarData();
 
     expect(months).toHaveLength(3);
-    expect(months[0].month).toBe(4); // 4月
-    expect(months[1].month).toBe(5); // 5月
-    expect(months[2].month).toBe(6); // 6月
+    expect(months[0].month).toBe(4);
+    expect(months[1].month).toBe(5);
+    expect(months[2].month).toBe(6);
   });
 
   it('各月に週データが含まれる', () => {
@@ -240,7 +205,7 @@ describe('getThreeMonthCalendarData', () => {
     stateManager.getState.mockReturnValue({ history: [] });
     const { months } = getThreeMonthCalendarData();
 
-    const currentMonth = months[2]; // 6月
+    const currentMonth = months[2];
     let foundToday = false;
     for (const week of currentMonth.weeks) {
       for (const day of week) {
@@ -255,7 +220,7 @@ describe('getThreeMonthCalendarData', () => {
 
   it('読書履歴のレベルを正しく計算', () => {
     stateManager.getState.mockReturnValue({
-      history: [{ d: '2024-06-15T10:00:00', m: 60 }],
+      history: [createHistoryEntry({ m: 60 })],
     });
 
     const { months, maxMinutes } = getThreeMonthCalendarData();
@@ -275,14 +240,8 @@ describe('getThreeMonthCalendarData', () => {
 });
 
 describe('getReadingRhythmData', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00')); // 土曜日
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('4x7のグリッドを返す', () => {
     stateManager.getState.mockReturnValue({ history: [] });
@@ -295,24 +254,23 @@ describe('getReadingRhythmData', () => {
   it('履歴からグリッドを生成', () => {
     stateManager.getState.mockReturnValue({
       history: [
-        { d: '2024-06-15T08:00:00', h: 8, m: 30 }, // 土曜朝
-        { d: '2024-06-15T09:00:00', h: 9, m: 30 }, // 土曜朝
+        createHistoryEntry({ date: '2024-06-15T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-15T09:00:00', h: 9 }),
       ],
     });
 
     const { rawGrid } = getReadingRhythmData();
-    // 朝(index 0) × 土曜(index 6)
     expect(rawGrid[0][6]).toBe(2);
   });
 
   it('5回以上の履歴でインサイトを生成', () => {
     stateManager.getState.mockReturnValue({
       history: [
-        { d: '2024-06-10T08:00:00', h: 8, m: 30 },
-        { d: '2024-06-11T08:00:00', h: 8, m: 30 },
-        { d: '2024-06-12T08:00:00', h: 8, m: 30 },
-        { d: '2024-06-13T08:00:00', h: 8, m: 30 },
-        { d: '2024-06-14T08:00:00', h: 8, m: 30 },
+        createHistoryEntry({ date: '2024-06-10T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-11T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-12T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-13T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-14T08:00:00', h: 8 }),
       ],
     });
 
@@ -322,14 +280,8 @@ describe('getReadingRhythmData', () => {
 });
 
 describe('getReadingInsights', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2024-06-15T12:00:00'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+  beforeEach(() => setupFakeTimers());
+  afterEach(() => teardownFakeTimers());
 
   it('履歴がない場合のデフォルト値', () => {
     stateManager.getState.mockReturnValue({
@@ -346,11 +298,11 @@ describe('getReadingInsights', () => {
 
   it('読書タイプを判定', () => {
     stateManager.getState.mockReturnValue({
-      books: [{ id: 1 }],
+      books: [createTestBook()],
       history: [
-        { d: '2024-06-13T08:00:00', h: 8, m: 30 },
-        { d: '2024-06-14T09:00:00', h: 9, m: 30 },
-        { d: '2024-06-15T07:00:00', h: 7, m: 30 },
+        createHistoryEntry({ date: '2024-06-13T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-14T09:00:00', h: 9 }),
+        createHistoryEntry({ date: '2024-06-15T07:00:00', h: 7 }),
       ],
       stats: { total: 90 },
     });
@@ -362,10 +314,10 @@ describe('getReadingInsights', () => {
 
   it('平均集中時間を計算', () => {
     stateManager.getState.mockReturnValue({
-      books: [{ id: 1 }],
+      books: [createTestBook()],
       history: [
-        { d: '2024-06-14T10:00:00', h: 10, m: 30 },
-        { d: '2024-06-15T10:00:00', h: 10, m: 60 },
+        createHistoryEntry({ date: '2024-06-14T10:00:00', h: 10, m: 30 }),
+        createHistoryEntry({ date: '2024-06-15T10:00:00', h: 10, m: 60 }),
       ],
       stats: { total: 90 },
     });
@@ -375,37 +327,30 @@ describe('getReadingInsights', () => {
   });
 });
 
-// ========================================
 // 純粋関数版のテスト（vi.mockやvi.useFakeTimers不要）
-// stateManagerへの依存を排除し、データを直接渡せる
-// ========================================
 describe('純粋関数版（モック不要）', () => {
-  describe('calculateStreakPure', () => {
-    const today = new Date('2024-06-15T12:00:00');
+  const today = new Date(DEFAULT_TEST_DATE);
 
+  describe('calculateStreakPure', () => {
     it('履歴がない場合は0', () => {
       expect(calculateStreakPure([], today)).toBe(0);
     });
 
     it('今日だけ読んだ場合は1', () => {
-      const history = [{ d: '2024-06-15T10:00:00', m: 30 }];
+      const history = [createHistoryEntry()];
       expect(calculateStreakPure(history, today)).toBe(1);
     });
 
     it('連続3日読んだ場合は3', () => {
-      const history = [
-        { d: '2024-06-13T10:00:00', m: 30 },
-        { d: '2024-06-14T10:00:00', m: 30 },
-        { d: '2024-06-15T10:00:00', m: 30 },
-      ];
+      const history = createConsecutiveHistory(3);
       expect(calculateStreakPure(history, today)).toBe(3);
     });
 
     it('途切れた場合はリセット', () => {
       const history = [
-        { d: '2024-06-10T10:00:00', m: 30 },
-        { d: '2024-06-14T10:00:00', m: 30 },
-        { d: '2024-06-15T10:00:00', m: 30 },
+        createHistoryEntry({ date: '2024-06-10T10:00:00' }),
+        createHistoryEntry({ date: '2024-06-14T10:00:00' }),
+        createHistoryEntry({ date: '2024-06-15T10:00:00' }),
       ];
       expect(calculateStreakPure(history, today)).toBe(2);
     });
@@ -420,11 +365,10 @@ describe('純粋関数版（モック不要）', () => {
           sessions: 5,
           firstSessionDate: '2024-06-01T10:00:00',
         },
-        history: [{ d: '2024-06-15T10:00:00', m: 30 }],
+        history: [createHistoryEntry()],
       };
-      const now = new Date('2024-06-15T12:00:00');
 
-      const stats = getBasicStatsPure(state, now);
+      const stats = getBasicStatsPure(state, today);
 
       expect(stats.totalHours).toBe(2);
       expect(stats.totalMinutes).toBe(120);
@@ -436,9 +380,7 @@ describe('純粋関数版（モック不要）', () => {
 
   describe('getWeekChartDataPure', () => {
     it('7日分のデータを返す', () => {
-      const history = [];
-      const now = new Date('2024-06-15T12:00:00');
-      const data = getWeekChartDataPure(history, now);
+      const data = getWeekChartDataPure([], today);
 
       expect(data).toHaveLength(7);
       expect(data[6].isToday).toBe(true);
@@ -446,15 +388,14 @@ describe('純粋関数版（モック不要）', () => {
 
     it('履歴データを集計', () => {
       const history = [
-        { d: '2024-06-15T10:00:00', m: 30 },
-        { d: '2024-06-15T14:00:00', m: 20 },
-        { d: '2024-06-14T10:00:00', m: 45 },
+        createHistoryEntry({ date: '2024-06-15T10:00:00', m: 30 }),
+        createHistoryEntry({ date: '2024-06-15T14:00:00', m: 20 }),
+        createHistoryEntry({ date: '2024-06-14T10:00:00', m: 45 }),
       ];
-      const now = new Date('2024-06-15T12:00:00');
-      const data = getWeekChartDataPure(history, now);
+      const data = getWeekChartDataPure(history, today);
 
-      const today = data.find((d) => d.isToday);
-      expect(today.minutes).toBe(50);
+      const todayData = data.find((d) => d.isToday);
+      expect(todayData.minutes).toBe(50);
     });
   });
 
@@ -468,12 +409,11 @@ describe('純粋関数版（モック不要）', () => {
 
     it('履歴からグリッドを生成', () => {
       const history = [
-        { d: '2024-06-15T08:00:00', h: 8, m: 30 }, // 土曜朝
-        { d: '2024-06-15T09:00:00', h: 9, m: 30 }, // 土曜朝
+        createHistoryEntry({ date: '2024-06-15T08:00:00', h: 8 }),
+        createHistoryEntry({ date: '2024-06-15T09:00:00', h: 9 }),
       ];
 
       const { rawGrid } = getReadingRhythmDataPure(history);
-      // 朝(index 0) × 土曜(index 6)
       expect(rawGrid[0][6]).toBe(2);
     });
   });
@@ -494,11 +434,11 @@ describe('純粋関数版（モック不要）', () => {
 
     it('読書タイプを判定', () => {
       const state = {
-        books: [{ id: 1 }],
+        books: [createTestBook()],
         history: [
-          { d: '2024-06-13T08:00:00', h: 8, m: 30 },
-          { d: '2024-06-14T09:00:00', h: 9, m: 30 },
-          { d: '2024-06-15T07:00:00', h: 7, m: 30 },
+          createHistoryEntry({ date: '2024-06-13T08:00:00', h: 8 }),
+          createHistoryEntry({ date: '2024-06-14T09:00:00', h: 9 }),
+          createHistoryEntry({ date: '2024-06-15T07:00:00', h: 7 }),
         ],
         stats: { total: 90 },
       };
@@ -510,19 +450,17 @@ describe('純粋関数版（モック不要）', () => {
   });
 
   describe('getThreeMonthCalendarDataPure', () => {
-    const now = new Date('2024-06-15T12:00:00');
-
     it('3ヶ月分のデータを返す', () => {
-      const { months } = getThreeMonthCalendarDataPure([], now);
+      const { months } = getThreeMonthCalendarDataPure([], today);
 
       expect(months).toHaveLength(3);
-      expect(months[0].month).toBe(4); // 4月
-      expect(months[1].month).toBe(5); // 5月
-      expect(months[2].month).toBe(6); // 6月
+      expect(months[0].month).toBe(4);
+      expect(months[1].month).toBe(5);
+      expect(months[2].month).toBe(6);
     });
 
     it('各月に週データが含まれ、すべて7日分', () => {
-      const { months } = getThreeMonthCalendarDataPure([], now);
+      const { months } = getThreeMonthCalendarDataPure([], today);
 
       for (const month of months) {
         expect(month.weeks.length).toBeGreaterThan(0);
@@ -533,22 +471,19 @@ describe('純粋関数版（モック不要）', () => {
     });
 
     it('月初の空白セルが正しく設定される', () => {
-      // 2024年6月1日は土曜日（dayOfWeek: 6）
-      const { months } = getThreeMonthCalendarDataPure([], now);
+      const { months } = getThreeMonthCalendarDataPure([], today);
       const june = months[2];
       const firstWeek = june.weeks[0];
 
-      // 土曜日の前の6セルは空白
       for (let i = 0; i < 6; i++) {
         expect(firstWeek[i].isEmpty).toBe(true);
       }
-      // 土曜日（6番目）は1日
       expect(firstWeek[6].isEmpty).toBe(false);
       expect(firstWeek[6].dayOfMonth).toBe(1);
     });
 
     it('今日のセルにisTodayフラグがある', () => {
-      const { months } = getThreeMonthCalendarDataPure([], now);
+      const { months } = getThreeMonthCalendarDataPure([], today);
 
       const currentMonth = months[2];
       let foundToday = false;
@@ -564,8 +499,8 @@ describe('純粋関数版（モック不要）', () => {
     });
 
     it('読書履歴のレベルを正しく計算', () => {
-      const history = [{ d: '2024-06-15T10:00:00', m: 60 }];
-      const { months, maxMinutes } = getThreeMonthCalendarDataPure(history, now);
+      const history = [createHistoryEntry({ m: 60 })];
+      const { months, maxMinutes } = getThreeMonthCalendarDataPure(history, today);
 
       expect(maxMinutes).toBeGreaterThanOrEqual(30);
 
@@ -586,11 +521,11 @@ describe('純粋関数版（モック不要）', () => {
       const { months } = getThreeMonthCalendarDataPure([], januaryNow);
 
       expect(months[0].year).toBe(2023);
-      expect(months[0].month).toBe(11); // 11月
+      expect(months[0].month).toBe(11);
       expect(months[1].year).toBe(2023);
-      expect(months[1].month).toBe(12); // 12月
+      expect(months[1].month).toBe(12);
       expect(months[2].year).toBe(2024);
-      expect(months[2].month).toBe(1); // 1月
+      expect(months[2].month).toBe(1);
     });
   });
 });

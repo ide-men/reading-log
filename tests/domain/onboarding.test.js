@@ -5,58 +5,39 @@ import {
   getNextStep,
   getTotalSteps
 } from '../../js/domain/onboarding.js';
+import { createLocalStorageMock } from '../helpers/index.js';
 
-// ========================================
-// モックストレージ
-// ========================================
-function createMockStorage(initialData = {}) {
-  const data = { ...initialData };
-  return {
-    getItem: (key) => data[key] || null,
-    setItem: (key, value) => { data[key] = value; },
-    removeItem: (key) => { delete data[key]; },
-    clear: () => { Object.keys(data).forEach(k => delete data[k]); },
-    getData: () => ({ ...data })
-  };
-}
-
-// ========================================
-// isOnboardingCompleted
-// ========================================
 describe('isOnboardingCompleted', () => {
   it('データがない場合はfalseを返す', () => {
-    const storage = createMockStorage();
+    const storage = createLocalStorageMock();
     expect(isOnboardingCompleted(storage)).toBe(false);
   });
 
   it('completed: trueの場合はtrueを返す', () => {
-    const storage = createMockStorage({
+    const storage = createLocalStorageMock({
       'rl_v1_onboarding': JSON.stringify({ completed: true })
     });
     expect(isOnboardingCompleted(storage)).toBe(true);
   });
 
   it('completed: falseの場合はfalseを返す', () => {
-    const storage = createMockStorage({
+    const storage = createLocalStorageMock({
       'rl_v1_onboarding': JSON.stringify({ completed: false })
     });
     expect(isOnboardingCompleted(storage)).toBe(false);
   });
 
   it('不正なJSONの場合はfalseを返す', () => {
-    const storage = createMockStorage({
+    const storage = createLocalStorageMock({
       'rl_v1_onboarding': 'invalid json'
     });
     expect(isOnboardingCompleted(storage)).toBe(false);
   });
 });
 
-// ========================================
-// markOnboardingCompleted
-// ========================================
 describe('markOnboardingCompleted', () => {
   it('完了状態をストレージに保存する', () => {
-    const storage = createMockStorage();
+    const storage = createLocalStorageMock();
     markOnboardingCompleted(storage);
 
     const saved = JSON.parse(storage.getData()['rl_v1_onboarding']);
@@ -65,15 +46,12 @@ describe('markOnboardingCompleted', () => {
   });
 
   it('保存後はisOnboardingCompletedがtrueを返す', () => {
-    const storage = createMockStorage();
+    const storage = createLocalStorageMock();
     markOnboardingCompleted(storage);
     expect(isOnboardingCompleted(storage)).toBe(true);
   });
 });
 
-// ========================================
-// getNextStep
-// ========================================
 describe('getNextStep', () => {
   it('ステップ1の次はステップ2', () => {
     const result = getNextStep(1);
@@ -105,9 +83,6 @@ describe('getNextStep', () => {
   });
 });
 
-// ========================================
-// getTotalSteps
-// ========================================
 describe('getTotalSteps', () => {
   it('ステップ総数は5', () => {
     expect(getTotalSteps()).toBe(5);
