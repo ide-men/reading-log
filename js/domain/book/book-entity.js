@@ -28,18 +28,26 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
 // ========================================
 
 /**
+ * @typedef {Object} CreateBookOptions
+ * @property {Function} [onShortUrl] - 短縮URL検出時のコールバック
+ * @property {Function} [now] - 現在時刻を取得する関数（テスト用）
+ */
+
+/**
  * 新しいBookオブジェクトを作成
  * @param {Object} params - 本のデータ
  * @param {string} params.title - タイトル
  * @param {string} [params.link] - リンク
  * @param {string} [params.note] - メモ
  * @param {string} [params.status] - ステータス
- * @param {Function} [onShortUrl] - 短縮URL検出時のコールバック
+ * @param {CreateBookOptions} [options] - オプション
  * @returns {Book}
  */
-export function createBook({ title, link, note, status = BOOK_STATUS.READING }, onShortUrl = null) {
+export function createBook({ title, link, note, status = BOOK_STATUS.READING }, options = {}) {
+  const { onShortUrl = null, now = () => new Date() } = options;
+  const currentDate = now();
   const coverUrl = getCoverUrlFromLink(link, onShortUrl);
-  const today = new Date().toISOString().split('T')[0];
+  const today = currentDate.toISOString().split('T')[0];
 
   // ステータスに応じて日付を設定
   let startedAt = null;
@@ -51,7 +59,7 @@ export function createBook({ title, link, note, status = BOOK_STATUS.READING }, 
   }
 
   return {
-    id: Date.now(),
+    id: currentDate.getTime(),
     title,
     link: link || null,
     coverUrl,

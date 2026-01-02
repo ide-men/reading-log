@@ -7,6 +7,14 @@ import {
   getMonthCalendarData,
   getReadingRhythmData,
   getReadingInsights,
+  // 純粋関数版（モック不要）
+  calculateStreakPure,
+  calculateYearlyPredictionPure,
+  getBasicStatsPure,
+  getWeekChartDataPure,
+  getMonthCalendarDataPure,
+  getReadingRhythmDataPure,
+  getReadingInsightsPure,
 } from '../../js/domain/stats/stats-service.js';
 import { stateManager } from '../../js/core/state-manager.js';
 
@@ -292,5 +300,140 @@ describe('getReadingInsights', () => {
 
     const insights = getReadingInsights();
     expect(insights.avgFocus).toBe(45);
+  });
+});
+
+// ========================================
+// 純粋関数版のテスト（vi.mockやvi.useFakeTimers不要）
+// stateManagerへの依存を排除し、データを直接渡せる
+// ========================================
+describe('純粋関数版（モック不要）', () => {
+  describe('calculateStreakPure', () => {
+    const today = new Date('2024-06-15T12:00:00');
+
+    it('履歴がない場合は0', () => {
+      expect(calculateStreakPure([], today)).toBe(0);
+    });
+
+    it('今日だけ読んだ場合は1', () => {
+      const history = [{ d: '2024-06-15T10:00:00', m: 30 }];
+      expect(calculateStreakPure(history, today)).toBe(1);
+    });
+
+    it('連続3日読んだ場合は3', () => {
+      const history = [
+        { d: '2024-06-13T10:00:00', m: 30 },
+        { d: '2024-06-14T10:00:00', m: 30 },
+        { d: '2024-06-15T10:00:00', m: 30 },
+      ];
+      expect(calculateStreakPure(history, today)).toBe(3);
+    });
+
+    it('途切れた場合はリセット', () => {
+      const history = [
+        { d: '2024-06-10T10:00:00', m: 30 },
+        { d: '2024-06-14T10:00:00', m: 30 },
+        { d: '2024-06-15T10:00:00', m: 30 },
+      ];
+      expect(calculateStreakPure(history, today)).toBe(2);
+    });
+  });
+
+  describe('getBasicStatsPure', () => {
+    it('基本統計を計算', () => {
+      const state = {
+        stats: {
+          total: 120,
+          today: 30,
+          sessions: 5,
+          firstSessionDate: '2024-06-01T10:00:00',
+        },
+        history: [{ d: '2024-06-15T10:00:00', m: 30 }],
+      };
+      const now = new Date('2024-06-15T12:00:00');
+
+      const stats = getBasicStatsPure(state, now);
+
+      expect(stats.totalHours).toBe(2);
+      expect(stats.totalMinutes).toBe(120);
+      expect(stats.totalSessions).toBe(5);
+      expect(stats.todayMinutes).toBe(30);
+      expect(stats.streak).toBe(1);
+    });
+  });
+
+  describe('getWeekChartDataPure', () => {
+    it('7日分のデータを返す', () => {
+      const history = [];
+      const now = new Date('2024-06-15T12:00:00');
+      const data = getWeekChartDataPure(history, now);
+
+      expect(data).toHaveLength(7);
+      expect(data[6].isToday).toBe(true);
+    });
+
+    it('履歴データを集計', () => {
+      const history = [
+        { d: '2024-06-15T10:00:00', m: 30 },
+        { d: '2024-06-15T14:00:00', m: 20 },
+        { d: '2024-06-14T10:00:00', m: 45 },
+      ];
+      const now = new Date('2024-06-15T12:00:00');
+      const data = getWeekChartDataPure(history, now);
+
+      const today = data.find((d) => d.isToday);
+      expect(today.minutes).toBe(50);
+    });
+  });
+
+  describe('getReadingRhythmDataPure', () => {
+    it('4x7のグリッドを返す', () => {
+      const { grid } = getReadingRhythmDataPure([]);
+
+      expect(grid).toHaveLength(4);
+      expect(grid[0]).toHaveLength(7);
+    });
+
+    it('履歴からグリッドを生成', () => {
+      const history = [
+        { d: '2024-06-15T08:00:00', h: 8, m: 30 }, // 土曜朝
+        { d: '2024-06-15T09:00:00', h: 9, m: 30 }, // 土曜朝
+      ];
+
+      const { rawGrid } = getReadingRhythmDataPure(history);
+      // 朝(index 0) × 土曜(index 6)
+      expect(rawGrid[0][6]).toBe(2);
+    });
+  });
+
+  describe('getReadingInsightsPure', () => {
+    it('履歴がない場合のデフォルト値', () => {
+      const state = {
+        books: [],
+        history: [],
+        stats: { total: 0 },
+      };
+
+      const insights = getReadingInsightsPure(state);
+      expect(insights.yearlyPrediction).toBe('--冊');
+      expect(insights.avgFocus).toBeNull();
+      expect(insights.readingType).toBeNull();
+    });
+
+    it('読書タイプを判定', () => {
+      const state = {
+        books: [{ id: 1 }],
+        history: [
+          { d: '2024-06-13T08:00:00', h: 8, m: 30 },
+          { d: '2024-06-14T09:00:00', h: 9, m: 30 },
+          { d: '2024-06-15T07:00:00', h: 7, m: 30 },
+        ],
+        stats: { total: 90 },
+      };
+
+      const insights = getReadingInsightsPure(state);
+      expect(insights.readingType).toBe('朝型');
+      expect(insights.readingTypeIcon).toBe('🌅');
+    });
   });
 });

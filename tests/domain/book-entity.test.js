@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
+  createBook,
   validateBookTitle,
   isValidStatus,
   formatDate,
@@ -10,6 +11,79 @@ import {
   getMiniBookStyle,
 } from '../../js/domain/book/book-entity.js';
 import { BOOK_STATUS, BOOK_COLORS } from '../../js/shared/constants.js';
+
+// ========================================
+// createBook（Date注入によるテスト）
+// ========================================
+describe('createBook', () => {
+  it('決定論的なIDと日付を生成できる', () => {
+    const fixedDate = new Date('2024-06-15T12:00:00');
+    const book = createBook(
+      { title: 'テスト本' },
+      { now: () => fixedDate }
+    );
+
+    expect(book.id).toBe(fixedDate.getTime());
+    expect(book.title).toBe('テスト本');
+    expect(book.startedAt).toBe('2024-06-15');
+    expect(book.status).toBe(BOOK_STATUS.READING);
+  });
+
+  it('読書中ステータスでstartedAtが設定される', () => {
+    const fixedDate = new Date('2024-03-20T10:00:00');
+    const book = createBook(
+      { title: '読書中の本', status: BOOK_STATUS.READING },
+      { now: () => fixedDate }
+    );
+
+    expect(book.startedAt).toBe('2024-03-20');
+    expect(book.completedAt).toBeNull();
+  });
+
+  it('読了ステータスでcompletedAtが設定される', () => {
+    const fixedDate = new Date('2024-12-25T15:30:00');
+    const book = createBook(
+      { title: '読了本', status: BOOK_STATUS.COMPLETED },
+      { now: () => fixedDate }
+    );
+
+    expect(book.startedAt).toBeNull();
+    expect(book.completedAt).toBe('2024-12-25');
+  });
+
+  it('積読ステータスでは日付が設定されない', () => {
+    const book = createBook(
+      { title: '積読本', status: BOOK_STATUS.UNREAD },
+      { now: () => new Date('2024-01-01') }
+    );
+
+    expect(book.startedAt).toBeNull();
+    expect(book.completedAt).toBeNull();
+  });
+
+  it('デフォルト値が正しく設定される', () => {
+    const book = createBook(
+      { title: 'デフォルト本' },
+      { now: () => new Date('2024-01-01') }
+    );
+
+    expect(book.link).toBeNull();
+    expect(book.coverUrl).toBeNull();
+    expect(book.note).toBeNull();
+    expect(book.readingTime).toBe(0);
+    expect(book.bookmark).toBeNull();
+  });
+
+  it('リンクとメモを設定できる', () => {
+    const book = createBook(
+      { title: '本', link: 'https://example.com', note: 'メモ' },
+      { now: () => new Date('2024-01-01') }
+    );
+
+    expect(book.link).toBe('https://example.com');
+    expect(book.note).toBe('メモ');
+  });
+});
 
 describe('validateBookTitle', () => {
   it('有効なタイトル', () => {

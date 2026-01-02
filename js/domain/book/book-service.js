@@ -45,7 +45,7 @@ export function addBook({ title, link, note, status = BOOK_STATUS.READING }) {
   // 本を作成
   const book = createBook(
     { title, link, note, status },
-    () => { shortUrlWarning = true; }
+    { onShortUrl: () => { shortUrlWarning = true; } }
   );
 
   // 保存

@@ -52,30 +52,61 @@ export function getBookColor(book) {
 // ========================================
 
 /**
- * 本を追加
+ * 本を追加（状態のみ変更、永続化なし）
  * @param {Book} book - 追加する本
  */
-export function addBook(book) {
+export function addBookToState(book) {
   stateManager.addBook(book);
-  saveState();
+}
+
+/**
+ * 本を追加
+ * @param {Book} book - 追加する本
+ * @param {Object} [options] - オプション
+ * @param {boolean} [options.persist=true] - 永続化するかどうか
+ */
+export function addBook(book, { persist = true } = {}) {
+  addBookToState(book);
+  if (persist) saveState();
+}
+
+/**
+ * 本を更新（状態のみ変更、永続化なし）
+ * @param {number} id - 本のID
+ * @param {Object} updates - 更新内容
+ */
+export function updateBookInState(id, updates) {
+  stateManager.updateBook(id, updates);
 }
 
 /**
  * 本を更新
  * @param {number} id - 本のID
  * @param {Object} updates - 更新内容
+ * @param {Object} [options] - オプション
+ * @param {boolean} [options.persist=true] - 永続化するかどうか
  */
-export function updateBook(id, updates) {
-  stateManager.updateBook(id, updates);
-  saveState();
+export function updateBook(id, updates, { persist = true } = {}) {
+  updateBookInState(id, updates);
+  if (persist) saveState();
+}
+
+/**
+ * 本を削除（状態のみ変更、永続化なし）
+ * @param {number} id - 本のID
+ */
+export function removeBookFromState(id) {
+  stateManager.removeBook(id);
 }
 
 /**
  * 本を削除
  * @param {number} id - 本のID
+ * @param {Object} [options] - オプション
+ * @param {boolean} [options.persist=true] - 永続化するかどうか
  */
-export function removeBook(id) {
-  stateManager.removeBook(id);
-  saveState();
+export function removeBook(id, { persist = true } = {}) {
+  removeBookFromState(id);
+  if (persist) saveState();
 }
 

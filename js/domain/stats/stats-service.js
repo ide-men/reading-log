@@ -7,26 +7,27 @@ import { getTimeSlotIndex } from '../../shared/utils.js';
 import { stateManager } from '../../core/state-manager.js';
 
 // ========================================
-// 連続日数計算
+// 純粋関数版（テスト用・状態を引数で受け取る）
 // ========================================
 
 /**
- * 連続読書日数（ストリーク）を計算
+ * 連続読書日数（ストリーク）を計算（純粋関数版）
+ * @param {Array} history - 読書履歴
+ * @param {Date} [today] - 基準日（テスト用）
  * @returns {number}
  */
-export function calculateStreak() {
-  const state = stateManager.getState();
-  if (!state.history.length) return 0;
+export function calculateStreakPure(history, today = new Date()) {
+  if (!history.length) return 0;
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayStart = new Date(today);
+  todayStart.setHours(0, 0, 0, 0);
 
-  const readingDays = new Set(state.history.map(h => new Date(h.d).toDateString()));
+  const readingDays = new Set(history.map(h => new Date(h.d).toDateString()));
   let streak = 0;
-  const checkDate = new Date(today);
+  const checkDate = new Date(todayStart);
 
   // 今日読んでいない場合は昨日から数え始める
-  if (!readingDays.has(today.toDateString())) {
+  if (!readingDays.has(todayStart.toDateString())) {
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
@@ -38,20 +39,16 @@ export function calculateStreak() {
   return streak;
 }
 
-// ========================================
-// 予測計算
-// ========================================
-
 /**
- * 年間読書冊数を予測
+ * 年間読書冊数を予測（純粋関数版）
  * @param {Book[]} books - 本の配列
  * @param {Array} history - 履歴配列
+ * @param {Date} [now] - 基準日（テスト用）
  * @returns {string} "XX冊" 形式
  */
-export function calculateYearlyPrediction(books, history) {
+export function calculateYearlyPredictionPure(books, history, now = new Date()) {
   if (!books.length || !history.length) return '--冊';
 
-  const now = new Date();
   const firstSession = new Date(history[0].d);
   const daysSinceStart = Math.max(1, Math.ceil((now - firstSession) / CONFIG.msPerDay));
   const booksPerDay = books.length / daysSinceStart;
@@ -62,19 +59,16 @@ export function calculateYearlyPrediction(books, history) {
   return (books.length + Math.round(booksPerDay * daysLeft)) + '冊';
 }
 
-// ========================================
-// 統計データ取得
-// ========================================
-
 /**
- * 基本統計を取得
+ * 基本統計を取得（純粋関数版）
+ * @param {Object} state - アプリケーション状態
+ * @param {Date} [now] - 基準日（テスト用）
  * @returns {Object}
  */
-export function getBasicStats() {
-  const state = stateManager.getState();
+export function getBasicStatsPure(state, now = new Date()) {
   const startDate = state.stats.firstSessionDate || (state.history.length ? state.history[0].d : null);
   const days = startDate
-    ? Math.max(1, Math.ceil((Date.now() - new Date(startDate)) / CONFIG.msPerDay))
+    ? Math.max(1, Math.ceil((now.getTime() - new Date(startDate).getTime()) / CONFIG.msPerDay))
     : 1;
 
   return {
@@ -83,23 +77,23 @@ export function getBasicStats() {
     totalSessions: state.stats.sessions,
     todayMinutes: state.stats.today,
     daysSinceStart: days,
-    streak: calculateStreak()
+    streak: calculateStreakPure(state.history, now)
   };
 }
 
 /**
- * 週間チャートデータを取得
- * @returns {Array<{ label: string, minutes: number, isToday: boolean }>}
+ * 週間チャートデータを取得（純粋関数版）
+ * @param {Array} history - 読書履歴
+ * @param {Date} [now] - 基準日（テスト用）
+ * @returns {Array<{ label: string, minutes: number, isToday: boolean, barHeight: number }>}
  */
-export function getWeekChartData() {
-  const state = stateManager.getState();
+export function getWeekChartDataPure(history, now = new Date()) {
   const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
-  const now = new Date();
   const data = [];
 
   // 日付ごとの合計時間をマップ化（O(n) で history を 1 回だけ走査）
   const minutesByDate = {};
-  for (const h of state.history) {
+  for (const h of history) {
     const dateStr = h.d.split('T')[0];
     minutesByDate[dateStr] = (minutesByDate[dateStr] || 0) + h.m;
   }
@@ -128,16 +122,15 @@ export function getWeekChartData() {
 }
 
 /**
- * 月間カレンダーデータを取得（草カレンダー用）
+ * 月間カレンダーデータを取得（純粋関数版）
+ * @param {Array} history - 読書履歴
+ * @param {Date} [now] - 基準日（テスト用）
  * @returns {Object} { days: Array, maxMinutes: number }
  */
-export function getMonthCalendarData() {
-  const state = stateManager.getState();
-  const now = new Date();
-
+export function getMonthCalendarDataPure(history, now = new Date()) {
   // 日付ごとの合計時間をマップ化
   const minutesByDate = {};
-  for (const h of state.history) {
+  for (const h of history) {
     const dateStr = h.d.split('T')[0];
     minutesByDate[dateStr] = (minutesByDate[dateStr] || 0) + h.m;
   }
@@ -173,17 +166,16 @@ export function getMonthCalendarData() {
 }
 
 /**
- * 読書リズムヒートマップデータを取得
- * @returns {Object} { grid: number[][], insight: string }
+ * 読書リズムヒートマップデータを取得（純粋関数版）
+ * @param {Array} history - 読書履歴
+ * @returns {Object} { grid: number[][], insight: string, rawGrid: number[][] }
  */
-export function getReadingRhythmData() {
-  const state = stateManager.getState();
-
+export function getReadingRhythmDataPure(history) {
   // 時間帯×曜日のグリッド（4時間帯 × 7曜日）
   // 時間帯: 朝(5-11), 昼(11-17), 夜(17-23), 深夜(23-5)
   const grid = Array.from({ length: 4 }, () => Array(7).fill(0));
 
-  for (const { h, d } of state.history) {
+  for (const { h, d } of history) {
     const dayOfWeek = new Date(d).getDay();
     const slotIndex = getTimeSlotIndex(h);
     grid[slotIndex][dayOfWeek]++;
@@ -204,7 +196,7 @@ export function getReadingRhythmData() {
 
   // インサイト生成
   let insight = '';
-  if (state.history.length >= 5) {
+  if (history.length >= 5) {
     const weekdayCounts = [0, 0]; // [平日, 休日]
     const slotCounts = [0, 0, 0, 0]; // [朝, 昼, 夜, 深夜]
 
@@ -233,15 +225,15 @@ export function getReadingRhythmData() {
 }
 
 /**
- * 読書インサイトを取得
+ * 読書インサイトを取得（純粋関数版）
+ * @param {Object} state - アプリケーション状態
  * @returns {Object}
  */
-export function getReadingInsights() {
-  const state = stateManager.getState();
+export function getReadingInsightsPure(state) {
   const history = state.history;
 
   // 年間予測
-  const yearlyPrediction = calculateYearlyPrediction(state.books, history);
+  const yearlyPrediction = calculateYearlyPredictionPure(state.books, history);
 
   // 平均集中時間
   const avgFocus = history.length
@@ -287,4 +279,80 @@ export function getReadingInsights() {
     tips,
     defaultTip: '読書を始めて記録を作ろう'
   };
+}
+
+// ========================================
+// 連続日数計算（後方互換）
+// ========================================
+
+/**
+ * 連続読書日数（ストリーク）を計算
+ * @returns {number}
+ */
+export function calculateStreak() {
+  const state = stateManager.getState();
+  return calculateStreakPure(state.history);
+}
+
+// ========================================
+// 予測計算（後方互換）
+// ========================================
+
+/**
+ * 年間読書冊数を予測
+ * @param {Book[]} books - 本の配列
+ * @param {Array} history - 履歴配列
+ * @returns {string} "XX冊" 形式
+ */
+export function calculateYearlyPrediction(books, history) {
+  return calculateYearlyPredictionPure(books, history);
+}
+
+// ========================================
+// 統計データ取得（後方互換）
+// ========================================
+
+/**
+ * 基本統計を取得
+ * @returns {Object}
+ */
+export function getBasicStats() {
+  const state = stateManager.getState();
+  return getBasicStatsPure(state);
+}
+
+/**
+ * 週間チャートデータを取得
+ * @returns {Array<{ label: string, minutes: number, isToday: boolean }>}
+ */
+export function getWeekChartData() {
+  const state = stateManager.getState();
+  return getWeekChartDataPure(state.history);
+}
+
+/**
+ * 月間カレンダーデータを取得（草カレンダー用）
+ * @returns {Object} { days: Array, maxMinutes: number }
+ */
+export function getMonthCalendarData() {
+  const state = stateManager.getState();
+  return getMonthCalendarDataPure(state.history);
+}
+
+/**
+ * 読書リズムヒートマップデータを取得
+ * @returns {Object} { grid: number[][], insight: string }
+ */
+export function getReadingRhythmData() {
+  const state = stateManager.getState();
+  return getReadingRhythmDataPure(state.history);
+}
+
+/**
+ * 読書インサイトを取得
+ * @returns {Object}
+ */
+export function getReadingInsights() {
+  const state = stateManager.getState();
+  return getReadingInsightsPure(state);
 }
