@@ -13,6 +13,17 @@ import {
 } from '../../domain/book/book-entity.js';
 
 // ========================================
+// 再会判定ヘルパー
+// ========================================
+function isReunionBook(book, months = 3) {
+  if (book.status !== BOOK_STATUS.COMPLETED || !book.completedAt) return false;
+  const now = new Date();
+  const thresholdDate = new Date(now.setMonth(now.getMonth() - months));
+  const completedDate = new Date(book.completedAt);
+  return completedDate <= thresholdDate;
+}
+
+// ========================================
 // 共通グリッドカードレンダリング
 // ========================================
 export function renderBookGrid(books, type = 'study') {
@@ -43,9 +54,12 @@ export function renderBookGrid(books, type = 'study') {
     const color = getBookColorByIndex(colorIndex);
     const coverHtml = createBookCoverHtml(book, placeholder);
     const dateText = getBookDateText(book);
+    const reunion = isReunionBook(book);
+    const reunionBadge = reunion ? '<div class="book-card__reunion-badge">久しぶり</div>' : '';
 
     return `
-      <div class="book-card ${modifier}" data-book-id="${book.id}">
+      <div class="book-card ${modifier}" data-book-id="${book.id}" ${reunion ? 'data-reunion="true"' : ''}>
+        ${reunionBadge}
         <div class="book-card__cover" style="background-color: ${color}">
           ${coverHtml}
         </div>
@@ -117,16 +131,32 @@ export function renderDetailView(book, type = 'study') {
       </div>`
     : '';
 
-  // メモ表示
-  const noteHtml = book.note
-    ? `<div class="detail-view__note">${escapeHtml(book.note)}</div>`
+  // きっかけ表示
+  const triggerHtml = book.triggerNote
+    ? `<div class="detail-view__note"><strong>📌 きっかけ:</strong> ${escapeHtml(book.triggerNote)}</div>`
     : '';
+
+  // 読了時の感想表示
+  const completionHtml = book.completionNote
+    ? `<div class="detail-view__note"><strong>✨ 読了時:</strong> ${escapeHtml(book.completionNote)}</div>`
+    : '';
+
+  // 再会判定
+  const reunion = isReunionBook(book);
 
   // リンクボタン
   const linkBtn = isValidUrl(book.link)
     ? `<button class="detail-view__action" data-link="${escapeAttr(book.link)}">
         <span>↗</span>
         <span>リンクを開く</span>
+      </button>`
+    : '';
+
+  // 再会ボタン（読了から3ヶ月以上経過した本）
+  const reunionBtn = reunion
+    ? `<button class="detail-view__action detail-view__action--primary" data-reunion="${book.id}">
+        <span>📚</span>
+        <span>振り返る</span>
       </button>`
     : '';
 
@@ -143,7 +173,7 @@ export function renderDetailView(book, type = 'study') {
         <span>カバンに入れる</span>
       </button>`;
   } else if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED || book.status === BOOK_STATUS.COMPLETED) {
-    primaryActions = `
+    primaryActions = reunion ? reunionBtn : `
       <button class="detail-view__action detail-view__action--primary" data-start="${book.id}">
         <span>🎒</span>
         <span>カバンに入れる</span>
@@ -161,7 +191,8 @@ export function renderDetailView(book, type = 'study') {
           <div class="detail-view__title">${escapeHtml(book.title)}</div>
           <div class="detail-view__date">${dateText}</div>
           ${bookmarkHtml}
-          ${noteHtml}
+          ${triggerHtml}
+          ${completionHtml}
           <div class="detail-view__actions">
             ${primaryActions}
             ${linkBtn}
@@ -203,10 +234,14 @@ export function openBookDetail(id) {
   // メタ情報
   document.getElementById('bookDetailMeta').textContent = getBookDateText(book);
 
-  // メモ
+  // メモ（きっかけ・読了時の感想）
   const noteEl = document.getElementById('bookDetailNote');
-  if (book.note) {
-    noteEl.textContent = book.note;
+  const notes = [];
+  if (book.triggerNote) notes.push(`📌 きっかけ: ${book.triggerNote}`);
+  if (book.completionNote) notes.push(`✨ 読了時: ${book.completionNote}`);
+
+  if (notes.length > 0) {
+    noteEl.textContent = notes.join('\n\n');
     noteEl.classList.add('has-note');
   } else {
     noteEl.textContent = '';

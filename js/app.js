@@ -23,7 +23,8 @@ import {
   initEditDeleteEvents,
   initCarouselEvents,
   initStudyEvents,
-  initStoreEvents
+  initStoreEvents,
+  initReunionEvents
 } from './presentation/controllers/book-controller.js';
 import {
   initOnboardingEvents,
@@ -43,6 +44,7 @@ function initializeEventListeners() {
   initCarouselEvents();
   initStudyEvents();
   initStoreEvents();
+  initReunionEvents();
   initOnboardingEvents();
   initBeforeUnloadEvent();
 }

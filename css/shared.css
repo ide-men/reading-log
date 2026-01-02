@@ -1012,3 +1012,86 @@
     font-size: 22px;
   }
 }
+
+/* ==========================================================================
+   Reunion Modal (再会モーダル)
+   ========================================================================== */
+
+.reunion-modal {
+  max-width: 400px;
+}
+
+.reunion-book-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  line-height: 1.4;
+}
+
+.reunion-section {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
+}
+
+.reunion-section-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: var(--space-sm);
+}
+
+.reunion-section-content {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.reunion-reflections-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.reflection-item {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.reflection-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.reflection-date {
+  font-size: 11px;
+  color: var(--text-dim);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.reflection-note {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Reunion badge for book cards */
+.book-card__reunion-badge {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
