@@ -1078,6 +1078,61 @@ select.form-input {
   color: var(--text-dim);
 }
 
+/* 課題共感ステップ */
+.onboarding-problems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.onboarding-problem-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.onboarding-problem-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.onboarding-problem-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 機能紹介ステップ */
+.onboarding-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.onboarding-feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+}
+
+.onboarding-feature-icon {
+  font-size: 20px;
+}
+
+.onboarding-feature-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
 @media (min-width: 600px) {
   .onboarding-modal {
     max-width: 420px;
