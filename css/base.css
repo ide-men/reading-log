@@ -47,14 +47,25 @@
   --color-store-light: #fbbf24;
   --color-store-rgb: 245, 158, 11;
 
-  /* Spacing */
+  /* Spacing - Base Scale */
+  --space-2xs: 2px;
   --space-xs: 4px;
   --space-sm: 8px;
+  --space-compact: 6px;
   --space-md: 12px;
+  --space-gutter: 10px;
+  --space-form: 14px;
   --space-lg: 16px;
   --space-xl: 20px;
   --space-2xl: 24px;
   --space-3xl: 32px;
+  --space-4xl: 40px;
+
+  /* Layout Spacing - Component-specific */
+  --layout-nav-inset: 12px;
+  --layout-toast-top: 20px;
+  --layout-fab-offset: 24px;
+  --layout-modal-padding: 28px;
 
   /* Border Radius */
   --radius-sm: 4px;
@@ -151,7 +162,7 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: 6px var(--space-md);
+  padding: var(--space-compact) var(--space-md);
   border-radius: var(--radius-full);
   font-size: 12px;
 }
