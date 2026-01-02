@@ -402,6 +402,33 @@ function initShelfEvents(config) {
 }
 
 // ========================================
+// 本追加モーダルを開く（共通関数）
+// ========================================
+function openAddBookModalWithStatus(status) {
+  const titleMap = {
+    [BOOK_STATUS.READING]: 'カバンに本を追加',
+    [BOOK_STATUS.UNREAD]: '書斎に本を追加',
+    [BOOK_STATUS.WISHLIST]: '本屋に本を追加'
+  };
+
+  document.getElementById('addBookModalTitle').textContent = titleMap[status] || '本を追加';
+  document.getElementById('addBookStatus').value = status;
+
+  const statusSelector = document.getElementById('studyStatusSelector');
+  if (status === BOOK_STATUS.UNREAD) {
+    statusSelector.style.display = 'block';
+    document.querySelector('input[name="studyStatus"][value="unread"]').checked = true;
+  } else {
+    statusSelector.style.display = 'none';
+  }
+
+  openModal('addBookModal');
+
+  // バリデーション状態を更新
+  updateButtonState('addBookBtn', ['bookInput']);
+}
+
+// ========================================
 // 本の追加イベント初期化
 // ========================================
 export function initAddBookEvents() {
@@ -416,28 +443,24 @@ export function initAddBookEvents() {
       store: BOOK_STATUS.WISHLIST
     };
 
-    const titleMap = {
-      home: 'カバンに本を追加',
-      study: '書斎に本を追加',
-      store: '本屋に本を追加'
+    const status = statusMap[tabName] || BOOK_STATUS.READING;
+    openAddBookModalWithStatus(status);
+  });
+
+  // 空状態のプラスボタンのイベント（イベント委譲）
+  document.addEventListener('click', (e) => {
+    const addBtn = e.target.closest('[data-add-book]');
+    if (!addBtn) return;
+
+    const statusType = addBtn.dataset.addBook;
+    const statusMap = {
+      reading: BOOK_STATUS.READING,
+      unread: BOOK_STATUS.UNREAD,
+      wishlist: BOOK_STATUS.WISHLIST
     };
 
-    const status = statusMap[tabName] || BOOK_STATUS.READING;
-    document.getElementById('addBookModalTitle').textContent = titleMap[tabName] || '本を追加';
-    document.getElementById('addBookStatus').value = status;
-
-    const statusSelector = document.getElementById('studyStatusSelector');
-    if (tabName === 'study') {
-      statusSelector.style.display = 'block';
-      document.querySelector('input[name="studyStatus"][value="unread"]').checked = true;
-    } else {
-      statusSelector.style.display = 'none';
-    }
-
-    openModal('addBookModal');
-
-    // バリデーション状態を更新
-    updateButtonState('addBookBtn', ['bookInput']);
+    const status = statusMap[statusType] || BOOK_STATUS.READING;
+    openAddBookModalWithStatus(status);
   });
 
   document.querySelectorAll('input[name="studyStatus"]').forEach(radio => {
