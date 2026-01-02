@@ -1152,3 +1152,163 @@ select.form-input {
     font-size: 15px;
   }
 }
+
+/* ==========================================================================
+   Glossary Modal (用語集)
+   ========================================================================== */
+
+.glossary-modal {
+  max-width: 400px;
+}
+
+.glossary-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.glossary-item {
+  padding: var(--space-md);
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
+}
+
+.glossary-term {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.glossary-icon {
+  font-size: 18px;
+}
+
+.glossary-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.glossary-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 26px;
+}
+
+.glossary-divider {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space-sm) 0;
+}
+
+@media (min-width: 600px) {
+  .glossary-modal {
+    max-width: 480px;
+  }
+
+  .glossary-name {
+    font-size: 16px;
+  }
+
+  .glossary-desc {
+    font-size: 14px;
+  }
+}
+
+/* ==========================================================================
+   Term Hint (用語ヒント/ツールチップ)
+   ========================================================================== */
+
+.term-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  color: var(--text-dim);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 4px;
+  vertical-align: middle;
+  transition: all 0.2s;
+}
+
+.term-hint:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.term-hint--small {
+  width: 14px;
+  height: 14px;
+  font-size: 9px;
+  margin-left: 2px;
+}
+
+.term-hint-popup {
+  position: fixed;
+  z-index: 400;
+  max-width: 280px;
+  padding: var(--space-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  animation: termHintIn 0.2s ease;
+}
+
+@keyframes termHintIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.term-hint-popup__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.term-hint-popup__desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.term-hint-popup__close {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.term-hint-popup__close:hover {
+  background: var(--elevated);
+  color: var(--text);
+}
