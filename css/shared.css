@@ -3,6 +3,22 @@
    ========================================================================== */
 
 /* ==========================================================================
+   Page Layout (共通レイアウトコンテナ)
+   ========================================================================== */
+
+/* 各タブ内のコンテンツを囲む共通レイアウトコンテナ */
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* カバン画面では flex: 1 でスペースを埋める */
+#tab-home .page-layout {
+  flex: 1;
+}
+
+/* ==========================================================================
    Page Headers (共通) - モダンデザイン
    ========================================================================== */
 
@@ -37,7 +53,7 @@
 /* インラインヘッダー（左寄せ横並び） - モダン */
 .page-header--inline {
   text-align: left;
-  padding: var(--space-lg) var(--space-sm) var(--space-md);
+  padding: var(--space-lg) 0 0;
 }
 
 .page-header__row {
@@ -330,7 +346,6 @@
    ========================================================================== */
 
 .shelf {
-  margin-top: var(--space-xl);
   background: linear-gradient(145deg,
     rgba(42, 31, 24, 0.95) 0%,
     rgba(61, 46, 36, 0.9) 50%,
@@ -414,7 +429,6 @@
 
 /* Store theme for shelf */
 #tab-store .shelf {
-  margin-top: var(--space-lg);
   background: linear-gradient(145deg,
     rgba(26, 26, 37, 0.95) 0%,
     rgba(37, 37, 53, 0.9) 50%,
@@ -453,7 +467,6 @@
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--space-xl);
   padding: var(--space-md) 0;
-  margin-top: var(--space-xl);
 }
 
 /* ==========================================================================
@@ -739,7 +752,6 @@
   position: relative;
   border-radius: var(--radius-2xl);
   padding: var(--space-xl);
-  margin-top: var(--space-xl);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.25),
     0 4px 16px rgba(0, 0, 0, 0.15);

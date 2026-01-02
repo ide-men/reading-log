@@ -33,117 +33,122 @@
     <main class="content" role="main">
       <!-- ホームタブ（カバン） -->
       <section class="tab active" id="tab-home" role="tabpanel" aria-labelledby="nav-home">
-    <div class="page-header page-header--compact page-header--inline">
-      <div class="page-header__row">
-        <span class="page-header__icon">🎒</span>
-        <span class="page-header__title">カバン</span>
-        <button class="term-hint" data-term="bag" aria-label="カバンの説明を見る">?</button>
-      </div>
-    </div>
+        <div class="page-layout">
+          <div class="page-header page-header--compact page-header--inline">
+            <div class="page-header__row">
+              <span class="page-header__icon">🎒</span>
+              <span class="page-header__title">カバン</span>
+              <button class="term-hint" data-term="bag" aria-label="カバンの説明を見る">?</button>
+            </div>
+          </div>
 
-    <div class="book-carousel-container">
-      <div class="book-carousel-wrapper" id="bookCarouselWrapper">
-        <div class="book-carousel" id="bookCarousel">
-          <!-- 本のカルーセルがここに表示される -->
-        </div>
-      </div>
-      <div class="carousel-dots" id="carouselDots">
-        <!-- ドットインジケーター -->
-      </div>
-    </div>
+          <div class="book-carousel-container">
+            <div class="book-carousel-wrapper" id="bookCarouselWrapper">
+              <div class="book-carousel" id="bookCarousel">
+                <!-- 本のカルーセルがここに表示される -->
+              </div>
+            </div>
+            <div class="carousel-dots" id="carouselDots">
+              <!-- ドットインジケーター -->
+            </div>
+          </div>
 
-    <div class="selected-book-info" id="selectedBookInfo">
-      <!-- 選択中の本の情報 -->
-    </div>
-
-    <div class="home-actions-fixed">
-      <button class="main-btn" id="startBtn" disabled>
-        <span class="main-btn-icon">📖</span>
-        <span>本を選んでください</span>
-      </button>
-      <div class="home-actions-row">
-        <button class="btn btn-success" id="completeSelectedBtn" disabled>最後まで読んだ！</button>
-        <div class="home-actions-menu">
-          <button class="btn btn-secondary home-actions-menu-btn" id="bookActionsMenuBtn" disabled aria-label="その他のアクション">⋮</button>
-          <div class="home-actions-dropdown" id="bookActionsDropdown">
-            <button class="home-actions-dropdown-item" id="editSelectedBtn">
-              <span>✏️</span>
-              <span>編集</span>
-            </button>
-            <button class="home-actions-dropdown-item" id="openLinkSelectedBtn">
-              <span>↗</span>
-              <span>リンクを開く</span>
-            </button>
-            <button class="home-actions-dropdown-item" id="dropSelectedBtn">
-              <span>⏸️</span>
-              <span>中断する</span>
-            </button>
+          <div class="selected-book-info" id="selectedBookInfo">
+            <!-- 選択中の本の情報 -->
           </div>
         </div>
-      </div>
-    </div>
 
+        <div class="home-actions-fixed">
+          <button class="main-btn" id="startBtn" disabled>
+            <span class="main-btn-icon">📖</span>
+            <span>本を選んでください</span>
+          </button>
+          <div class="home-actions-row">
+            <button class="btn btn-success" id="completeSelectedBtn" disabled>最後まで読んだ！</button>
+            <div class="home-actions-menu">
+              <button class="btn btn-secondary home-actions-menu-btn" id="bookActionsMenuBtn" disabled aria-label="その他のアクション">⋮</button>
+              <div class="home-actions-dropdown" id="bookActionsDropdown">
+                <button class="home-actions-dropdown-item" id="editSelectedBtn">
+                  <span>✏️</span>
+                  <span>編集</span>
+                </button>
+                <button class="home-actions-dropdown-item" id="openLinkSelectedBtn">
+                  <span>↗</span>
+                  <span>リンクを開く</span>
+                </button>
+                <button class="home-actions-dropdown-item" id="dropSelectedBtn">
+                  <span>⏸️</span>
+                  <span>中断する</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- 書斎タブ -->
       <section class="tab" id="tab-study" role="tabpanel" aria-labelledby="nav-study">
-    <div class="page-header page-header--inline">
-      <div class="page-header__row">
-        <span class="page-header__icon">🏠</span>
-        <span class="page-header__title">書斎</span>
-        <button class="term-hint" data-term="study" aria-label="書斎の説明を見る">?</button>
-      </div>
-    </div>
+        <div class="page-layout">
+          <div class="page-header page-header--inline">
+            <div class="page-header__row">
+              <span class="page-header__icon">🏠</span>
+              <span class="page-header__title">書斎</span>
+              <button class="term-hint" data-term="study" aria-label="書斎の説明を見る">?</button>
+            </div>
+          </div>
 
-    <div class="status-tabs" id="studyStatusTabs">
-      <button class="status-tab" data-status="completed">
-        <span class="status-icon">✅</span>
-        <span class="status-label">読了</span>
-        <span class="status-count" id="completedCount">0</span>
-      </button>
-      <button class="status-tab active" data-status="unread">
-        <span class="status-icon">📚</span>
-        <span class="status-label">積読</span>
-        <span class="status-count" id="unreadCount">0</span>
-      </button>
-      <button class="status-tab" data-status="dropped">
-        <span class="status-icon">⏸️</span>
-        <span class="status-label">中断</span>
-        <span class="status-count" id="droppedCount">0</span>
-      </button>
-    </div>
+          <div class="status-tabs" id="studyStatusTabs">
+            <button class="status-tab" data-status="completed">
+              <span class="status-icon">✅</span>
+              <span class="status-label">読了</span>
+              <span class="status-count" id="completedCount">0</span>
+            </button>
+            <button class="status-tab active" data-status="unread">
+              <span class="status-icon">📚</span>
+              <span class="status-label">積読</span>
+              <span class="status-count" id="unreadCount">0</span>
+            </button>
+            <button class="status-tab" data-status="dropped">
+              <span class="status-icon">⏸️</span>
+              <span class="status-label">中断</span>
+              <span class="status-count" id="droppedCount">0</span>
+            </button>
+          </div>
 
-    <div class="shelf">
-      <div class="shelf__board">
-        <div class="shelf__visual" id="studyShelf"></div>
-      </div>
-    </div>
+          <div class="shelf">
+            <div class="shelf__board">
+              <div class="shelf__visual" id="studyShelf"></div>
+            </div>
+          </div>
 
-    <div id="studyBookList"></div>
+          <div id="studyBookList"></div>
+        </div>
       </section>
 
       <!-- 本屋タブ -->
       <section class="tab" id="tab-store" role="tabpanel" aria-labelledby="nav-store">
-    <div class="page-header page-header--inline">
-      <div class="page-header__row">
-        <span class="page-header__icon">🏪</span>
-        <span class="page-header__title">本屋</span>
-        <button class="term-hint" data-term="store" aria-label="本屋の説明を見る">?</button>
-      </div>
-    </div>
+        <div class="page-layout">
+          <div class="page-header page-header--inline">
+            <div class="page-header__row">
+              <span class="page-header__icon">🏪</span>
+              <span class="page-header__title">本屋</span>
+              <button class="term-hint" data-term="store" aria-label="本屋の説明を見る">?</button>
+            </div>
+          </div>
 
-    <div class="store-stats">
-      <span class="store-count" id="wishlistCount">0</span>
-      <span class="store-label">冊の本を見つけた</span>
-    </div>
+          <div class="store-stats">
+            <span class="store-count" id="wishlistCount">0</span>
+            <span class="store-label">冊の本を見つけた</span>
+          </div>
 
-    <div class="shelf">
-      <div class="shelf__board">
-        <div class="shelf__visual" id="storeShelf"></div>
-      </div>
-    </div>
+          <div class="shelf">
+            <div class="shelf__board">
+              <div class="shelf__visual" id="storeShelf"></div>
+            </div>
+          </div>
 
-    <div id="storeBookList"></div>
+          <div id="storeBookList"></div>
+        </div>
       </section>
 
       <!-- 本を手に入れた時のセレブレーション -->

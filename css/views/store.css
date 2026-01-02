@@ -11,7 +11,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-md);
-  margin-bottom: var(--space-xl);
   padding: var(--space-lg) var(--space-2xl);
   background: rgba(var(--surface-rgb), 0.6);
   backdrop-filter: blur(16px);
