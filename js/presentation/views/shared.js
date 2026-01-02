@@ -84,6 +84,9 @@ export function renderShelfContent(options) {
     emptyConfig
   } = options;
 
+  // FABの表示制御（書斎・本屋タブのみ）
+  const fab = document.getElementById('addBookFab');
+
   if (books.length === 0) {
     const addBookType = type === 'store' ? 'wishlist' : 'unread';
     shelfEl.innerHTML = `
@@ -96,8 +99,13 @@ export function renderShelfContent(options) {
         </button>
       </div>`;
     containerEl.innerHTML = '';
+    // empty-state表示時はFABを非表示
+    if (fab) fab.classList.add('hidden');
     return;
   }
+
+  // 本がある場合はFABを表示
+  if (fab) fab.classList.remove('hidden');
 
   // 本棚表示
   shelfEl.innerHTML = renderMiniBookShelf(books, selectedBookId, miniBookClass);
