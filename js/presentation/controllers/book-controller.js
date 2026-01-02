@@ -494,6 +494,20 @@ export function initAddBookEvents() {
       amazonSearchLink.style.display = 'none';
     }
   });
+
+  // 「なぜこの本？」トグル
+  const triggerNoteToggle = document.getElementById('triggerNoteToggle');
+  const triggerNoteGroup = document.getElementById('triggerNoteGroup');
+  const triggerNoteIcon = triggerNoteToggle.querySelector('.optional-field-toggle__icon');
+
+  triggerNoteToggle.addEventListener('click', () => {
+    const isHidden = triggerNoteGroup.style.display === 'none';
+    triggerNoteGroup.style.display = isHidden ? 'block' : 'none';
+    triggerNoteIcon.textContent = isHidden ? '−' : '+';
+    if (isHidden) {
+      document.getElementById('bookCommentInput').focus();
+    }
+  });
 }
 
 // ========================================
