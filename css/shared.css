@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* ==========================================================================
-   Page Headers (共通)
+   Page Headers (共通) - モダンデザイン
    ========================================================================== */
 
 /* 共通ページヘッダー */
@@ -13,7 +13,7 @@
 }
 
 .page-header--compact {
-  padding-bottom: 0;
+  padding-bottom: var(--space-sm);
 }
 
 .page-header__emoji {
@@ -25,6 +25,7 @@
   font-size: 22px;
   font-weight: 700;
   color: var(--text);
+  letter-spacing: -0.01em;
 }
 
 .page-header__subtitle {
@@ -33,63 +34,76 @@
   margin-top: var(--space-xs);
 }
 
-/* インラインヘッダー（左寄せ横並び） */
+/* インラインヘッダー（左寄せ横並び） - モダン */
 .page-header--inline {
   text-align: left;
-  padding: var(--space-lg) 0 var(--space-md);
+  padding: var(--space-lg) var(--space-sm) var(--space-md);
 }
 
 .page-header__row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-md);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
 }
 
 .page-header__icon {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .page-header--inline .page-header__title {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 
 /* ==========================================================================
-   Empty States (共通)
+   Empty States (共通) - モダンデザイン
    ========================================================================== */
 
 /* 共通空状態スタイル */
 .empty-state {
   text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
+  padding: var(--space-2xl) var(--space-xl);
   color: var(--text-dim);
   width: 100%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), transparent);
+  border-radius: 24px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
 .empty-state__icon {
-  font-size: 48px;
-  margin-bottom: var(--space-md);
-  opacity: 0.5;
+  font-size: 52px;
+  margin-bottom: var(--space-lg);
+  opacity: 0.6;
+  filter: grayscale(0.3);
 }
 
 .empty-state__text {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-sm);
 }
 
 .empty-state__hint {
-  font-size: 13px;
-  opacity: 0.8;
+  font-size: 14px;
+  opacity: 0.7;
+  line-height: 1.5;
 }
 
 /* 小サイズバリアント */
 .empty-state--small .empty-state__icon {
-  font-size: 36px;
+  font-size: 40px;
 }
 
 .empty-state--small {
-  padding: 30px var(--space-xl);
+  padding: var(--space-xl) var(--space-lg);
+  border-radius: 20px;
 }
 
 
