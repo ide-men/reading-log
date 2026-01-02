@@ -242,7 +242,7 @@
 .selected-book-info {
   padding: var(--space-md) var(--space-xl);
   text-align: center;
-  min-height: 60px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -274,7 +274,7 @@
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
   padding: var(--space-sm) var(--space-lg);
   border-radius: 16px;
-  margin-top: var(--space-md);
+  margin-top: var(--space-sm);
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
@@ -282,6 +282,10 @@
     0 4px 12px rgba(251, 191, 36, 0.2),
     0 1px 3px rgba(0, 0, 0, 0.1);
   font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -325,6 +329,7 @@
   }
 
   .selected-book-info {
+    height: 110px;
     border-radius: 24px;
     padding: var(--space-lg) var(--space-2xl);
   }
@@ -379,6 +384,7 @@
   }
 
   .selected-book-info {
+    height: 120px;
     border-radius: 28px;
   }
 
