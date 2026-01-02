@@ -12,6 +12,8 @@
   flex-direction: column;
   gap: var(--space-lg);
   position: relative;
+  /* ヒントマーク分のスペースを確保 (18px icon + 12px top offset + 余白) */
+  padding-top: 36px;
 }
 
 /* カバン画面では flex: 1 でスペースを埋める */
