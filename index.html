@@ -279,12 +279,19 @@
         <div class="form-group">
           <label class="form-label">タイトル</label>
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
+          <a href="#" id="amazonSearchLink" class="amazon-search-link" target="_blank" rel="noopener noreferrer" style="display: none;">
+            📦 Amazonで検索してリンクを取得
+          </a>
         </div>
         <div class="form-group">
           <label class="form-label">リンク先（任意）</label>
           <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
         </div>
-        <div class="form-group">
+        <button type="button" class="optional-field-toggle" id="triggerNoteToggle">
+          <span class="optional-field-toggle__icon">+</span>
+          <span class="optional-field-toggle__text">なぜこの本？を記録</span>
+        </button>
+        <div class="form-group" id="triggerNoteGroup" style="display: none;">
           <label class="form-label">なぜこの本？（任意）</label>
           <input type="text" class="form-input" id="bookCommentInput" placeholder="例：友人のおすすめ、書店で目に留まった">
         </div>
