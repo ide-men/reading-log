@@ -17,6 +17,7 @@ export function renderReadingBooks() {
   const infoContainer = document.getElementById('selectedBookInfo');
   const startBtn = document.getElementById('startBtn');
   const completeBtn = document.getElementById('completeSelectedBtn');
+  const dropBtn = document.getElementById('dropSelectedBtn');
   const menuBtn = document.getElementById('bookActionsMenuBtn');
 
   if (!carousel) return;
@@ -37,6 +38,7 @@ export function renderReadingBooks() {
     startBtn.disabled = true;
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を追加してください</span>';
     completeBtn.disabled = true;
+    dropBtn.disabled = true;
     menuBtn.disabled = true;
     stateManager.setSelectedBookId(null);
     if (dotsContainer) {
@@ -134,6 +136,7 @@ export function updateSelectedBookInfo() {
   const infoContainer = document.getElementById('selectedBookInfo');
   const startBtn = document.getElementById('startBtn');
   const completeBtn = document.getElementById('completeSelectedBtn');
+  const dropBtn = document.getElementById('dropSelectedBtn');
   const menuBtn = document.getElementById('bookActionsMenuBtn');
   const linkBtn = document.getElementById('openLinkSelectedBtn');
 
@@ -142,6 +145,7 @@ export function updateSelectedBookInfo() {
     startBtn.disabled = true;
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を選んでください</span>';
     completeBtn.disabled = true;
+    dropBtn.disabled = true;
     menuBtn.disabled = true;
     if (linkBtn) linkBtn.disabled = true;
     return;
@@ -159,6 +163,7 @@ export function updateSelectedBookInfo() {
   startBtn.disabled = false;
   startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>この本を読む</span>';
   completeBtn.disabled = false;
+  dropBtn.disabled = false;
   menuBtn.disabled = false;
   // リンクボタンはリンクがある場合のみ有効化
   if (linkBtn) linkBtn.disabled = !book.link;
