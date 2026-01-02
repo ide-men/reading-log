@@ -259,7 +259,7 @@
   padding: 8px 4px 12px;
   text-align: center;
   writing-mode: vertical-rl;
-  text-orientation: mixed;
+  text-orientation: upright;
   white-space: nowrap;
   max-height: 80px;
   overflow: hidden;
