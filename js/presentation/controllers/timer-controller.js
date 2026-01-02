@@ -22,13 +22,14 @@ export function handleStartReading() {
   const { book } = timerService.startReading(selectedId);
 
   // 読書画面を表示
-  const readingIcon = document.getElementById('readingIcon');
+  const bookCover = document.getElementById('readingBookCover');
+
   if (book && book.coverUrl) {
-    readingIcon.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" class="reading-cover-img" alt="">`;
-    readingIcon.classList.add('has-cover');
+    bookCover.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" alt="">`;
+    bookCover.classList.add('has-cover');
   } else {
-    readingIcon.textContent = '📖';
-    readingIcon.classList.remove('has-cover');
+    bookCover.innerHTML = '<span class="reading-book__icon">📖</span>';
+    bookCover.classList.remove('has-cover');
   }
 
   applyReadingAnimation();

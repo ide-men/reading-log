@@ -240,13 +240,34 @@
 
   <!-- 読書画面 -->
   <div class="reading-screen" id="readingScreen">
-    <div class="reading-anim" id="readingAnim">
-      <div class="reading-glow"></div>
-      <div class="reading-icon" id="readingIcon">📖</div>
+    <!-- 背景アンビエント効果 -->
+    <div class="reading-ambient">
+      <div class="reading-orb reading-orb--1"></div>
+      <div class="reading-orb reading-orb--2"></div>
+      <div class="reading-orb reading-orb--3"></div>
     </div>
-    <p class="reading-label" id="readingLabel">読書に集中しています</p>
-    <span class="reading-indicator" aria-label="計測中"></span>
-    <button class="reading-stop" id="stopBtn">読書をおわる</button>
+
+    <!-- メインコンテンツ -->
+    <div class="reading-content">
+      <div class="reading-book" id="readingBook">
+        <div class="reading-book__cover" id="readingBookCover">
+          <span class="reading-book__icon">📖</span>
+        </div>
+        <div class="reading-book__glow"></div>
+      </div>
+
+      <div class="reading-info">
+        <p class="reading-subtitle" id="readingSubtitle">今この瞬間に集中</p>
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <div class="reading-footer">
+      <button class="reading-end-btn" id="stopBtn">
+        <span class="reading-end-btn__icon">✓</span>
+        <span class="reading-end-btn__text">読書をおわる</span>
+      </button>
+    </div>
   </div>
 
   <!-- 本追加モーダル -->

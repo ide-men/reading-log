@@ -34,14 +34,17 @@ export function updateButtonAnimation() {
 
 export function applyReadingAnimation() {
   const config = randomItem(READING_ANIMATIONS);
-  const animEl = document.getElementById('readingAnim');
-  const iconEl = document.getElementById('readingIcon');
-  const labelEl = document.getElementById('readingLabel');
+  const bookEl = document.getElementById('readingBook');
+  const coverEl = document.getElementById('readingBookCover');
+  const subtitleEl = document.getElementById('readingSubtitle');
 
   // 表紙画像がある場合はアイコンを上書きしない
-  if (!iconEl.classList.contains('has-cover')) {
-    iconEl.textContent = config.icon;
+  if (!coverEl.classList.contains('has-cover')) {
+    const iconEl = coverEl.querySelector('.reading-book__icon');
+    if (iconEl) {
+      iconEl.textContent = config.icon;
+    }
   }
-  animEl.className = `reading-anim anim-${config.anim}`;
-  labelEl.textContent = config.label;
+  bookEl.className = `reading-book anim-${config.anim}`;
+  subtitleEl.textContent = config.label;
 }
