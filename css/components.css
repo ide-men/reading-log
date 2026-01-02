@@ -842,9 +842,8 @@ select.form-input {
 
 .reading-subtitle {
   font-size: 15px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   margin: 0;
-  opacity: 0.7;
 }
 
 /* Footer */
