@@ -236,7 +236,7 @@
 .form-label {
   display: block;
   font-size: 12px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   margin-bottom: var(--space-compact);
 }
 
@@ -598,7 +598,7 @@ select.form-input {
 
 .form-hint {
   font-size: 12px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   margin-top: var(--space-sm);
 }
 
@@ -614,7 +614,7 @@ select.form-input {
 
 .celebration-text {
   font-size: 14px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   margin-top: var(--space-sm);
 }
 
@@ -642,7 +642,7 @@ select.form-input {
 
 .confirm-text {
   font-size: 14px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   margin-bottom: var(--space-2xl);
   line-height: 1.5;
 }
@@ -1244,7 +1244,7 @@ select.form-input {
 
 .onboarding-text {
   font-size: 14px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
