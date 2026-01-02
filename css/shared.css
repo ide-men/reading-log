@@ -759,7 +759,6 @@
     0 12px 40px rgba(0, 0, 0, 0.25),
     0 4px 16px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 1px solid rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
@@ -952,7 +951,6 @@
     rgba(31, 26, 22, 0.95) 0%,
     rgba(42, 35, 25, 0.9) 100%
   );
-  border-color: rgba(139, 90, 43, 0.15);
 }
 
 .detail-view--study .detail-view__action--primary {
@@ -969,7 +967,6 @@
     rgba(26, 26, 37, 0.95) 0%,
     rgba(37, 37, 53, 0.9) 100%
   );
-  border-color: rgba(245, 158, 11, 0.12);
 }
 
 .detail-view--store .detail-view__date {
