@@ -617,6 +617,9 @@ export function initCarouselEvents() {
       closeBookActionsDropdown();
     }
   });
+
+  // スワイプで読了・メニューボタンを表示
+  initCarouselSwipe();
 }
 
 // ドロップダウンを閉じる
@@ -624,6 +627,64 @@ function closeBookActionsDropdown() {
   const dropdown = document.getElementById('bookActionsDropdown');
   if (dropdown) {
     dropdown.classList.remove('open');
+  }
+}
+
+// ========================================
+// カルーセルスワイプで読了・メニューボタン表示
+// ========================================
+function initCarouselSwipe() {
+  const carousel = document.getElementById('bookCarousel');
+  const actionsRow = document.querySelector('.home-actions-row');
+  if (!carousel || !actionsRow) return;
+
+  const SWIPE_THRESHOLD = 30; // 上方向スワイプのしきい値（px）
+  let touchStartY = 0;
+  let touchStartX = 0;
+
+  carousel.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    touchStartY = touch.clientY;
+    touchStartX = touch.clientX;
+  }, { passive: true });
+
+  carousel.addEventListener('touchend', (e) => {
+    const touch = e.changedTouches[0];
+    const deltaY = touchStartY - touch.clientY;
+    const deltaX = Math.abs(touch.clientX - touchStartX);
+
+    // 上方向へのスワイプで、横方向の移動より大きい場合
+    if (deltaY > SWIPE_THRESHOLD && deltaY > deltaX) {
+      showActionsRow();
+    }
+    // 下方向へのスワイプで非表示
+    else if (deltaY < -SWIPE_THRESHOLD && -deltaY > deltaX) {
+      hideActionsRow();
+    }
+  }, { passive: true });
+
+  // ボタンエリア外タップで非表示
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.home-actions-row') && !e.target.closest('.carousel-book')) {
+      hideActionsRow();
+    }
+  });
+}
+
+// 読了・メニューボタン行を表示
+function showActionsRow() {
+  const actionsRow = document.querySelector('.home-actions-row');
+  if (actionsRow) {
+    actionsRow.classList.add('home-actions-row--visible');
+  }
+}
+
+// 読了・メニューボタン行を非表示
+function hideActionsRow() {
+  const actionsRow = document.querySelector('.home-actions-row');
+  if (actionsRow) {
+    actionsRow.classList.remove('home-actions-row--visible');
+    closeBookActionsDropdown();
   }
 }
 
