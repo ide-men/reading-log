@@ -851,6 +851,17 @@ select.form-input {
   text-align: center;
 }
 
+.reading-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 var(--space-xs) 0;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .reading-subtitle {
   font-size: 15px;
   color: var(--text-dim);
@@ -1062,6 +1073,11 @@ select.form-input {
     font-size: 64px;
   }
 
+  .reading-title {
+    font-size: 18px;
+    max-width: 360px;
+  }
+
   .reading-subtitle {
     font-size: 16px;
   }
@@ -1163,6 +1179,11 @@ select.form-input {
 
   .reading-book__glow {
     inset: -60px;
+  }
+
+  .reading-title {
+    font-size: 20px;
+    max-width: 420px;
   }
 
   .reading-subtitle {

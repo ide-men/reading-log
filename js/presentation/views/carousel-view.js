@@ -150,8 +150,10 @@ export function updateSelectedBookInfo() {
   const book = bookRepository.getBookById(selectedBookId);
   if (!book) return;
 
-  // 本の名前・開始日は表示しない（栞は別の場所で表示）
-  infoContainer.innerHTML = '';
+  // 選択中の本のタイトルを表示
+  infoContainer.innerHTML = `
+    <div class="selected-book-title">${escapeHtml(book.title)}</div>
+  `;
 
   // ボタンを有効化
   startBtn.disabled = false;

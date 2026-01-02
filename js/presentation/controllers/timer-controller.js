@@ -2,7 +2,7 @@
 // Timer Controller
 // タイマー操作の制御
 // ========================================
-import { escapeAttr } from '../../shared/utils.js';
+import { escapeAttr, escapeHtml } from '../../shared/utils.js';
 import * as timerService from '../../domain/timer/timer-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
 import * as bookService from '../../domain/book/book-service.js';
@@ -23,6 +23,7 @@ export function handleStartReading() {
 
   // 読書画面を表示
   const bookCover = document.getElementById('readingBookCover');
+  const readingTitle = document.getElementById('readingTitle');
 
   if (book && book.coverUrl) {
     bookCover.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" alt="">`;
@@ -30,6 +31,11 @@ export function handleStartReading() {
   } else {
     bookCover.innerHTML = '<span class="reading-book__icon">📖</span>';
     bookCover.classList.remove('has-cover');
+  }
+
+  // 本のタイトルを表示
+  if (book && readingTitle) {
+    readingTitle.textContent = book.title;
   }
 
   applyReadingAnimation();
