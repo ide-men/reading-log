@@ -13,7 +13,7 @@ import { createBook, validateBookTitle } from './book-entity.js';
 // ========================================
 const ADD_BOOK_MESSAGES = {
   [BOOK_STATUS.READING]: 'カバンに追加しました',
-  [BOOK_STATUS.UNREAD]: '積読に追加しました',
+  [BOOK_STATUS.UNREAD]: '未読に追加しました',
   [BOOK_STATUS.COMPLETED]: '読了に追加しました',
   [BOOK_STATUS.DROPPED]: '中断に追加しました',
   [BOOK_STATUS.WISHLIST]: '本屋に追加しました'

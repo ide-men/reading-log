@@ -15,7 +15,7 @@ export const SAMPLE_BOOKS = [
   { title: '思考の整理学', link: 'https://www.amazon.co.jp/dp/4480020470', status: 'completed', startedAt: -25, completedAt: -7 },
   { title: 'サピエンス全史（上）', link: 'https://www.amazon.co.jp/dp/430922671X', status: 'completed', startedAt: -90, completedAt: -45, note: '人類史の壮大なスケールに圧倒された' },
 
-  // unread（書斎・積読）- 買ったけど読んでない本
+  // unread（書斎・未読）- 買ったけど読んでない本
   { title: '影響力の武器', link: 'https://www.amazon.co.jp/dp/4414304229', status: 'unread' },
   { title: '金持ち父さん貧乏父さん', link: 'https://www.amazon.co.jp/dp/4480864245', status: 'unread' },
   { title: 'イシューからはじめよ', link: 'https://www.amazon.co.jp/dp/4862760856', status: 'unread' },

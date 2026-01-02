@@ -58,7 +58,7 @@ describe('book-service.js', () => {
     });
 
     it('各ステータスで適切なメッセージを返す', () => {
-      expect(addBook({ title: 'A', status: BOOK_STATUS.UNREAD }).message).toBe('積読に追加しました');
+      expect(addBook({ title: 'A', status: BOOK_STATUS.UNREAD }).message).toBe('未読に追加しました');
       expect(addBook({ title: 'B', status: BOOK_STATUS.COMPLETED }).message).toBe('読了に追加しました');
       expect(addBook({ title: 'C', status: BOOK_STATUS.DROPPED }).message).toBe('中断に追加しました');
       expect(addBook({ title: 'D', status: BOOK_STATUS.WISHLIST }).message).toBe('本屋に追加しました');

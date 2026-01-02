@@ -45,7 +45,7 @@ export function renderStudyBooks() {
 
   const emptyMessages = {
     [BOOK_STATUS.COMPLETED]: { icon: '✅', text: '読了した本はまだありません', hint: '本を読み終えたらここに表示されます' },
-    [BOOK_STATUS.UNREAD]: { icon: '📚', text: '積読本はありません', hint: '買った本を追加してみましょう' },
+    [BOOK_STATUS.UNREAD]: { icon: '📚', text: '未読本はありません', hint: '買った本を追加してみましょう' },
     [BOOK_STATUS.DROPPED]: { icon: '⏸️', text: '中断した本はありません', hint: '読書を中断した本がここに表示されます' }
   };
 

@@ -126,7 +126,7 @@ export function acquireBook(id) {
   if (!result.success) return;
 
   showAcquireCelebration(result.book, result.destination, () => {
-    showToast('書斎の積読に追加しました！');
+    showToast('書斎の未読に追加しました！');
   });
 
   setTimeout(() => {

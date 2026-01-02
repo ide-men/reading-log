@@ -47,10 +47,10 @@ export function showAcquireCelebration(book, destination = '書斎', onComplete 
   if (hintEl) {
     const hintText = {
       'カバン': 'カバンに追加されました',
-      '書斎': '書斎の積読に追加されました',
+      '書斎': '書斎の未読に追加されました',
       '読了': 'お疲れさまでした！'
     };
-    hintEl.textContent = hintText[destination] || '書斎の積読に追加されました';
+    hintEl.textContent = hintText[destination] || '書斎の未読に追加されました';
   }
 
   // パーティクルを生成
