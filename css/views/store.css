@@ -99,6 +99,11 @@
   letter-spacing: 0.02em;
 }
 
+/* 本屋の本棚位置を書斎と揃える（status-tabsとstore-statsの高さ差を補正） */
+#tab-store .shelf {
+  margin-top: var(--space-lg);
+}
+
 /* 本屋グリッド用のEmpty State追加スタイル */
 .book-grid .empty-state {
   grid-column: 1 / -1;
