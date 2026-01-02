@@ -652,9 +652,9 @@ export function initStudyEvents() {
     miniBookClass: 'mini-book',
     handlers: studyBookListHandlers,
     fallback: studyBookListFallback,
-    getSelectedId: stateManager.getStudySelectedBookId,
-    setSelectedId: stateManager.setStudySelectedBookId,
-    clearSelection: stateManager.clearStudySelection,
+    getSelectedId: () => stateManager.getStudySelectedBookId(),
+    setSelectedId: (id) => stateManager.setStudySelectedBookId(id),
+    clearSelection: () => stateManager.clearStudySelection(),
     renderFn: renderStudyBooks
   });
 }
@@ -669,9 +669,9 @@ export function initStoreEvents() {
     miniBookClass: 'mini-book',
     handlers: storeBookListHandlers,
     fallback: storeBookListFallback,
-    getSelectedId: stateManager.getStoreSelectedBookId,
-    setSelectedId: stateManager.setStoreSelectedBookId,
-    clearSelection: stateManager.clearStoreSelection,
+    getSelectedId: () => stateManager.getStoreSelectedBookId(),
+    setSelectedId: (id) => stateManager.setStoreSelectedBookId(id),
+    clearSelection: () => stateManager.clearStoreSelection(),
     renderFn: renderStoreBooks
   });
 }

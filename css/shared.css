@@ -355,15 +355,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 2px,
-      transparent 24px
-    ),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
   pointer-events: none;
   border-radius: var(--radius-xl);
 }
@@ -438,15 +430,7 @@
 }
 
 #tab-store .shelf::before {
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      rgba(245, 158, 11, 0.02) 1px,
-      transparent 2px,
-      transparent 24px
-    ),
-    linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
 }
 
 #tab-store .shelf__visual::after {
@@ -1020,9 +1004,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    inset 0 0 0 1px rgba(139, 90, 43, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .book-detail-cover img {
