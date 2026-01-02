@@ -1,54 +1,95 @@
 /* ==========================================================================
-   Stats View - 統計画面・チャート・カード
+   Stats View - 統計画面・チャート・カード（モダンデザイン）
    ========================================================================== */
 
 /* ==========================================================================
-   Stats Grid
+   Stats Grid - ガラスモーフィズムカード
    ========================================================================== */
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
+  gap: 12px;
   margin-bottom: var(--space-xl);
 }
 
 .stats-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-lg);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: var(--space-lg) var(--space-md);
   text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(139, 90, 43, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: rgba(139, 90, 43, 0.2);
+}
+
+.stats-card:hover::before {
+  opacity: 1;
 }
 
 .stats-card-value {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--text);
+  background: linear-gradient(135deg, var(--text), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .stats-card-label {
   font-size: 10px;
   color: var(--text-dim);
-  margin-top: 2px;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
 }
 
-/* .section-title はbase.cssで定義 */
-
 /* ==========================================================================
-   Week Chart
+   Week Chart - モダンバーチャート
    ========================================================================== */
 
 .week-chart {
   display: flex;
   align-items: flex-end;
   gap: var(--space-sm);
-  height: 100px;
-  padding: var(--space-md);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  height: 110px;
+  padding: var(--space-lg);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
   margin-bottom: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.week-chart::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(139, 90, 43, 0.03) 100%);
+  pointer-events: none;
 }
 
 .week-bar {
@@ -56,62 +97,93 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
 }
 
 .week-bar-fill {
   width: 100%;
-  max-width: 24px;
-  background: var(--accent);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  min-height: 4px;
+  max-width: 28px;
+  background: linear-gradient(180deg, var(--accent) 0%, rgba(139, 90, 43, 0.7) 100%);
+  border-radius: 8px 8px 4px 4px;
+  min-height: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
 }
 
 .week-bar-fill.empty {
-  background: var(--elevated);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  box-shadow: none;
 }
 
 .week-bar span {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-dim);
+  font-weight: 500;
 }
 
 .week-bar.today span {
   color: var(--accent);
-  font-weight: 500;
+  font-weight: 600;
+}
+
+.week-bar.today .week-bar-fill:not(.empty) {
+  box-shadow: 0 4px 12px rgba(139, 90, 43, 0.4);
 }
 
 /* ==========================================================================
-   Impact Card
+   Impact Card - グラデーション強調
    ========================================================================== */
 
 .impact-card {
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  border-radius: var(--radius-3xl);
-  padding: 28px;
+  border-radius: 28px;
+  padding: 32px;
   text-align: center;
   color: var(--bg);
   margin-bottom: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(139, 90, 43, 0.3);
+}
+
+.impact-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .impact-value {
-  font-size: 40px;
+  font-size: 44px;
   font-weight: 700;
+  position: relative;
+  z-index: 1;
 }
 
 .impact-label {
   font-size: 14px;
-  opacity: 0.8;
+  opacity: 0.85;
+  position: relative;
+  z-index: 1;
 }
 
 .streak-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  background: rgba(0, 0, 0, 0.15);
-  padding: 6px var(--space-md);
-  border-radius: var(--radius-2xl);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 8px var(--space-lg);
+  border-radius: 20px;
   margin-top: var(--space-md);
+  position: relative;
+  z-index: 1;
 }
 
 .streak-fire {
@@ -129,20 +201,21 @@
 }
 
 /* ==========================================================================
-   Prediction & Style Cards
+   Prediction & Style Cards - ガラスモーフィズム
    ========================================================================== */
 
-/* Base Card Style (shared by prediction-card and style-card) */
 .prediction-card,
 .style-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-2xl);
-  padding: 18px var(--space-xl);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 20px var(--space-xl);
   margin-bottom: var(--space-md);
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .prediction-card::before,
@@ -153,19 +226,32 @@
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.08;
-  transition: opacity 0.2s ease;
+  opacity: 0.06;
+  transition: opacity 0.3s ease;
+}
+
+.prediction-card::after,
+.style-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+  opacity: 0.8;
 }
 
 .prediction-card:hover,
 .style-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .prediction-card:hover::before,
 .style-card:hover::before {
-  opacity: 0.15;
+  opacity: 0.12;
 }
 
 /* Prediction Card Variants */
@@ -173,8 +259,16 @@
   background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
 }
 
+.prediction-card-yearly::after {
+  background: linear-gradient(180deg, #10b981, #34d399);
+}
+
 .prediction-card-title::before {
   background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.prediction-card-title::after {
+  background: linear-gradient(180deg, #f59e0b, #fbbf24);
 }
 
 /* Style Card Variants */
@@ -188,11 +282,19 @@
   background: linear-gradient(135deg, #e8a87c 0%, #f0c27b 100%);
 }
 
+.style-card-focus::after {
+  background: linear-gradient(180deg, #e8a87c, #f0c27b);
+}
+
 .style-card-time::before {
   background: linear-gradient(135deg, #6b5b95 0%, #a78bfa 100%);
 }
 
-/* Card Content (shared) */
+.style-card-time::after {
+  background: linear-gradient(180deg, #6b5b95, #a78bfa);
+}
+
+/* Card Content */
 .prediction-item {
   display: flex;
   align-items: center;
@@ -204,9 +306,9 @@
 
 .prediction-icon,
 .style-icon {
-  font-size: 32px;
+  font-size: 34px;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
 }
 
 .prediction-content,
@@ -217,14 +319,14 @@
 }
 
 .prediction-value {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 2px;
 }
 
 .style-value {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 2px;
@@ -234,7 +336,7 @@
 .style-label {
   font-size: 13px;
   color: var(--accent);
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: var(--space-xs);
 }
 
@@ -242,18 +344,20 @@
 .style-hint {
   font-size: 11px;
   color: var(--text-dim);
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 /* ==========================================================================
-   Reading Calendar (1ヶ月表示・スワイプ切り替え)
+   Reading Calendar - ガラスモーフィズムコンテナ
    ========================================================================== */
 
 .calendar-container {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-md);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: var(--space-lg);
   margin-bottom: var(--space-xl);
 }
 
@@ -286,26 +390,26 @@
 
 /* 月のヘッダー */
 .calendar-month-header {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
   text-align: center;
   margin-bottom: var(--space-sm);
   padding-bottom: var(--space-xs);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* 曜日ヘッダー */
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-  margin-bottom: 4px;
+  gap: 3px;
+  margin-bottom: 6px;
 }
 
 .calendar-weekday {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-dim);
   text-align: center;
   padding: 2px 0;
@@ -323,29 +427,30 @@
 .calendar-weeks {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .calendar-week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+  gap: 3px;
 }
 
 /* 日付セル */
 .calendar-cell {
   aspect-ratio: 1;
-  min-width: 26px;
-  border-radius: var(--radius-sm);
+  min-width: 28px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: default;
-  transition: transform 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .calendar-cell:not(.empty):hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .calendar-cell.empty {
@@ -354,14 +459,14 @@
 
 .calendar-cell.today {
   outline: 2px solid var(--accent);
-  outline-offset: 1px;
+  outline-offset: 2px;
   position: relative;
 }
 
 .calendar-cell.today::after {
   content: '';
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
@@ -372,7 +477,7 @@
 
 .calendar-day {
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-dim);
 }
 
@@ -385,34 +490,35 @@
   color: #3b82f6;
 }
 
-/* レベル別の背景色 */
+/* レベル別の背景色 - より丸みのあるグラデーション */
 .calendar-cell.level-0 {
-  background: var(--elevated);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
 }
 
 .calendar-cell.level-1 {
-  background: rgba(139, 90, 43, 0.25);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.3), rgba(139, 90, 43, 0.2));
 }
 .calendar-cell.level-1 .calendar-day { color: var(--text); }
 .calendar-cell.level-1.sunday .calendar-day,
 .calendar-cell.level-1.saturday .calendar-day { color: var(--text); }
 
 .calendar-cell.level-2 {
-  background: rgba(139, 90, 43, 0.45);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.5), rgba(139, 90, 43, 0.4));
 }
 .calendar-cell.level-2 .calendar-day { color: var(--bg); }
 .calendar-cell.level-2.sunday .calendar-day,
 .calendar-cell.level-2.saturday .calendar-day { color: var(--bg); }
 
 .calendar-cell.level-3 {
-  background: rgba(139, 90, 43, 0.7);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.75), rgba(139, 90, 43, 0.6));
 }
 .calendar-cell.level-3 .calendar-day { color: var(--bg); }
 .calendar-cell.level-3.sunday .calendar-day,
 .calendar-cell.level-3.saturday .calendar-day { color: var(--bg); }
 
 .calendar-cell.level-4 {
-  background: var(--accent);
+  background: linear-gradient(145deg, var(--accent), rgba(139, 90, 43, 0.85));
+  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
 }
 .calendar-cell.level-4 .calendar-day { color: var(--bg); }
 .calendar-cell.level-4.sunday .calendar-day,
@@ -423,15 +529,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 4px;
-  margin-top: var(--space-sm);
+  gap: 6px;
+  margin-top: var(--space-md);
 }
 
 .calendar-legend .calendar-cell {
-  width: 14px;
-  height: 14px;
-  min-width: 14px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
   aspect-ratio: auto;
+  border-radius: 6px;
 }
 
 .calendar-legend .calendar-cell:hover {
@@ -448,60 +555,65 @@
 .calendar-dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-top: var(--space-sm);
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--border);
+  gap: 10px;
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .calendar-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: var(--elevated);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .calendar-dot:hover {
-  transform: scale(1.2);
+  transform: scale(1.3);
+  background: rgba(139, 90, 43, 0.4);
 }
 
 .calendar-dot.active {
-  background: var(--accent);
+  background: linear-gradient(145deg, var(--accent), rgba(139, 90, 43, 0.8));
+  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.4);
 }
 
 /* ==========================================================================
-   Reading Rhythm Heatmap (ヒートマップ)
+   Reading Rhythm Heatmap - ガラスモーフィズム
    ========================================================================== */
 
 .rhythm-container {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-md);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: var(--space-lg);
   margin-bottom: var(--space-xl);
 }
 
 .rhythm-grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .rhythm-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .rhythm-row.rhythm-header {
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .rhythm-label {
-  width: 32px;
-  font-size: 10px;
+  width: 36px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--text-dim);
   text-align: right;
   flex-shrink: 0;
@@ -511,39 +623,42 @@
   flex: 1;
   text-align: center;
   font-size: 10px;
+  font-weight: 600;
   color: var(--text-dim);
 }
 
 .rhythm-cell {
   flex: 1;
   aspect-ratio: 1;
-  max-height: 28px;
-  border-radius: var(--radius-sm);
-  transition: transform 0.15s ease;
+  max-height: 30px;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rhythm-cell:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .rhythm-cell.level-0 {
-  background: var(--elevated);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
 }
 
 .rhythm-cell.level-1 {
-  background: rgba(139, 90, 43, 0.25);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.3), rgba(139, 90, 43, 0.2));
 }
 
 .rhythm-cell.level-2 {
-  background: rgba(139, 90, 43, 0.45);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.5), rgba(139, 90, 43, 0.4));
 }
 
 .rhythm-cell.level-3 {
-  background: rgba(139, 90, 43, 0.7);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.75), rgba(139, 90, 43, 0.6));
 }
 
 .rhythm-cell.level-4 {
-  background: var(--accent);
+  background: linear-gradient(145deg, var(--accent), rgba(139, 90, 43, 0.85));
+  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
 }
 
 .rhythm-insight {
@@ -551,30 +666,43 @@
   color: var(--text-dim);
   text-align: center;
   margin-top: var(--space-md);
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--border);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  line-height: 1.5;
 }
 
 /* ==========================================================================
-   Tip
+   Tip - モダンなヒントカード
    ========================================================================== */
 
 .tip {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(232, 168, 124, 0.1);
-  border-radius: var(--radius-xl);
-  padding: 14px var(--space-lg);
+  gap: 12px;
+  background: linear-gradient(145deg, rgba(232, 168, 124, 0.12), rgba(232, 168, 124, 0.06));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(232, 168, 124, 0.15);
+  border-radius: 20px;
+  padding: 16px var(--space-xl);
   margin-top: var(--space-xl);
+  transition: all 0.3s ease;
+}
+
+.tip:hover {
+  background: linear-gradient(145deg, rgba(232, 168, 124, 0.16), rgba(232, 168, 124, 0.08));
+  transform: translateY(-1px);
 }
 
 .tip span:first-child {
-  font-size: 18px;
+  font-size: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
 .tip span:last-child {
   font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
 }
 
 /* ==========================================================================
@@ -588,10 +716,11 @@
 
   .stats-card {
     padding: var(--space-xl);
+    border-radius: 24px;
   }
 
   .stats-card-value {
-    font-size: 28px;
+    font-size: 32px;
   }
 
   .stats-card-label {
@@ -599,30 +728,47 @@
   }
 
   .week-chart {
-    height: 120px;
-    padding: var(--space-lg);
+    height: 130px;
+    padding: var(--space-xl);
+    border-radius: 28px;
   }
 
   .week-bar-fill {
-    max-width: 32px;
+    max-width: 36px;
+    border-radius: 10px 10px 5px 5px;
   }
 
   .prediction-card,
   .style-card {
     padding: var(--space-xl) var(--space-2xl);
+    border-radius: 28px;
   }
 
   .prediction-icon,
   .style-icon {
-    font-size: 36px;
+    font-size: 38px;
   }
 
   .prediction-value {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .style-value {
-    font-size: 22px;
+    font-size: 24px;
+  }
+
+  .calendar-container,
+  .rhythm-container {
+    border-radius: 28px;
+    padding: var(--space-xl);
+  }
+
+  .calendar-cell {
+    border-radius: 12px;
+  }
+
+  .rhythm-cell {
+    border-radius: 10px;
   }
 }
 
@@ -636,7 +782,7 @@
   }
 
   .stats-card-value {
-    font-size: 32px;
+    font-size: 36px;
   }
 
   .stats-card-label {
@@ -644,27 +790,39 @@
   }
 
   .week-chart {
-    height: 140px;
+    height: 150px;
+    border-radius: 32px;
   }
 
   .week-bar-fill {
-    max-width: 40px;
+    max-width: 44px;
+  }
+
+  .prediction-card,
+  .style-card {
+    border-radius: 32px;
   }
 
   .prediction-icon,
   .style-icon {
-    font-size: 40px;
+    font-size: 42px;
   }
 
   .prediction-value {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .style-value {
-    font-size: 24px;
+    font-size: 26px;
+  }
+
+  .calendar-container,
+  .rhythm-container {
+    border-radius: 32px;
   }
 
   .tip {
-    padding: var(--space-lg) var(--space-xl);
+    padding: var(--space-lg) var(--space-2xl);
+    border-radius: 24px;
   }
 }
