@@ -350,20 +350,20 @@
 
 .shelf {
   background: linear-gradient(145deg,
-    rgba(42, 31, 24, 0.95) 0%,
-    rgba(61, 46, 36, 0.9) 50%,
-    rgba(42, 31, 24, 0.95) 100%
+    rgba(55, 35, 20, 0.95) 0%,
+    rgba(75, 50, 30, 0.92) 50%,
+    rgba(55, 35, 20, 0.95) 100%
   );
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 2px solid rgba(139, 90, 43, 0.2);
+  border: 2px solid rgba(160, 100, 50, 0.25);
   border-radius: var(--radius-2xl);
   padding: 0 var(--space-md);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 20px rgba(0, 0, 0, 0.3);
+    inset 0 1px 0 rgba(255, 220, 180, 0.08),
+    inset 0 0 20px rgba(0, 0, 0, 0.25);
   position: relative;
   overflow: hidden;
   touch-action: pan-x;
@@ -420,45 +420,53 @@
   right: -4px;
   height: 16px;
   background: linear-gradient(to bottom,
-    rgba(90, 74, 58, 0.95) 0%,
-    rgba(74, 58, 42, 0.9) 40%,
-    rgba(58, 42, 26, 0.85) 100%
+    rgba(110, 75, 45, 0.95) 0%,
+    rgba(90, 60, 35, 0.92) 40%,
+    rgba(70, 45, 25, 0.9) 100%
   );
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   box-shadow:
     0 6px 12px rgba(0, 0, 0, 0.4),
-    inset 0 2px 0 rgba(255, 255, 255, 0.08);
+    inset 0 2px 0 rgba(255, 220, 180, 0.1);
 }
 
-/* Store theme for shelf */
+/* Store theme for shelf - Modern Glass Showcase */
 #tab-store .shelf {
   background: linear-gradient(145deg,
-    rgba(26, 26, 37, 0.95) 0%,
-    rgba(37, 37, 53, 0.9) 50%,
-    rgba(26, 26, 37, 0.95) 100%
+    rgba(15, 20, 30, 0.85) 0%,
+    rgba(20, 28, 40, 0.8) 50%,
+    rgba(15, 20, 30, 0.85) 100%
   );
-  border: 2px solid rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-xl);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(245, 158, 11, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    inset 0 0 20px rgba(0, 0, 0, 0.3);
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(245, 158, 11, 0.08),
+    0 0 40px rgba(245, 158, 11, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 30px rgba(245, 158, 11, 0.03);
 }
 
 #tab-store .shelf::before {
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+  background: linear-gradient(180deg,
+    rgba(245, 158, 11, 0.06) 0%,
+    transparent 40%,
+    rgba(245, 158, 11, 0.02) 100%
+  );
 }
 
+/* Glass/metal shelf board */
 #tab-store .shelf__visual::after {
   background: linear-gradient(to bottom,
-    rgba(58, 58, 74, 0.95) 0%,
-    rgba(42, 42, 58, 0.9) 40%,
-    rgba(26, 26, 37, 0.85) 100%
+    rgba(60, 70, 90, 0.9) 0%,
+    rgba(45, 55, 75, 0.85) 50%,
+    rgba(35, 45, 65, 0.8) 100%
   );
+  border-top: 1px solid rgba(245, 158, 11, 0.15);
   box-shadow:
-    0 6px 12px rgba(0, 0, 0, 0.4),
-    inset 0 2px 0 rgba(255, 255, 255, 0.04);
+    0 6px 16px rgba(0, 0, 0, 0.5),
+    0 0 8px rgba(245, 158, 11, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* ==========================================================================
@@ -600,17 +608,18 @@
   gap: var(--space-sm);
 }
 
-/* Book Card - Study Theme */
+/* Book Card - Study Theme - Warm Wood Style */
 .book-card--study {
   background: linear-gradient(145deg,
-    rgba(31, 26, 22, 0.95) 0%,
-    rgba(42, 35, 25, 0.9) 100%
+    rgba(45, 32, 20, 0.95) 0%,
+    rgba(55, 40, 25, 0.92) 100%
   );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(160, 100, 50, 0.15);
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 220, 180, 0.05);
 }
 
 .book-card--study::before {
@@ -619,31 +628,34 @@
 
 @media (hover: hover) {
   .book-card--study:hover {
+    border-color: rgba(160, 100, 50, 0.25);
     box-shadow:
       0 20px 40px rgba(0, 0, 0, 0.35),
-      0 0 30px rgba(139, 90, 43, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 0 20px rgba(139, 90, 43, 0.08),
+      inset 0 1px 0 rgba(255, 220, 180, 0.08);
   }
 }
 
 .book-card--study .book-card__cover {
   background: linear-gradient(145deg,
-    rgba(42, 35, 25, 0.9) 0%,
-    rgba(31, 26, 22, 0.95) 100%
+    rgba(55, 40, 25, 0.9) 0%,
+    rgba(45, 32, 20, 0.95) 100%
   );
 }
 
-/* Book Card - Store Theme */
+/* Book Card - Store Theme - Modern Glass Card */
 .book-card--store {
   background: linear-gradient(145deg,
-    rgba(26, 26, 37, 0.95) 0%,
-    rgba(37, 37, 53, 0.9) 100%
+    rgba(18, 24, 35, 0.9) 0%,
+    rgba(25, 32, 45, 0.85) 100%
   );
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 158, 11, 0.12);
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(245, 158, 11, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .book-card--store::before {
@@ -652,22 +664,25 @@
 
 @media (hover: hover) {
   .book-card--store:hover {
+    border-color: rgba(245, 158, 11, 0.25);
     box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.35),
-      0 0 30px rgba(245, 158, 11, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 20px 50px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(245, 158, 11, 0.12),
+      0 0 60px rgba(245, 158, 11, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 }
 
 .book-card--store .book-card__cover {
   background: linear-gradient(145deg,
-    rgba(37, 37, 53, 0.9) 0%,
-    rgba(26, 26, 37, 0.95) 100%
+    rgba(30, 40, 55, 0.9) 0%,
+    rgba(20, 28, 40, 0.95) 100%
   );
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .book-card--store .book-card__date {
-  color: #9a9aaa;
+  color: rgba(245, 158, 11, 0.7);
 }
 
 /* ==========================================================================
@@ -948,40 +963,57 @@
 /* Detail View Theme Modifiers */
 .detail-view--study {
   background: linear-gradient(145deg,
-    rgba(31, 26, 22, 0.95) 0%,
-    rgba(42, 35, 25, 0.9) 100%
+    rgba(45, 30, 18, 0.95) 0%,
+    rgba(55, 38, 22, 0.92) 100%
   );
+  border: 1px solid rgba(160, 100, 50, 0.2);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 220, 180, 0.06);
 }
 
 .detail-view--study .detail-view__action--primary {
   background: linear-gradient(135deg, var(--color-study), var(--color-study-light));
-  box-shadow: 0 4px 12px rgba(var(--color-study-rgb), 0.25);
+  box-shadow: 0 4px 12px rgba(var(--color-study-rgb), 0.3);
 }
 
 .detail-view--study .detail-view__action--primary:hover {
-  box-shadow: 0 8px 20px rgba(var(--color-study-rgb), 0.4);
+  box-shadow: 0 8px 20px rgba(var(--color-study-rgb), 0.45);
 }
 
 .detail-view--store {
   background: linear-gradient(145deg,
-    rgba(26, 26, 37, 0.95) 0%,
-    rgba(37, 37, 53, 0.9) 100%
+    rgba(15, 20, 30, 0.95) 0%,
+    rgba(22, 30, 42, 0.92) 100%
   );
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 25px rgba(245, 158, 11, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .detail-view--store .detail-view__date {
-  color: #9a9aaa;
+  color: rgba(245, 158, 11, 0.7);
+}
+
+.detail-view--store .detail-view__cover {
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .detail-view--store .detail-view__action--primary {
   background: linear-gradient(135deg, var(--color-store), var(--color-store-light));
   color: #1a1a25;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(var(--color-store-rgb), 0.25);
+  box-shadow:
+    0 4px 12px rgba(var(--color-store-rgb), 0.3),
+    0 0 15px rgba(var(--color-store-rgb), 0.15);
 }
 
 .detail-view--store .detail-view__action--primary:hover {
-  box-shadow: 0 8px 20px rgba(var(--color-store-rgb), 0.45);
+  box-shadow:
+    0 8px 20px rgba(var(--color-store-rgb), 0.5),
+    0 0 25px rgba(var(--color-store-rgb), 0.25);
 }
 
 /* ==========================================================================
