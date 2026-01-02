@@ -189,6 +189,9 @@
   overflow-x: hidden;
   padding: var(--space-md) var(--space-xl) 100px;
   -webkit-overflow-scrolling: touch;
+  /* ヘッダー + タブを縦に配置 */
+  display: flex;
+  flex-direction: column;
 }
 
 .tab {
@@ -200,13 +203,14 @@
 }
 
 #tab-home {
-  min-height: 100%;
+  min-height: 0;
   position: relative;
 }
 
 #tab-home.active {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 /* カバン画面ではスクロールを無効化（高さが十分ある場合） */
