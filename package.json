@@ -1,0 +1,23 @@
+{
+  "name": "reading-log",
+  "version": "1.0.0",
+  "description": "読書記録アプリ",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:18815/git/ide-men/reading-log"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vitest": "^4.0.16"
+  }
+}
