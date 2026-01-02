@@ -123,7 +123,7 @@ html, body {
 
 /* Section Title */
 .section-title {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -132,7 +132,7 @@ html, body {
 
 /* Hint Text */
 .text-hint {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-dim);
 }
 
@@ -167,7 +167,7 @@ html, body {
   gap: var(--space-xs);
   padding: var(--space-compact) var(--space-md);
   border-radius: var(--radius-full);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .badge--subtle {

@@ -48,7 +48,7 @@
 }
 
 .page-header__subtitle {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-secondary);
   margin-top: var(--space-xs);
 }
@@ -110,7 +110,7 @@
 }
 
 .empty-state__hint {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -292,7 +292,7 @@
 }
 
 .book-name {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -307,7 +307,7 @@
 }
 
 .book-date {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-dim);
   margin-top: var(--space-2xs);
 }
@@ -329,7 +329,7 @@
 /* Book Action Buttons (ステータス遷移) */
 .book-status-action {
   padding: var(--space-compact) var(--space-md);
-  font-size: 12px;
+  font-size: 14px;
   font-family: inherit;
   border: none;
   border-radius: var(--radius-md);
@@ -673,7 +673,7 @@
 }
 
 .book-card__title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text);
   line-height: 1.5;
@@ -771,7 +771,7 @@
 .action-btn {
   width: 100%;
   padding: var(--space-md) var(--space-md);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   font-family: inherit;
   border: none;
@@ -953,7 +953,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text);
   padding: var(--space-sm) var(--space-md);
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
@@ -1001,7 +1001,7 @@
   background: rgba(var(--surface-rgb), 0.6);
   backdrop-filter: blur(8px);
   color: var(--text);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1138,13 +1138,13 @@
 }
 
 .book-detail-meta {
-  font-size: 13px;
+  font-size: 15px;
   color: #b0967e;
   margin-bottom: var(--space-md);
 }
 
 .book-detail-note {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-secondary);
   line-height: 1.6;
   text-align: left;
@@ -1170,7 +1170,7 @@
   justify-content: center;
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-lg);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .book-detail-btn span:first-child {
@@ -1317,14 +1317,14 @@
 }
 
 .reunion-section-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-dim);
   margin-bottom: var(--space-sm);
 }
 
 .reunion-section-content {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
   line-height: 1.6;
   white-space: pre-wrap;
@@ -1347,14 +1347,14 @@
 }
 
 .reflection-date {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-dim);
   display: block;
   margin-bottom: var(--space-xs);
 }
 
 .reflection-note {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text);
   line-height: 1.5;
   margin: 0;
@@ -1367,7 +1367,7 @@
   right: var(--space-sm);
   background: linear-gradient(135deg, #8b5cf6, #a78bfa);
   color: white;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);

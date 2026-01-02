@@ -147,7 +147,7 @@
 }
 
 .nav button span:last-child {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-dim);
   position: relative;
   z-index: 1;
@@ -235,7 +235,7 @@
 
 .form-label {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-secondary);
   margin-bottom: var(--space-compact);
 }
@@ -284,7 +284,7 @@ select.form-input {
   gap: var(--space-sm);
   margin-bottom: var(--space-md);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
 }
 
@@ -328,7 +328,7 @@ select.form-input {
 }
 
 .status-option-label {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
 }
 
@@ -337,7 +337,7 @@ select.form-input {
   background: none;
   border: none;
   color: var(--text-dim);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   padding: var(--space-md);
   margin-top: var(--space-md);
@@ -350,7 +350,7 @@ select.form-input {
 
 /* Settings */
 .settings-hint {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-dim);
   margin-top: var(--space-sm);
   text-align: center;
@@ -365,7 +365,7 @@ select.form-input {
 }
 
 .settings-section-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-secondary);
   margin-bottom: var(--space-md);
@@ -380,7 +380,7 @@ select.form-input {
 .settings-btns .btn {
   flex: 1;
   padding: var(--space-md);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 /* Storage Info */
@@ -391,7 +391,7 @@ select.form-input {
 }
 
 .storage-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-secondary);
   margin-bottom: var(--space-sm);
 }
@@ -416,7 +416,7 @@ select.form-input {
 }
 
 .storage-text {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-dim);
   text-align: right;
 }
@@ -597,7 +597,7 @@ select.form-input {
 }
 
 .form-hint {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-secondary);
   margin-top: var(--space-sm);
 }
@@ -613,7 +613,7 @@ select.form-input {
 }
 
 .celebration-text {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   margin-top: var(--space-sm);
 }
@@ -641,7 +641,7 @@ select.form-input {
 }
 
 .confirm-text {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   margin-bottom: var(--space-2xl);
   line-height: 1.5;
@@ -913,7 +913,7 @@ select.form-input {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-xl);
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text);
   z-index: 250;
   min-width: 280px;
@@ -1243,7 +1243,7 @@ select.form-input {
 }
 
 .onboarding-text {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.7;
 }
@@ -1273,14 +1273,14 @@ select.form-input {
 }
 
 .onboarding-tab-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
   width: 48px;
 }
 
 .onboarding-tab-desc {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-dim);
 }
 
@@ -1305,20 +1305,20 @@ select.form-input {
   background: var(--accent);
   color: var(--bg);
   border-radius: 50%;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .onboarding-flow-text {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text);
   text-align: left;
 }
 
 .onboarding-flow-arrow {
   color: var(--text-dim);
-  font-size: 14px;
+  font-size: 16px;
   padding-left: var(--space-xs);
 }
 
@@ -1389,7 +1389,7 @@ select.form-input {
 }
 
 .onboarding-problem-text {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -1416,7 +1416,7 @@ select.form-input {
 }
 
 .onboarding-feature-text {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
 }
 
@@ -1514,14 +1514,14 @@ select.form-input {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
   margin-bottom: var(--space-xs);
 }
 
 .term-hint-popup__desc {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.6;
 }
