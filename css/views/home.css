@@ -327,28 +327,7 @@
 .home-actions-row {
   display: flex;
   gap: var(--space-md);
-  /* スワイプで表示するため、通常時は非表示 */
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-  max-height: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease, margin 0.3s ease;
-  margin-top: 0;
-}
-
-.home-actions-row--visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-  max-height: 60px;
   margin-top: var(--space-sm);
-}
-
-/* 可視状態では子要素もクリック可能にする */
-.home-actions-row--visible .btn,
-.home-actions-row--visible .home-actions-menu,
-.home-actions-row--visible .home-actions-menu-btn {
-  pointer-events: auto;
 }
 
 .home-actions-row .btn {
