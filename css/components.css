@@ -1457,7 +1457,6 @@ select.form-input {
   padding: var(--space-md);
   background: var(--elevated);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--accent);
 }
 
 .glossary-term {
