@@ -10,9 +10,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-lg) var(--space-xl);
-  background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-lg) 0;
+  background: transparent;
+  border-bottom: none;
+  /* コンテンツ内に配置されるためマージン調整不要 */
 }
 
 .header h1 {
@@ -856,8 +857,7 @@ select.form-input {
 
 @media (min-width: 600px) {
   .header {
-    padding: var(--space-lg) var(--space-xl);
-    border-radius: var(--radius-3xl);
+    padding: var(--space-lg) 0;
   }
 
   .header h1 {
@@ -937,7 +937,7 @@ select.form-input {
 
 @media (min-width: 1024px) {
   .header {
-    padding: var(--space-xl) var(--space-2xl);
+    padding: var(--space-xl) 0;
   }
 
   .header h1 {
