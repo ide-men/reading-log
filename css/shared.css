@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  position: relative;
 }
 
 /* カバン画面では flex: 1 でスペースを埋める */

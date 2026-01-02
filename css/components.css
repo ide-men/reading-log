@@ -1370,6 +1370,14 @@ select.form-input {
   margin-left: 4px;
 }
 
+.term-hint--corner {
+  position: absolute;
+  top: var(--space-md);
+  right: 0;
+  margin-left: 0;
+  z-index: 10;
+}
+
 .term-hint-popup {
   position: fixed;
   z-index: 400;
