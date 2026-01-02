@@ -5,7 +5,6 @@ import { BOOK_STATUS, UI_CONFIG } from '../../shared/constants.js';
 import { escapeHtml } from '../../shared/utils.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
 import { stateManager } from '../../core/state-manager.js';
-import { getRelativeDate } from '../../domain/book/book-entity.js';
 
 // ========================================
 // カバン（読書中）のレンダリング
@@ -60,8 +59,14 @@ export function renderReadingBooks() {
       : '📖';
     const isSelected = book.id === selectedBookId;
 
+    // 選択中の本に付箋があれば吹き出しで表示
+    const bookmarkHtml = isSelected && book.bookmark
+      ? `<div class="carousel-book-balloon">${escapeHtml(book.bookmark)}</div>`
+      : '';
+
     return `
       <div class="carousel-book${isSelected ? ' selected' : ''}" data-id="${book.id}">
+        ${bookmarkHtml}
         <div class="carousel-book-cover">${coverHtml}</div>
       </div>`;
   }).join('');
@@ -142,18 +147,8 @@ export function updateSelectedBookInfo() {
   const book = bookRepository.getBookById(selectedBookId);
   if (!book) return;
 
-  const meta = book.startedAt ? getRelativeDate(book.startedAt) : '';
-
-  // 付箋がある場合は「前回: ○○」を表示
-  const bookmarkHtml = book.bookmark
-    ? `<div class="selected-book-bookmark">前回: ${escapeHtml(book.bookmark)}</div>`
-    : '';
-
-  infoContainer.innerHTML = `
-    <div class="selected-book-title">${escapeHtml(book.title)}</div>
-    <div class="selected-book-meta">${meta}</div>
-    ${bookmarkHtml}
-  `;
+  // 本の名前・開始日は表示しない（付箋は別の場所で表示）
+  infoContainer.innerHTML = '';
 
   // ボタンを有効化
   startBtn.disabled = false;
