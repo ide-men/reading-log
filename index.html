@@ -537,6 +537,90 @@
     </div>
   </div>
 
+  <!-- オンボーディングモーダル -->
+  <div class="modal-overlay" id="onboardingModal" role="dialog" aria-modal="true" aria-labelledby="onboardingModalTitle">
+    <div class="modal onboarding-modal">
+      <div class="onboarding-content">
+        <!-- ステップ1: ようこそ -->
+        <div class="onboarding-step active" data-step="1">
+          <div class="onboarding-icon">🔥</div>
+          <h2 class="onboarding-title" id="onboardingModalTitle">ほのかへようこそ</h2>
+          <p class="onboarding-text">読書習慣を、小さな火のように<br>静かに、でも確かに灯し続けるアプリです</p>
+        </div>
+
+        <!-- ステップ2: 4つのタブ -->
+        <div class="onboarding-step" data-step="2">
+          <div class="onboarding-icon">📱</div>
+          <h2 class="onboarding-title">4つの場所</h2>
+          <div class="onboarding-tabs-preview">
+            <div class="onboarding-tab-item">
+              <span class="onboarding-tab-icon">🎒</span>
+              <span class="onboarding-tab-name">カバン</span>
+              <span class="onboarding-tab-desc">今読んでいる本</span>
+            </div>
+            <div class="onboarding-tab-item">
+              <span class="onboarding-tab-icon">📚</span>
+              <span class="onboarding-tab-name">書斎</span>
+              <span class="onboarding-tab-desc">読了・積読・中断</span>
+            </div>
+            <div class="onboarding-tab-item">
+              <span class="onboarding-tab-icon">🏪</span>
+              <span class="onboarding-tab-name">本屋</span>
+              <span class="onboarding-tab-desc">気になる本リスト</span>
+            </div>
+            <div class="onboarding-tab-item">
+              <span class="onboarding-tab-icon">📊</span>
+              <span class="onboarding-tab-name">統計</span>
+              <span class="onboarding-tab-desc">読書の記録</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ステップ3: 読書の流れ -->
+        <div class="onboarding-step" data-step="3">
+          <div class="onboarding-icon">📖</div>
+          <h2 class="onboarding-title">読書の流れ</h2>
+          <div class="onboarding-flow">
+            <div class="onboarding-flow-item">
+              <span class="onboarding-flow-num">1</span>
+              <span class="onboarding-flow-text">＋ボタンで本を追加</span>
+            </div>
+            <div class="onboarding-flow-arrow">↓</div>
+            <div class="onboarding-flow-item">
+              <span class="onboarding-flow-num">2</span>
+              <span class="onboarding-flow-text">「読書をはじめる」で計測開始</span>
+            </div>
+            <div class="onboarding-flow-arrow">↓</div>
+            <div class="onboarding-flow-item">
+              <span class="onboarding-flow-num">3</span>
+              <span class="onboarding-flow-text">読み終わったら記録完了！</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ステップ4: さあ始めよう -->
+        <div class="onboarding-step" data-step="4">
+          <div class="onboarding-icon">✨</div>
+          <h2 class="onboarding-title">さあ、始めよう</h2>
+          <p class="onboarding-text">最初の一冊を追加して<br>読書の火を灯しましょう</p>
+        </div>
+      </div>
+
+      <div class="onboarding-footer">
+        <div class="onboarding-dots">
+          <span class="onboarding-dot active" data-dot="1"></span>
+          <span class="onboarding-dot" data-dot="2"></span>
+          <span class="onboarding-dot" data-dot="3"></span>
+          <span class="onboarding-dot" data-dot="4"></span>
+        </div>
+        <div class="onboarding-actions">
+          <button class="btn btn-secondary onboarding-skip" id="onboardingSkip">スキップ</button>
+          <button class="btn btn-primary onboarding-next" id="onboardingNext">次へ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

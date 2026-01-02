@@ -27,7 +27,8 @@ export const STORAGE_KEYS = {
   stats: 'rl_v1_stats',
   books: 'rl_v1_books',
   history: 'rl_v1_history',
-  archived: 'rl_v1_archived'
+  archived: 'rl_v1_archived',
+  onboarding: 'rl_v1_onboarding'
 };
 
 export const CONFIG = {

@@ -25,6 +25,10 @@ import {
   initStudyEvents,
   initStoreEvents
 } from './presentation/controllers/book-controller.js';
+import {
+  initOnboardingEvents,
+  showOnboardingIfNeeded
+} from './presentation/controllers/onboarding-controller.js';
 
 // ========================================
 // 全イベントリスナー初期化
@@ -39,6 +43,7 @@ function initializeEventListeners() {
   initCarouselEvents();
   initStudyEvents();
   initStoreEvents();
+  initOnboardingEvents();
   initBeforeUnloadEvent();
 }
 
@@ -64,6 +69,9 @@ function init() {
 
   // UIを更新
   updateUI();
+
+  // 初回起動時はオンボーディングを表示
+  showOnboardingIfNeeded();
 
   // 状態変更時に自動保存
   stateManager.subscribe(() => {
