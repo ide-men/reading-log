@@ -96,16 +96,22 @@
 }
 
 /* ==========================================================================
-   Status Tabs (書斎のステータス切り替え)
+   Status Tabs (書斎のステータス切り替え) - Modern Glass Design
    ========================================================================== */
 
 .status-tabs {
   display: flex;
   gap: var(--space-sm);
-  margin-bottom: var(--space-lg);
-  padding: var(--space-xs);
-  background: var(--surface);
-  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-xl);
+  padding: var(--space-sm);
+  background: rgba(var(--surface-rgb), 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .status-tab {
@@ -113,46 +119,82 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   padding: var(--space-md) var(--space-sm);
   background: transparent;
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.status-tab:hover {
-  background: var(--elevated);
+.status-tab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent);
+  border-radius: var(--radius-xl);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.status-tab:hover::before {
+  opacity: 1;
 }
 
 .status-tab.active {
-  background: var(--elevated);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.2), rgba(139, 90, 43, 0.1));
+  box-shadow:
+    0 4px 16px rgba(139, 90, 43, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.status-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: linear-gradient(90deg, #8b5a2b, #cd853f);
+  border-radius: var(--radius-full);
 }
 
 .status-tab .status-icon {
-  font-size: 20px;
+  font-size: 22px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.status-tab:hover .status-icon,
+.status-tab.active .status-icon {
+  transform: scale(1.1);
 }
 
 .status-tab .status-label {
   font-size: 11px;
   color: var(--text-dim);
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .status-tab.active .status-label {
   color: var(--text);
+  font-weight: 600;
 }
 
 .status-tab .status-count {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-dim);
+  transition: all 0.3s ease;
 }
 
 .status-tab.active .status-count {
-  color: var(--accent);
+  color: #cd853f;
+  text-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
 }
 
 /* ==========================================================================
@@ -444,15 +486,17 @@
 
   .status-tabs {
     gap: var(--space-md);
-    padding: var(--space-sm);
+    padding: var(--space-md);
+    border-radius: var(--radius-3xl);
   }
 
   .status-tab {
     padding: var(--space-lg) var(--space-md);
+    border-radius: var(--radius-xl);
   }
 
   .status-tab .status-icon {
-    font-size: 24px;
+    font-size: 26px;
   }
 
   .status-tab .status-label {
@@ -460,7 +504,12 @@
   }
 
   .status-tab .status-count {
-    font-size: 18px;
+    font-size: 20px;
+  }
+
+  .status-tab.active::after {
+    width: 32px;
+    height: 4px;
   }
 
   .reading-book-card {
@@ -516,15 +565,20 @@
   }
 
   .status-tab .status-icon {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .status-tab .status-label {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .status-tab .status-count {
-    font-size: 20px;
+    font-size: 22px;
+  }
+
+  .status-tab.active::after {
+    width: 36px;
+    height: 4px;
   }
 
   .reading-book-cover {

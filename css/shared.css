@@ -326,18 +326,26 @@
 }
 
 /* ==========================================================================
-   Shelf (書斎・本屋共通の本棚)
+   Shelf (書斎・本屋共通の本棚) - Modern Rounded Design
    ========================================================================== */
 
 .shelf {
   margin-top: var(--space-xl);
-  background: linear-gradient(135deg, #2a1f18 0%, #3d2e24 50%, #2a1f18 100%);
-  border: 4px solid #1a1410;
-  border-radius: var(--radius-md);
-  padding: 0 var(--space-sm);
+  background: linear-gradient(145deg,
+    rgba(42, 31, 24, 0.95) 0%,
+    rgba(61, 46, 36, 0.9) 50%,
+    rgba(42, 31, 24, 0.95) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid rgba(139, 90, 43, 0.2);
+  border-radius: var(--radius-2xl);
+  padding: 0 var(--space-md);
   box-shadow:
-    inset 0 0 20px rgba(0, 0, 0, 0.4),
-    var(--shadow-xl);
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
   touch-action: pan-x;
@@ -347,20 +355,22 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0px,
-    rgba(255, 255, 255, 0.02) 1px,
-    transparent 2px,
-    transparent 20px
-  );
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 2px,
+      transparent 24px
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
   pointer-events: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-xl);
 }
 
 .shelf__board {
   position: relative;
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-sm);
   overflow-x: auto;
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
@@ -384,9 +394,9 @@
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
-  gap: var(--space-xs);
-  min-height: 80px;
-  padding: var(--space-md) 100px 0 var(--space-sm);
+  gap: var(--space-sm);
+  min-height: 90px;
+  padding: var(--space-lg) 100px 0 var(--space-md);
   width: fit-content;
   min-width: 100%;
   position: relative;
@@ -396,67 +406,88 @@
   content: '';
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 12px;
-  background: linear-gradient(to bottom, #5a4a3a 0%, #4a3a2a 40%, #3a2a1a 100%);
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  left: -4px;
+  right: -4px;
+  height: 16px;
+  background: linear-gradient(to bottom,
+    rgba(90, 74, 58, 0.95) 0%,
+    rgba(74, 58, 42, 0.9) 40%,
+    rgba(58, 42, 26, 0.85) 100%
+  );
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.4),
-    inset 0 2px 0 rgba(255, 255, 255, 0.1);
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Store theme for shelf */
 #tab-store .shelf {
-  margin-top: var(--space-md);
-  background: linear-gradient(135deg, #1a1a25 0%, #252535 50%, #1a1a25 100%);
-  border: 3px solid #2a2a3a;
+  margin-top: var(--space-lg);
+  background: linear-gradient(145deg,
+    rgba(26, 26, 37, 0.95) 0%,
+    rgba(37, 37, 53, 0.9) 50%,
+    rgba(26, 26, 37, 0.95) 100%
+  );
+  border: 2px solid rgba(245, 158, 11, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(245, 158, 11, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 #tab-store .shelf::before {
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0px,
-    rgba(245, 158, 11, 0.02) 1px,
-    transparent 2px,
-    transparent 20px
-  );
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      rgba(245, 158, 11, 0.02) 1px,
+      transparent 2px,
+      transparent 24px
+    ),
+    linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
 }
 
 #tab-store .shelf__visual::after {
-  background: linear-gradient(to bottom, #3a3a4a 0%, #2a2a3a 40%, #1a1a25 100%);
+  background: linear-gradient(to bottom,
+    rgba(58, 58, 74, 0.95) 0%,
+    rgba(42, 42, 58, 0.9) 40%,
+    rgba(26, 26, 37, 0.85) 100%
+  );
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.4),
-    inset 0 2px 0 rgba(255, 255, 255, 0.05);
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 2px 0 rgba(255, 255, 255, 0.04);
 }
 
 /* ==========================================================================
-   Book Grid (書斎・本屋共通のグリッド)
+   Book Grid (書斎・本屋共通のグリッド) - Modern Layout
    ========================================================================== */
 
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: var(--space-lg);
-  padding: var(--space-sm) 0;
-  margin-top: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-xl);
+  padding: var(--space-md) 0;
+  margin-top: var(--space-xl);
 }
 
 /* ==========================================================================
-   Book Card (書斎・本屋共通のカード)
+   Book Card (書斎・本屋共通のカード) - Modern Rounded Design
    ========================================================================== */
 
 .book-card {
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   padding: var(--space-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-md);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .book-card::before {
@@ -465,17 +496,33 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease;
+}
+
+.book-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 40%);
+  pointer-events: none;
+  border-radius: var(--radius-2xl);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 @media (hover: hover) {
   .book-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px) scale(1.02);
   }
 
   .book-card:hover::before {
+    opacity: 1;
+  }
+
+  .book-card:hover::after {
     opacity: 1;
   }
 }
@@ -483,19 +530,25 @@
 .book-card__cover {
   width: 120px;
   height: 170px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   flex-shrink: 0;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 @media (hover: hover) {
   .book-card:hover .book-card__cover {
-    transform: scale(1.02) rotateY(-3deg);
+    transform: scale(1.05) rotateY(-5deg);
+    box-shadow:
+      0 12px 28px rgba(0, 0, 0, 0.35),
+      0 6px 12px rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -503,11 +556,17 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: var(--radius-md);
 }
 
 .book-card__cover .book-placeholder {
   font-size: 48px;
   opacity: 0.5;
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-card__cover .book-placeholder {
+  transform: scale(1.1);
 }
 
 .book-card__info {
@@ -519,17 +578,19 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: var(--space-xs);
+  transition: color 0.3s ease;
 }
 
 .book-card__date {
-  font-size: 10px;
+  font-size: 11px;
   color: #8b7355;
+  font-weight: 500;
 }
 
 .book-card__actions {
@@ -537,12 +598,21 @@
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 /* Book Card - Study Theme */
 .book-card--study {
-  background: linear-gradient(135deg, #1f1a16 0%, #2a2319 100%);
+  background: linear-gradient(145deg,
+    rgba(31, 26, 22, 0.95) 0%,
+    rgba(42, 35, 25, 0.9) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 90, 43, 0.1);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .book-card--study::before {
@@ -551,21 +621,34 @@
 
 @media (hover: hover) {
   .book-card--study:hover {
+    border-color: rgba(139, 90, 43, 0.25);
     box-shadow:
-      0 16px 32px rgba(0, 0, 0, 0.3),
-      0 0 0 1px rgba(139, 90, 43, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 20px 40px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(139, 90, 43, 0.2),
+      0 0 30px rgba(139, 90, 43, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 }
 
 .book-card--study .book-card__cover {
-  background: linear-gradient(135deg, #2a2319 0%, #1f1a16 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(145deg,
+    rgba(42, 35, 25, 0.9) 0%,
+    rgba(31, 26, 22, 0.95) 100%
+  );
 }
 
 /* Book Card - Store Theme */
 .book-card--store {
-  background: linear-gradient(135deg, #1a1a25 0%, #252535 100%);
+  background: linear-gradient(145deg,
+    rgba(26, 26, 37, 0.95) 0%,
+    rgba(37, 37, 53, 0.9) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 158, 11, 0.08);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .book-card--store::before {
@@ -574,16 +657,20 @@
 
 @media (hover: hover) {
   .book-card--store:hover {
+    border-color: rgba(245, 158, 11, 0.2);
     box-shadow:
-      0 16px 32px rgba(0, 0, 0, 0.3),
-      0 0 0 1px rgba(245, 158, 11, 0.25),
+      0 20px 40px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(245, 158, 11, 0.15),
+      0 0 30px rgba(245, 158, 11, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 }
 
 .book-card--store .book-card__cover {
-  background: linear-gradient(135deg, #252535 0%, #1a1a25 100%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(145deg,
+    rgba(37, 37, 53, 0.9) 0%,
+    rgba(26, 26, 37, 0.95) 100%
+  );
 }
 
 .book-card--store .book-card__date {
@@ -591,124 +678,173 @@
 }
 
 /* ==========================================================================
-   Action Buttons (書斎・本屋共通のアクションボタン)
+   Action Buttons (書斎・本屋共通のアクションボタン) - Modern Design
    ========================================================================== */
 
 .action-btn {
   width: 100%;
-  padding: var(--space-md) var(--space-sm);
+  padding: var(--space-md) var(--space-md);
   font-size: 12px;
   font-weight: 600;
   font-family: inherit;
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.action-btn:hover::before {
+  opacity: 1;
 }
 
 .action-btn:hover {
-  transform: scale(1.02);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .action-btn:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
 }
 
 /* Study theme */
 .book-card--study .action-btn--primary {
   background: linear-gradient(135deg, #8b5a2b, #cd853f);
   color: white;
+  box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25);
 }
 
 .book-card--study .action-btn--primary:hover {
-  box-shadow: 0 4px 16px rgba(139, 90, 43, 0.4);
+  box-shadow: 0 8px 20px rgba(139, 90, 43, 0.4);
 }
 
 /* Store theme */
 .book-card--store .action-btn--primary {
   background: linear-gradient(135deg, #f59e0b, #fbbf24);
   color: #1a1a25;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
 .book-card--store .action-btn--primary:hover {
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
 }
 
 .book-card--store .action-btn--secondary {
   background: linear-gradient(135deg, #e8a87c, #d4956a);
   color: white;
+  box-shadow: 0 4px 12px rgba(232, 168, 124, 0.25);
 }
 
 .book-card--store .action-btn--secondary:hover {
-  box-shadow: 0 4px 16px rgba(232, 168, 124, 0.4);
+  box-shadow: 0 8px 20px rgba(232, 168, 124, 0.45);
 }
 
 /* ==========================================================================
-   Detail View (共通 - 書斎・本屋)
+   Detail View (共通 - 書斎・本屋) - Modern Rounded Design
    ========================================================================== */
 
 /* 共通詳細ビュースタイル */
 .detail-view {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-2xl);
   padding: var(--space-xl);
-  margin-top: var(--space-lg);
-  box-shadow: var(--shadow-lg);
-  animation: slideUp 0.3s ease;
+  margin-top: var(--space-xl);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    0 4px 16px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+.detail-view::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 30%);
+  pointer-events: none;
+  border-radius: var(--radius-2xl);
 }
 
 .detail-view__close {
   position: absolute;
   top: var(--space-md);
   right: var(--space-md);
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: var(--bg);
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(var(--surface-rgb), 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
   color: var(--text-dim);
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
 }
 
 .detail-view__close:hover {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
   color: var(--text);
+  transform: scale(1.1);
 }
 
 .detail-view__content {
   display: flex;
   gap: var(--space-xl);
+  position: relative;
+  z-index: 1;
 }
 
 .detail-view__cover {
   width: 120px;
   height: 170px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.detail-view:hover .detail-view__cover {
+  transform: scale(1.02) rotateY(-3deg);
 }
 
 .detail-view__cover img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: var(--radius-md);
 }
 
 .detail-view__cover .book-placeholder {
   font-size: 48px;
+  opacity: 0.6;
 }
 
 .detail-view__info {
@@ -717,11 +853,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  position: relative;
+  z-index: 1;
 }
 
 .detail-view__title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
   line-height: 1.4;
 }
@@ -729,6 +867,7 @@
 .detail-view__date {
   font-size: 13px;
   color: var(--text-dim);
+  font-weight: 500;
 }
 
 .detail-view__bookmark {
@@ -768,60 +907,77 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
-  margin-top: var(--space-md);
+  margin-top: var(--space-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .detail-view__action {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--bg);
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  background: rgba(var(--surface-rgb), 0.6);
+  backdrop-filter: blur(8px);
   color: var(--text);
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .detail-view__action:hover {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
 }
 
 .detail-view__action--primary {
   color: white;
+  border: none;
+  font-weight: 600;
 }
 
 .detail-view__action--primary:hover {
-  transform: scale(1.02);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .detail-view__action--danger {
   color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
 }
 
 .detail-view__action--danger:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* Detail View Theme Modifiers */
 .detail-view--study {
-  background: linear-gradient(135deg, #1f1a16 0%, #2a2319 100%);
-  border-color: rgba(139, 90, 43, 0.2);
+  background: linear-gradient(145deg,
+    rgba(31, 26, 22, 0.95) 0%,
+    rgba(42, 35, 25, 0.9) 100%
+  );
+  border-color: rgba(139, 90, 43, 0.15);
 }
 
 .detail-view--study .detail-view__action--primary {
-  background: linear-gradient(135deg, #8B5A2B, #A0522D);
+  background: linear-gradient(135deg, #8B5A2B, #cd853f);
+  box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25);
 }
 
 .detail-view--study .detail-view__action--primary:hover {
-  box-shadow: 0 2px 8px rgba(139, 90, 43, 0.3);
+  box-shadow: 0 8px 20px rgba(139, 90, 43, 0.4);
 }
 
 .detail-view--store {
-  background: linear-gradient(135deg, #1a1a25 0%, #252535 100%);
-  border-color: rgba(245, 158, 11, 0.2);
+  background: linear-gradient(145deg,
+    rgba(26, 26, 37, 0.95) 0%,
+    rgba(37, 37, 53, 0.9) 100%
+  );
+  border-color: rgba(245, 158, 11, 0.12);
 }
 
 .detail-view--store .detail-view__date {
@@ -831,10 +987,12 @@
 .detail-view--store .detail-view__action--primary {
   background: linear-gradient(135deg, #f59e0b, #fbbf24);
   color: #1a1a25;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
 }
 
 .detail-view--store .detail-view__action--primary:hover {
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
 }
 
 /* ==========================================================================
