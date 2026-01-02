@@ -283,17 +283,12 @@
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
         </div>
         <div class="form-group">
-          <label class="form-label">なぜこの本？（任意）</label>
-          <input type="text" class="form-input" id="bookCommentInput" placeholder="例：友人のおすすめ、書店で目に留まった">
+          <label class="form-label">リンク先（任意）</label>
+          <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
         </div>
         <div class="form-group">
-          <button class="link-toggle" id="linkToggle">
-            <span id="linkIcon">+</span>
-            <span>リンクを追加</span>
-          </button>
-          <div class="link-fields" id="linkFields">
-            <input type="url" class="form-input" id="linkInput" placeholder="amazon.co.jp/dp/...のフルURL(短縮URLは非対応)">
-          </div>
+          <label class="form-label">なぜこの本？（任意）</label>
+          <input type="text" class="form-input" id="bookCommentInput" placeholder="例：友人のおすすめ、書店で目に留まった">
         </div>
         <input type="hidden" id="addBookStatus" value="reading">
         <div class="form-group status-selector" id="studyStatusSelector" style="display: none;">
