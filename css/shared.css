@@ -471,7 +471,6 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .book-card::before {
@@ -593,7 +592,6 @@
   );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(139, 90, 43, 0.1);
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
@@ -605,10 +603,8 @@
 
 @media (hover: hover) {
   .book-card--study:hover {
-    border-color: rgba(139, 90, 43, 0.25);
     box-shadow:
       0 20px 40px rgba(0, 0, 0, 0.35),
-      0 0 0 1px rgba(139, 90, 43, 0.2),
       0 0 30px rgba(139, 90, 43, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
@@ -629,7 +625,6 @@
   );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(245, 158, 11, 0.08);
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
@@ -641,10 +636,8 @@
 
 @media (hover: hover) {
   .book-card--store:hover {
-    border-color: rgba(245, 158, 11, 0.2);
     box-shadow:
       0 20px 40px rgba(0, 0, 0, 0.35),
-      0 0 0 1px rgba(245, 158, 11, 0.15),
       0 0 30px rgba(245, 158, 11, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
