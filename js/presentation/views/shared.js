@@ -85,11 +85,15 @@ export function renderShelfContent(options) {
   } = options;
 
   if (books.length === 0) {
+    const addBookType = type === 'store' ? 'wishlist' : 'unread';
     shelfEl.innerHTML = `
       <div class="empty-state empty-state--small">
         <div class="empty-state__icon">${emptyConfig.icon}</div>
         <div class="empty-state__text">${emptyConfig.text}</div>
         <div class="empty-state__hint">${emptyConfig.hint}</div>
+        <button class="empty-state__add-btn" data-add-book="${addBookType}" aria-label="本を追加">
+          <span class="empty-state__add-icon">＋</span>
+        </button>
       </div>`;
     containerEl.innerHTML = '';
     return;

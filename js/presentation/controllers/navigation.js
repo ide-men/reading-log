@@ -112,6 +112,9 @@ export function initModalEvents() {
 
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
+      // 本追加モーダルは背景クリックで閉じない（バツボタンのみ）
+      if (overlay.id === 'addBookModal') return;
+
       if (e.target === overlay) {
         overlay.classList.remove('active');
       }
