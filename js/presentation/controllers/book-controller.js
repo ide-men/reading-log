@@ -488,10 +488,19 @@ export function initAddBookEvents() {
     const title = bookInput.value.trim();
     if (title) {
       const searchUrl = `https://www.amazon.co.jp/s?k=${encodeURIComponent(title)}`;
-      amazonSearchLink.href = searchUrl;
+      amazonSearchLink.dataset.url = searchUrl;
       amazonSearchLink.style.display = 'inline-block';
     } else {
       amazonSearchLink.style.display = 'none';
+    }
+  });
+
+  // Amazon検索リンクをブラウザで開く
+  amazonSearchLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = amazonSearchLink.dataset.url;
+    if (url) {
+      openLink(url);
     }
   });
 
