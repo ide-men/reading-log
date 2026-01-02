@@ -390,10 +390,12 @@ select.form-input {
   border: none;
 }
 
+.btn-primary:disabled,
 .btn-success:disabled,
 .btn-secondary:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* ==========================================================================
