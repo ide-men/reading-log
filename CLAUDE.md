@@ -6,6 +6,7 @@
 
 - HTML + CSS + JS (ES Modules)
 - Vanilla JavaScript / 外部依存なし
+- テスト: Vitest
 
 ## アーキテクチャ
 
@@ -39,3 +40,13 @@
 - **定義場所**: 複数ページ→`shared.css` / 特定ページ→`views/*.css` / ユーティリティ→`base.css`
 - **テーマカラー**: 書斎=`#8b5a2b` / 本屋=`#f59e0b`
 - **禁止事項**: 同じスタイルの別名クラス作成、後方互換エイリアス、インラインスタイル多用
+
+## テスト
+
+**コード変更時はテストを書くこと**
+
+- 実行: `npm test` / ウォッチ: `npm run test:watch`
+- 配置: `tests/` 以下に元ファイルと同じ構造で配置
+- 優先度: shared > domain > core > presentation
+- DOM依存コードはテスト対象外（E2E向き）
+- stateManager依存は `vi.mock()` でモック
