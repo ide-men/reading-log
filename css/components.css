@@ -278,28 +278,6 @@ select.form-input {
   padding-right: 36px;
 }
 
-.link-toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--space-compact);
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  font-size: 12px;
-  font-family: inherit;
-  cursor: pointer;
-  padding: var(--space-compact) 0;
-}
-
-.link-fields {
-  margin-top: var(--space-gutter);
-  display: none;
-}
-
-.link-fields.open {
-  display: block;
-}
-
 .continue-checkbox {
   display: flex;
   align-items: center;

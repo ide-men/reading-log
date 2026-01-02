@@ -38,8 +38,6 @@ export function addBook(status = BOOK_STATUS.READING) {
   document.getElementById('bookInput').value = '';
   document.getElementById('bookCommentInput').value = '';
   document.getElementById('linkInput').value = '';
-  document.getElementById('linkFields').classList.remove('open');
-  document.getElementById('linkIcon').textContent = '+';
 
   renderBooks();
   showToast(result.message);
@@ -467,12 +465,6 @@ export function initAddBookEvents() {
     radio.addEventListener('change', (e) => {
       document.getElementById('addBookStatus').value = e.target.value;
     });
-  });
-
-  document.getElementById('linkToggle').addEventListener('click', () => {
-    const fields = document.getElementById('linkFields');
-    const isOpen = fields.classList.toggle('open');
-    document.getElementById('linkIcon').textContent = isOpen ? '−' : '+';
   });
 
   document.getElementById('addBookBtn').addEventListener('click', () => {
