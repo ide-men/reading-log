@@ -208,8 +208,8 @@
 .book-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 0;
+  gap: var(--space-form);
+  padding: var(--space-form) 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -272,7 +272,7 @@
 .book-date {
   font-size: 11px;
   color: var(--text-dim);
-  margin-top: 2px;
+  margin-top: var(--space-2xs);
 }
 
 .book-actions {
@@ -291,7 +291,7 @@
 
 /* Book Action Buttons (ステータス遷移) */
 .book-status-action {
-  padding: 6px 12px;
+  padding: var(--space-compact) var(--space-md);
   font-size: 12px;
   font-family: inherit;
   border: none;
@@ -325,8 +325,8 @@
 .store-book-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 0;
+  gap: var(--space-form);
+  padding: var(--space-form) 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -685,7 +685,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-compact);
   position: relative;
   overflow: hidden;
 }
@@ -1269,7 +1269,7 @@
   color: white;
   font-size: 10px;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
 }

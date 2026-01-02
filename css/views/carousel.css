@@ -61,7 +61,7 @@
 /* ドットインジケーター - モダンピル型 */
 .carousel-dots {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   justify-content: center;
   padding: var(--space-md) 0;
   opacity: 0;

@@ -21,7 +21,7 @@
 
 .main-btn {
   width: 100%;
-  padding: 14px var(--space-xl);
+  padding: var(--space-form) var(--space-xl);
   font-size: 15px;
   font-weight: 700;
   font-family: inherit;
@@ -118,7 +118,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-compact);
   padding: var(--space-md) var(--space-sm);
   background: transparent;
   border: none;
@@ -249,7 +249,7 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xs);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -267,7 +267,7 @@
 }
 
 .reading-book-action {
-  padding: 8px 12px;
+  padding: var(--space-sm) var(--space-md);
   font-size: 12px;
   font-family: inherit;
   border: none;
@@ -353,7 +353,7 @@
 
 .home-actions-row .btn {
   flex: 1;
-  padding: 10px var(--space-md);
+  padding: var(--space-gutter) var(--space-md);
   font-size: 13px;
   font-weight: 600;
   border-radius: 14px;
@@ -434,7 +434,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: 14px var(--space-lg);
+  padding: var(--space-form) var(--space-lg);
   background: none;
   border: none;
   font-family: inherit;
@@ -495,7 +495,7 @@
   }
 
   .home-actions-row .btn {
-    padding: 12px var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
     font-size: 14px;
     border-radius: 16px;
   }
@@ -575,7 +575,7 @@
   }
 
   .home-actions-row .btn {
-    padding: 14px var(--space-xl);
+    padding: var(--space-form) var(--space-xl);
     font-size: 15px;
     border-radius: 18px;
   }
@@ -613,7 +613,7 @@
   }
 
   .reading-book-action {
-    padding: 10px 16px;
+    padding: var(--space-gutter) var(--space-lg);
     font-size: 13px;
   }
 }

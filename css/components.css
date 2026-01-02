@@ -25,7 +25,7 @@
 .header h1 {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-gutter);
   font-size: 18px;
   font-weight: 700;
   color: var(--text);
@@ -83,9 +83,9 @@
 
 .nav {
   position: fixed;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
+  bottom: var(--layout-nav-inset);
+  left: var(--layout-nav-inset);
+  right: var(--layout-nav-inset);
   display: flex;
   background: rgba(var(--surface-rgb, 40, 40, 48), 0.85);
   backdrop-filter: blur(20px);
@@ -107,7 +107,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-2xs);
   padding: var(--space-sm) var(--space-xs);
   background: none;
   border: none;
@@ -120,7 +120,7 @@
 .nav button::before {
   content: '';
   position: absolute;
-  inset: 4px;
+  inset: var(--space-xs);
   background: transparent;
   border-radius: var(--radius-md);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -169,7 +169,7 @@
 .nav button.active::after {
   content: '';
   position: absolute;
-  bottom: 2px;
+  bottom: var(--space-2xs);
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
@@ -227,12 +227,12 @@
   display: block;
   font-size: 12px;
   color: var(--text-dim);
-  margin-bottom: 6px;
+  margin-bottom: var(--space-compact);
 }
 
 .form-input {
   width: 100%;
-  padding: 14px;
+  padding: var(--space-form);
   font-size: 16px;
   font-family: inherit;
   background: var(--bg);
@@ -264,25 +264,25 @@ select.form-input {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b7a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 14px center;
+  background-position: right var(--space-form) center;
   padding-right: 36px;
 }
 
 .link-toggle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-compact);
   background: none;
   border: none;
   color: var(--text-dim);
   font-size: 12px;
   font-family: inherit;
   cursor: pointer;
-  padding: 6px 0;
+  padding: var(--space-compact) 0;
 }
 
 .link-fields {
-  margin-top: 10px;
+  margin-top: var(--space-gutter);
   display: none;
 }
 
@@ -409,7 +409,7 @@ select.form-input {
 }
 
 .storage-bar {
-  height: 6px;
+  height: var(--space-compact);
   background: var(--elevated);
   border-radius: 3px;
   overflow: hidden;
@@ -454,14 +454,14 @@ select.form-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--space-gutter);
 }
 
 .btn-secondary {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-dim);
-  margin-top: 10px;
+  margin-top: var(--space-gutter);
 }
 
 .btn-danger {
@@ -472,7 +472,7 @@ select.form-input {
 
 .btn-badge {
   background: rgba(0, 0, 0, 0.15);
-  padding: 3px var(--space-sm);
+  padding: var(--space-2xs) var(--space-sm);
   border-radius: var(--radius-sm);
   font-size: 12px;
 }
@@ -579,7 +579,7 @@ select.form-input {
 }
 
 .modal-body {
-  padding: 0 var(--space-xl) 28px;
+  padding: 0 var(--space-xl) var(--layout-modal-padding);
 }
 
 .modal-actions {
@@ -648,7 +648,7 @@ select.form-input {
   font-size: 18px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-gutter);
 }
 
 .confirm-text {
@@ -665,7 +665,7 @@ select.form-input {
 
 .confirm-btns button {
   flex: 1;
-  padding: 14px;
+  padding: var(--space-form);
   font-size: 15px;
   font-family: inherit;
   border-radius: var(--radius-lg);
@@ -709,7 +709,7 @@ select.form-input {
 .reading-anim {
   width: 120px;
   height: 120px;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-4xl);
   position: relative;
 }
 
@@ -745,16 +745,16 @@ select.form-input {
 .reading-label {
   font-size: 15px;
   color: var(--text-dim);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .reading-indicator {
   display: block;
-  width: 6px;
-  height: 6px;
+  width: var(--space-compact);
+  height: var(--space-compact);
   background: var(--text-dim);
   border-radius: 50%;
-  margin-bottom: 40px;
+  margin-bottom: var(--space-4xl);
   opacity: 0.3;
   animation: indicator-pulse 3s ease-in-out infinite;
 }
@@ -765,7 +765,7 @@ select.form-input {
 }
 
 .reading-stop {
-  padding: 14px 40px;
+  padding: var(--space-form) var(--space-4xl);
   font-size: 14px;
   font-family: inherit;
   background: var(--elevated);
@@ -781,7 +781,7 @@ select.form-input {
 
 .toast {
   position: fixed;
-  top: 20px;
+  top: var(--layout-toast-top);
   left: 50%;
   transform: translateX(-50%);
   background: var(--elevated);
@@ -803,8 +803,8 @@ select.form-input {
 
 .fab {
   position: fixed;
-  bottom: calc(var(--nav-height) + 24px + env(safe-area-inset-bottom));
-  right: 20px;
+  bottom: calc(var(--nav-height) + var(--layout-fab-offset) + env(safe-area-inset-bottom));
+  right: var(--layout-toast-top);
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -868,9 +868,9 @@ select.form-input {
   }
 
   .nav {
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
+    bottom: var(--space-lg);
+    left: var(--space-lg);
+    right: var(--space-lg);
     max-width: calc(var(--max-width) - 32px);
     padding: var(--space-sm);
   }
@@ -911,7 +911,7 @@ select.form-input {
   .fab {
     width: 64px;
     height: 64px;
-    right: 24px;
+    right: var(--layout-fab-offset);
   }
 
   .fab-icon {
@@ -949,9 +949,9 @@ select.form-input {
   }
 
   .nav {
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
+    bottom: var(--layout-toast-top);
+    left: var(--layout-toast-top);
+    right: var(--layout-toast-top);
     max-width: calc(var(--max-width) - 40px);
     padding: var(--space-sm) var(--space-md);
   }
@@ -995,7 +995,7 @@ select.form-input {
   .fab {
     width: 72px;
     height: 72px;
-    right: 32px;
+    right: var(--space-3xl);
   }
 
   .fab-icon {
@@ -1016,7 +1016,7 @@ select.form-input {
   }
 
   .reading-stop {
-    padding: 16px 48px;
+    padding: var(--space-lg) var(--space-3xl);
     font-size: 15px;
   }
 }
@@ -1148,7 +1148,7 @@ select.form-input {
 .onboarding-flow-arrow {
   color: var(--text-dim);
   font-size: 14px;
-  padding-left: 5px;
+  padding-left: var(--space-xs);
 }
 
 /* Footer */
@@ -1349,7 +1349,7 @@ select.form-input {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 50%;
   cursor: pointer;
-  margin-left: 6px;
+  margin-left: var(--space-compact);
   vertical-align: middle;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
