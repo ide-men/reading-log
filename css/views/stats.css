@@ -246,7 +246,7 @@
 }
 
 /* ==========================================================================
-   Reading Calendar (草カレンダー)
+   Reading Calendar (3ヶ月カレンダー形式)
    ========================================================================== */
 
 .calendar-container {
@@ -270,24 +270,82 @@
 
 .calendar-grid {
   display: flex;
-  gap: 4px;
+  gap: var(--space-lg);
   min-width: max-content;
 }
 
+/* 各月のコンテナ */
+.calendar-month {
+  flex-shrink: 0;
+  min-width: 200px;
+}
+
+/* 月のヘッダー */
+.calendar-month-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--border);
+}
+
+/* 曜日ヘッダー */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.calendar-weekday {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 2px 0;
+}
+
+.calendar-weekday.sunday {
+  color: #ef4444;
+}
+
+.calendar-weekday.saturday {
+  color: #3b82f6;
+}
+
+/* 週のコンテナ */
+.calendar-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+/* 日付セル */
 .calendar-cell {
-  width: 28px;
-  height: 28px;
+  aspect-ratio: 1;
+  min-width: 26px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: default;
   transition: transform 0.15s ease;
-  flex-shrink: 0;
 }
 
-.calendar-cell:hover {
+.calendar-cell:not(.empty):hover {
   transform: scale(1.1);
+}
+
+.calendar-cell.empty {
+  background: transparent;
 }
 
 .calendar-cell.today {
@@ -301,6 +359,16 @@
   color: var(--text-dim);
 }
 
+/* 日曜・土曜の日付色 */
+.calendar-cell.sunday .calendar-day {
+  color: #ef4444;
+}
+
+.calendar-cell.saturday .calendar-day {
+  color: #3b82f6;
+}
+
+/* レベル別の背景色 */
 .calendar-cell.level-0 {
   background: var(--elevated);
 }
@@ -309,22 +377,31 @@
   background: rgba(139, 90, 43, 0.25);
 }
 .calendar-cell.level-1 .calendar-day { color: var(--text); }
+.calendar-cell.level-1.sunday .calendar-day,
+.calendar-cell.level-1.saturday .calendar-day { color: var(--text); }
 
 .calendar-cell.level-2 {
   background: rgba(139, 90, 43, 0.45);
 }
 .calendar-cell.level-2 .calendar-day { color: var(--bg); }
+.calendar-cell.level-2.sunday .calendar-day,
+.calendar-cell.level-2.saturday .calendar-day { color: var(--bg); }
 
 .calendar-cell.level-3 {
   background: rgba(139, 90, 43, 0.7);
 }
 .calendar-cell.level-3 .calendar-day { color: var(--bg); }
+.calendar-cell.level-3.sunday .calendar-day,
+.calendar-cell.level-3.saturday .calendar-day { color: var(--bg); }
 
 .calendar-cell.level-4 {
   background: var(--accent);
 }
 .calendar-cell.level-4 .calendar-day { color: var(--bg); }
+.calendar-cell.level-4.sunday .calendar-day,
+.calendar-cell.level-4.saturday .calendar-day { color: var(--bg); }
 
+/* 凡例 */
 .calendar-legend {
   display: flex;
   align-items: center;
@@ -338,6 +415,8 @@
 .calendar-legend .calendar-cell {
   width: 14px;
   height: 14px;
+  min-width: 14px;
+  aspect-ratio: auto;
 }
 
 .calendar-legend .calendar-cell:hover {

@@ -166,6 +166,101 @@ export function getMonthCalendarDataPure(history, now = new Date()) {
 }
 
 /**
+ * 3ヶ月分のカレンダーデータを取得（純粋関数版）
+ * 本物のカレンダー形式（週ごとの行、曜日ヘッダー付き）
+ * @param {Array} history - 読書履歴
+ * @param {Date} [now] - 基準日（テスト用）
+ * @returns {Object} { months: Array, maxMinutes: number }
+ */
+export function getThreeMonthCalendarDataPure(history, now = new Date()) {
+  // 日付ごとの合計時間をマップ化
+  const minutesByDate = {};
+  for (const h of history) {
+    const dateStr = h.d.split('T')[0];
+    minutesByDate[dateStr] = (minutesByDate[dateStr] || 0) + h.m;
+  }
+
+  // 今日の日付文字列
+  const todayStr = now.toISOString().split('T')[0];
+
+  // 3ヶ月分のデータを生成（今月、先月、先々月）
+  const months = [];
+  let maxMinutes = 30; // 最小スケール
+
+  for (let monthOffset = -2; monthOffset <= 0; monthOffset++) {
+    const targetDate = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+    const year = targetDate.getFullYear();
+    const month = targetDate.getMonth();
+
+    // 月の最初の日と最後の日
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDayOfWeek = firstDay.getDay(); // 月初の曜日（0=日曜日）
+
+    // 週ごとにデータを整理
+    const weeks = [];
+    let currentWeek = [];
+
+    // 月初までの空白セル
+    for (let i = 0; i < startDayOfWeek; i++) {
+      currentWeek.push({ isEmpty: true });
+    }
+
+    // 各日のデータ
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dateStr = date.toISOString().split('T')[0];
+      const minutes = minutesByDate[dateStr] || 0;
+      maxMinutes = Math.max(maxMinutes, minutes);
+
+      currentWeek.push({
+        date: dateStr,
+        dayOfMonth: day,
+        dayOfWeek: date.getDay(),
+        minutes,
+        isToday: dateStr === todayStr,
+        isEmpty: false
+      });
+
+      // 土曜日で週を区切る
+      if (date.getDay() === 6) {
+        weeks.push(currentWeek);
+        currentWeek = [];
+      }
+    }
+
+    // 最後の週に残りがあれば追加（月末までの空白も追加）
+    if (currentWeek.length > 0) {
+      while (currentWeek.length < 7) {
+        currentWeek.push({ isEmpty: true });
+      }
+      weeks.push(currentWeek);
+    }
+
+    months.push({
+      year,
+      month: month + 1, // 1-indexed
+      monthName: `${month + 1}月`,
+      weeks
+    });
+  }
+
+  // レベル計算（0-4の5段階）
+  for (const monthData of months) {
+    for (const week of monthData.weeks) {
+      for (const day of week) {
+        if (!day.isEmpty) {
+          day.level = day.minutes === 0 ? 0 : Math.min(4, Math.ceil(day.minutes / maxMinutes * 4));
+        }
+      }
+    }
+  }
+
+  return { months, maxMinutes };
+}
+
+/**
  * 読書リズムヒートマップデータを取得（純粋関数版）
  * @param {Array} history - 読書履歴
  * @returns {Object} { grid: number[][], insight: string, rawGrid: number[][] }
@@ -337,6 +432,15 @@ export function getWeekChartData() {
 export function getMonthCalendarData() {
   const state = stateManager.getState();
   return getMonthCalendarDataPure(state.history);
+}
+
+/**
+ * 3ヶ月分のカレンダーデータを取得
+ * @returns {Object} { months: Array, maxMinutes: number }
+ */
+export function getThreeMonthCalendarData() {
+  const state = stateManager.getState();
+  return getThreeMonthCalendarDataPure(state.history);
 }
 
 /**
