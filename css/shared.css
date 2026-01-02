@@ -650,10 +650,6 @@
   transition: color 0.3s ease;
 }
 
-.book-card__date {
-  display: none;
-}
-
 .book-card__actions {
   width: 100%;
   margin-top: auto;
@@ -731,10 +727,6 @@
     rgba(20, 28, 40, 0.95) 100%
   );
   border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.book-card--store .book-card__date {
-  color: rgba(245, 158, 11, 0.7);
 }
 
 /* ==========================================================================
@@ -922,10 +914,6 @@
   line-height: 1.4;
 }
 
-.detail-view__date {
-  display: none;
-}
-
 .detail-view__bookmark {
   display: flex;
   align-items: center;
@@ -1041,10 +1029,6 @@
     0 12px 40px rgba(0, 0, 0, 0.35),
     0 0 25px rgba(245, 158, 11, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.detail-view--store .detail-view__date {
-  color: rgba(245, 158, 11, 0.7);
 }
 
 .detail-view--store .detail-view__cover {

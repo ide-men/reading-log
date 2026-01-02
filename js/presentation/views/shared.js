@@ -50,7 +50,6 @@ export function renderBookGrid(books, type = 'study') {
 
   return `<div class="book-grid">${[...books].reverse().map((book, i) => {
     const coverHtml = createBookCoverHtml(book, placeholder);
-    const dateText = getBookDateText(book);
     const reunion = isReunionBook(book);
     const reunionBadge = reunion ? '<div class="book-card__reunion-badge">久しぶり</div>' : '';
 
@@ -62,7 +61,6 @@ export function renderBookGrid(books, type = 'study') {
         </div>
         <div class="book-card__info">
           <div class="book-card__title">${escapeHtml(book.title)}</div>
-          <div class="book-card__date">${dateText}</div>
         </div>
         <div class="book-card__actions">
           ${renderActions(book)}
@@ -116,7 +114,6 @@ export function renderShelfContent(options) {
 export function renderDetailView(book, type = 'study') {
   const placeholder = type === 'store' ? '📖' : '📕';
   const coverHtml = createBookCoverHtml(book, placeholder);
-  const dateText = getBookDateText(book);
   const modifier = type === 'store' ? 'detail-view--store' : 'detail-view--study';
 
   // 栞メモ表示（中断本のみ）
@@ -185,7 +182,6 @@ export function renderDetailView(book, type = 'study') {
         </div>
         <div class="detail-view__info">
           <div class="detail-view__title">${escapeHtml(book.title)}</div>
-          <div class="detail-view__date">${dateText}</div>
           ${bookmarkHtml}
           ${triggerHtml}
           ${completionHtml}
