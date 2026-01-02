@@ -10,6 +10,7 @@ import * as uiState from '../state/ui-state.js';
 import { applyReadingAnimation } from '../effects/animations.js';
 import { renderReadingBooks } from '../views/carousel-view.js';
 import { updateUI, openModal, closeModal, showToast } from './navigation.js';
+import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
 
 // ========================================
 // 読書開始
@@ -56,6 +57,9 @@ export function handleStopReading() {
     document.getElementById('readingBookmarkBookTitle').textContent = book.title;
     document.getElementById('readingBookmarkInput').value = book.bookmark || '';
     openModal('readingBookmarkModal');
+
+    // バリデーション状態を更新（任意のみなので入力がない場合は非活性）
+    updateButtonState('saveReadingBookmarkBtn', [], ['readingBookmarkInput']);
   }
 }
 
@@ -103,6 +107,14 @@ export function initTimerEvents() {
 
   document.getElementById('skipReadingBookmarkBtn').addEventListener('click', () => {
     skipReadingBookmark();
+  });
+
+  // バリデーションを初期化（入力イベントでボタン状態を更新）
+  initModalValidation({
+    modalId: 'readingBookmarkModal',
+    buttonId: 'saveReadingBookmarkBtn',
+    requiredFields: [],
+    optionalFields: ['readingBookmarkInput']
   });
 }
 

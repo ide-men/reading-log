@@ -13,6 +13,7 @@ import { renderStudyBooks } from '../views/study-view.js';
 import { renderStoreBooks } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
 import { showToast, closeModal, openModal, renderBooks, updateUI } from './navigation.js';
+import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
 
 // ========================================
 // 本の追加
@@ -63,6 +64,9 @@ export function editBook(id) {
   document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
   document.getElementById('editBookNote').value = book.note || '';
   openModal('editBookModal');
+
+  // バリデーション状態を更新
+  updateButtonState('saveEditBtn', ['editBookTitle']);
 }
 
 export function saveEditBook() {
@@ -177,6 +181,9 @@ export function openCompleteNoteModal(id, book) {
   document.getElementById('completeNoteBookTitle').textContent = book.title;
   document.getElementById('completeNoteInput').value = book.note || '';
   openModal('completeNoteModal');
+
+  // バリデーション状態を更新（任意のみなので入力がない場合は非活性）
+  updateButtonState('saveCompleteNoteBtn', [], ['completeNoteInput']);
 }
 
 // 読了感想を保存
@@ -206,6 +213,9 @@ export function openDropBookModal(id) {
   document.getElementById('dropBookTitle').textContent = book.title;
   document.getElementById('bookmarkInput').value = '';
   openModal('dropBookModal');
+
+  // バリデーション状態を更新（任意のみなので入力がない場合は非活性）
+  updateButtonState('confirmDropBtn', [], ['bookmarkInput']);
 }
 
 // 中断を確定
@@ -417,6 +427,9 @@ export function initAddBookEvents() {
     }
 
     openModal('addBookModal');
+
+    // バリデーション状態を更新
+    updateButtonState('addBookBtn', ['bookInput']);
   });
 
   document.querySelectorAll('input[name="studyStatus"]').forEach(radio => {
@@ -434,6 +447,14 @@ export function initAddBookEvents() {
   document.getElementById('addBookBtn').addEventListener('click', () => {
     const status = document.getElementById('addBookStatus').value;
     addBook(status);
+  });
+
+  // バリデーションを初期化（入力イベントでボタン状態を更新）
+  initModalValidation({
+    modalId: 'addBookModal',
+    buttonId: 'addBookBtn',
+    requiredFields: ['bookInput'],
+    optionalFields: []
   });
 }
 
@@ -477,6 +498,28 @@ export function initEditDeleteEvents() {
 
   document.getElementById('skipCompleteNoteBtn').addEventListener('click', () => {
     skipCompleteNote();
+  });
+
+  // バリデーションを初期化（入力イベントでボタン状態を更新）
+  initModalValidation({
+    modalId: 'editBookModal',
+    buttonId: 'saveEditBtn',
+    requiredFields: ['editBookTitle'],
+    optionalFields: []
+  });
+
+  initModalValidation({
+    modalId: 'dropBookModal',
+    buttonId: 'confirmDropBtn',
+    requiredFields: [],
+    optionalFields: ['bookmarkInput']
+  });
+
+  initModalValidation({
+    modalId: 'completeNoteModal',
+    buttonId: 'saveCompleteNoteBtn',
+    requiredFields: [],
+    optionalFields: ['completeNoteInput']
   });
 }
 
