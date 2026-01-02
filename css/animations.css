@@ -327,7 +327,7 @@
   position: absolute;
   width: 6px;
   height: 6px;
-  background: #fbbf24;
+  background: var(--color-store-light);
   border-radius: 50%;
   animation: sparkle 0.8s ease-out forwards;
 }

@@ -478,7 +478,7 @@ select.form-input {
 }
 
 .btn-success {
-  background: #10b981;
+  background: var(--success);
   color: white;
   border: none;
 }
@@ -679,7 +679,7 @@ select.form-input {
 }
 
 .confirm-ok {
-  background: #dc2626;
+  background: var(--danger-dark);
   border: none;
   color: white;
   font-weight: 700;
