@@ -13,8 +13,10 @@
   /* Colors */
   --bg: #0a0a0f;
   --surface: #12121a;
+  --surface-rgb: 18, 18, 26;
   --elevated: #1a1a25;
   --accent: #e8a87c;
+  --accent-rgb: 232, 168, 124;
   --accent-dark: #d4956a;
   --accent-glow: rgba(232, 168, 124, 0.25);
   --text: #f5f5f7;
