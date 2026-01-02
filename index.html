@@ -35,7 +35,7 @@
       <section class="tab active" id="tab-home" role="tabpanel" aria-labelledby="nav-home">
     <div class="page-header page-header--compact">
       <div class="page-header__emoji">🎒</div>
-      <div class="page-header__title">カバン</div>
+      <div class="page-header__title">カバン<button class="term-hint" data-term="bag" aria-label="カバンの説明を見る">?</button></div>
       <div class="page-header__subtitle">今日はどの本を読む？</div>
     </div>
 
@@ -87,7 +87,7 @@
       <section class="tab" id="tab-study" role="tabpanel" aria-labelledby="nav-study">
     <div class="page-header">
       <div class="page-header__emoji">📚</div>
-      <div class="page-header__title">書斎</div>
+      <div class="page-header__title">書斎<button class="term-hint" data-term="study" aria-label="書斎の説明を見る">?</button></div>
       <div class="page-header__subtitle">積読も読了も、ひと目でわかる</div>
     </div>
 
@@ -98,17 +98,17 @@
     <div class="status-tabs" id="studyStatusTabs">
       <button class="status-tab" data-status="completed">
         <span class="status-icon">✅</span>
-        <span class="status-label">読了</span>
+        <span class="status-label">読了<button class="term-hint term-hint--small" data-term="completed" aria-label="読了の説明を見る">?</button></span>
         <span class="status-count" id="completedCount">0</span>
       </button>
       <button class="status-tab active" data-status="unread">
         <span class="status-icon">📚</span>
-        <span class="status-label">積読</span>
+        <span class="status-label">積読<button class="term-hint term-hint--small" data-term="unread" aria-label="積読の説明を見る">?</button></span>
         <span class="status-count" id="unreadCount">0</span>
       </button>
       <button class="status-tab" data-status="dropped">
         <span class="status-icon">⏸️</span>
-        <span class="status-label">中断</span>
+        <span class="status-label">中断<button class="term-hint term-hint--small" data-term="dropped" aria-label="中断の説明を見る">?</button></span>
         <span class="status-count" id="droppedCount">0</span>
       </button>
     </div>
@@ -126,7 +126,7 @@
       <section class="tab" id="tab-store" role="tabpanel" aria-labelledby="nav-store">
     <div class="page-header">
       <div class="page-header__emoji">🏪</div>
-      <div class="page-header__title">本屋</div>
+      <div class="page-header__title">本屋<button class="term-hint" data-term="store" aria-label="本屋の説明を見る">?</button></div>
       <div class="page-header__subtitle">気になった本を忘れない</div>
     </div>
 
@@ -177,7 +177,7 @@
     <h3 class="section-title">今週の読書</h3>
     <div class="week-chart" id="weekChart"></div>
 
-    <h3 class="section-title">📅 読書カレンダー</h3>
+    <h3 class="section-title">📅 読書カレンダー<button class="term-hint" data-term="calendar" aria-label="読書カレンダーの説明を見る">?</button></h3>
     <div class="calendar-container">
       <div class="calendar-scroll" id="calendarScroll">
         <div class="calendar-grid" id="calendarGrid"></div>
@@ -360,6 +360,7 @@
         <div class="settings-section">
           <h3 class="settings-section-title">❓ ヘルプ</h3>
           <button class="btn btn-secondary" id="showOnboardingBtn">📖 使い方を見る</button>
+          <button class="btn btn-secondary" id="showGlossaryBtn">📝 用語集</button>
         </div>
         <div class="settings-section">
           <h3 class="settings-section-title">💾 データ管理</h3>
@@ -679,6 +680,99 @@
         <div class="onboarding-actions">
           <button class="btn btn-secondary onboarding-back" id="onboardingBack">戻る</button>
           <button class="btn btn-primary onboarding-next" id="onboardingNext">次へ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 用語集モーダル -->
+  <div class="modal-overlay" id="glossaryModal" role="dialog" aria-modal="true" aria-labelledby="glossaryModalTitle">
+    <div class="modal glossary-modal">
+      <div class="modal-header">
+        <h2 id="glossaryModalTitle">用語集</h2>
+        <button class="modal-close" data-close="glossaryModal" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="glossary-list">
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">🎒</span>
+              <span class="glossary-name">カバン</span>
+            </div>
+            <div class="glossary-desc">今読んでいる本を入れる場所。カバンに入れた本は読書タイマーで時間を計測できます。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">📚</span>
+              <span class="glossary-name">書斎</span>
+            </div>
+            <div class="glossary-desc">あなたの本棚。読了・積読・中断した本をまとめて管理できます。紙の本も電子書籍もOK。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">🏪</span>
+              <span class="glossary-name">本屋</span>
+            </div>
+            <div class="glossary-desc">気になる本のウィッシュリスト。「いつか読みたい」本をメモしておけます。</div>
+          </div>
+          <div class="glossary-divider"></div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">📖</span>
+              <span class="glossary-name">読書中</span>
+            </div>
+            <div class="glossary-desc">カバンに入っていて、今読み進めている本のこと。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">📚</span>
+              <span class="glossary-name">積読</span>
+            </div>
+            <div class="glossary-desc">買ったけどまだ読んでいない本。書斎で管理して「次に何を読むか」を決めやすく。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">✅</span>
+              <span class="glossary-name">読了</span>
+            </div>
+            <div class="glossary-desc">最後まで読み終えた本。読了時に感想を残すと、後で振り返れます。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">⏸️</span>
+              <span class="glossary-name">中断</span>
+            </div>
+            <div class="glossary-desc">途中で読むのをやめた本。どこまで読んだかメモを残せるので、再開しやすい。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">💭</span>
+              <span class="glossary-name">気になる</span>
+            </div>
+            <div class="glossary-desc">本屋にある「いつか読みたい」本。手に入れたら書斎の積読に移動します。</div>
+          </div>
+          <div class="glossary-divider"></div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">⏱️</span>
+              <span class="glossary-name">読書タイマー</span>
+            </div>
+            <div class="glossary-desc">カバンの本を選んで「読む」を押すと計測開始。読書時間が記録されます。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">🔥</span>
+              <span class="glossary-name">ストリーク</span>
+            </div>
+            <div class="glossary-desc">連続で読書した日数。毎日少しでも読むと継続できます。</div>
+          </div>
+          <div class="glossary-item">
+            <div class="glossary-term">
+              <span class="glossary-icon">📅</span>
+              <span class="glossary-name">読書カレンダー</span>
+            </div>
+            <div class="glossary-desc">いつ、どれくらい読んだかを色の濃さで表示。GitHubの草のような見た目です。</div>
+          </div>
         </div>
       </div>
     </div>
