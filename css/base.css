@@ -23,7 +23,7 @@
   --text: #f5f5f7;
   --text-secondary: #c9c9d0;
   --text-tertiary: #9898a8;
-  --text-dim: #6b6b7a;
+  --text-dim: #8a8a9a;
   --border: rgba(255, 255, 255, 0.06);
 
   /* Status Colors */
@@ -134,7 +134,6 @@ html, body {
 .text-hint {
   font-size: 11px;
   color: var(--text-dim);
-  opacity: 0.8;
 }
 
 /* Hover Lift Effect */
