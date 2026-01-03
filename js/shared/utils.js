@@ -66,6 +66,14 @@ export async function expandAmazonShortUrl(shortUrl) {
     const data = await response.json();
     const html = data.contents || '';
 
+    // デバッグ: alloriginsのレスポンスを確認
+    console.log('[expandAmazonShortUrl] response:', {
+      statusUrl: data.status?.url,
+      httpCode: data.status?.http_code,
+      contentsLength: html.length,
+      contentsPreview: html.substring(0, 500)
+    });
+
     // 0. リダイレクト後のURL（status.url）からASINを抽出（最優先）
     const redirectUrl = data.status?.url;
     if (redirectUrl) {
@@ -105,6 +113,7 @@ export async function expandAmazonShortUrl(shortUrl) {
     return { fullUrl: null, asin: null };
   } catch (error) {
     // ネットワークエラーやタイムアウト
+    console.error('[expandAmazonShortUrl] error:', error);
     return { fullUrl: null, asin: null };
   }
 }
