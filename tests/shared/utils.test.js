@@ -164,6 +164,25 @@ describe('expandAmazonShortUrl', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it('status.urlからASINを抽出（最優先）', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        contents: '<html><body>JavaScript redirect page</body></html>',
+        status: {
+          url: 'https://www.amazon.co.jp/dp/B08N5WRWNW',
+          http_code: 200
+        }
+      })
+    });
+
+    const result = await expandAmazonShortUrl('https://amzn.asia/d/abc123');
+    expect(result).toEqual({
+      fullUrl: 'https://www.amazon.co.jp/dp/B08N5WRWNW',
+      asin: 'B08N5WRWNW'
+    });
+  });
+
   it('canonical URLからASINを抽出', async () => {
     fetch.mockResolvedValue({
       ok: true,

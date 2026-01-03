@@ -66,6 +66,15 @@ export async function expandAmazonShortUrl(shortUrl) {
     const data = await response.json();
     const html = data.contents || '';
 
+    // 0. リダイレクト後のURL（status.url）からASINを抽出（最優先）
+    const redirectUrl = data.status?.url;
+    if (redirectUrl) {
+      const asin = extractAsinFromUrl(redirectUrl);
+      if (asin) {
+        return { fullUrl: redirectUrl, asin };
+      }
+    }
+
     // 1. canonical URLからASINを抽出
     const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) ||
                            html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
