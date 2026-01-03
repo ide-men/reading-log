@@ -33,17 +33,14 @@ export function renderBookGrid(books, type = 'study') {
     if (type === 'store') {
       return `
         <button class="action-btn action-btn--primary" data-to-study="${book.id}">
-          <span>📚</span>
           <span>書斎に入れる</span>
         </button>
         <button class="action-btn action-btn--secondary" data-to-bag="${book.id}">
-          <span>🎒</span>
           <span>カバンに入れる</span>
         </button>`;
     }
     return `
       <button class="action-btn action-btn--primary" data-start="${book.id}">
-        <span>🎒</span>
         <span>カバンに入れる</span>
       </button>`;
   };
@@ -172,17 +169,14 @@ export function renderDetailView(book, type = 'study') {
   if (type === 'store') {
     primaryActions = `
       <button class="detail-view__action detail-view__action--primary" data-to-study="${book.id}">
-        <span>📚</span>
         <span>書斎に入れる</span>
       </button>
       <button class="detail-view__action" data-to-bag="${book.id}">
-        <span>🎒</span>
         <span>カバンに入れる</span>
       </button>`;
   } else if (book.status === BOOK_STATUS.UNREAD || book.status === BOOK_STATUS.DROPPED || book.status === BOOK_STATUS.COMPLETED) {
     primaryActions = reunion ? reunionBtn : `
       <button class="detail-view__action detail-view__action--primary" data-start="${book.id}">
-        <span>🎒</span>
         <span>カバンに入れる</span>
       </button>`;
   }
