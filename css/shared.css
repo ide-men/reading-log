@@ -832,13 +832,13 @@
 }
 
 .book-card--store .action-btn--secondary {
-  background: linear-gradient(135deg, #e8a87c, #d4956a);
+  background: linear-gradient(135deg, var(--color-study), var(--color-study-light));
   color: white;
-  box-shadow: 0 4px 12px rgba(232, 168, 124, 0.25);
+  box-shadow: 0 4px 12px rgba(var(--color-study-rgb), 0.25);
 }
 
 .book-card--store .action-btn--secondary:hover {
-  box-shadow: 0 8px 20px rgba(232, 168, 124, 0.45);
+  box-shadow: 0 8px 20px rgba(var(--color-study-rgb), 0.4);
 }
 
 /* ==========================================================================
