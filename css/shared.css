@@ -635,17 +635,14 @@
   position: relative;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   flex-shrink: 0;
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.25),
-    0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
+  background: transparent;
 }
 
 @media (hover: hover) {
   .book-card:hover .book-card__cover {
     transform: scale(1.05) rotateY(-5deg);
-    box-shadow:
-      0 12px 28px rgba(0, 0, 0, 0.35),
-      0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
   }
 }
 
@@ -720,10 +717,7 @@
 }
 
 .book-card--study .book-card__cover {
-  background: linear-gradient(145deg,
-    rgba(55, 40, 25, 0.9) 0%,
-    rgba(45, 32, 20, 0.95) 100%
-  );
+  background: transparent;
 }
 
 /* Book Card - Store Theme - Modern Glass Card */
@@ -756,11 +750,8 @@
 }
 
 .book-card--store .book-card__cover {
-  background: linear-gradient(145deg,
-    rgba(30, 40, 55, 0.9) 0%,
-    rgba(20, 28, 40, 0.95) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  border: none;
 }
 
 /* ==========================================================================
@@ -909,9 +900,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
+  background: transparent;
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1066,7 +1056,7 @@
 }
 
 .detail-view--store .detail-view__cover {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: none;
 }
 
 .detail-view--store .detail-view__action--primary {
@@ -1103,13 +1093,13 @@
 .book-detail-cover {
   width: 140px;
   height: 200px;
-  background: linear-gradient(135deg, #2a2319 0%, #1f1a16 100%);
+  background: transparent;
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 .book-detail-cover img {

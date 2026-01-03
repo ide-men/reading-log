@@ -188,26 +188,19 @@
   justify-content: center;
   font-size: 48px;
   overflow: hidden;
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.15),
-    0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 }
 
 /* 非選択時のカバー */
 .carousel-book:not(.selected) .carousel-book-cover {
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 /* 選択された本の光沢効果 */
 .carousel-book.selected .carousel-book-cover {
-  box-shadow:
-    0 20px 50px rgba(232, 168, 124, 0.35),
-    0 10px 25px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(232, 168, 124, 0.2);
+  box-shadow: none;
 }
 
 .carousel-book.selected .carousel-book-cover::before {
@@ -369,10 +362,7 @@
 
 /* 選択時の本らしいシャドウ */
 .carousel-book.selected .carousel-book-cover--no-image {
-  box-shadow:
-    0 20px 50px rgba(139, 90, 43, 0.4),
-    0 10px 25px rgba(0, 0, 0, 0.25),
-    inset 0 0 30px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 /* Selected Book Info - 選択中の本の情報表示 */
