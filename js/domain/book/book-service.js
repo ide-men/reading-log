@@ -3,7 +3,7 @@
 // 本に関するビジネスロジック（CRUD・ステータス遷移）
 // ========================================
 import { BOOK_STATUS, CELEBRATION_CONFIG } from '../../shared/constants.js';
-import { getCoverUrlFromLink } from '../../shared/utils.js';
+import { getCoverUrlFromLink, toLocalDateString } from '../../shared/utils.js';
 import { eventBus, Events } from '../../shared/event-bus.js';
 import * as bookRepository from './book-repository.js';
 import { createBook, validateBookTitle } from './book-entity.js';
@@ -155,7 +155,7 @@ export function moveToReading(id) {
     return { success: false };
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = toLocalDateString(new Date());
 
   return {
     success: true,
@@ -182,7 +182,7 @@ export function startReadingBook(id) {
     return { success: false, message: '本が見つかりません' };
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = toLocalDateString(new Date());
   const wasCompleted = book.status === BOOK_STATUS.COMPLETED;
 
   const updates = {
@@ -215,7 +215,7 @@ export function completeBook(id) {
     return { success: false };
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = toLocalDateString(new Date());
 
   return {
     success: true,
@@ -293,7 +293,7 @@ export function addReflection(id, note) {
     return { success: false, message: '本が見つかりません' };
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = toLocalDateString(new Date());
   const reflections = book.reflections || [];
   reflections.push({ date: today, note });
 
