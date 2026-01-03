@@ -59,9 +59,11 @@ export function renderReadingBooks() {
 
   // カルーセルをレンダリング
   carousel.innerHTML = books.map(book => {
-    const coverHtml = book.coverUrl
+    const hasCover = !!book.coverUrl;
+    const coverHtml = hasCover
       ? `<img src="${escapeHtml(book.coverUrl)}" alt="">`
-      : '📖';
+      : `<span class="carousel-book-spine-title">${escapeHtml(book.title)}</span>`;
+    const coverClass = hasCover ? '' : ' carousel-book-cover--no-image';
     const isSelected = book.id === selectedBookId;
 
     // 栞がある本には栞を表示（選択時のみCSSで可視化）
@@ -72,7 +74,8 @@ export function renderReadingBooks() {
     return `
       <div class="carousel-book${isSelected ? ' selected' : ''}" data-id="${book.id}">
         ${bookmarkHtml}
-        <div class="carousel-book-cover">${coverHtml}</div>
+        <div class="carousel-book-title">${escapeHtml(book.title)}</div>
+        <div class="carousel-book-cover${coverClass}">${coverHtml}</div>
       </div>`;
   }).join('');
 
@@ -154,10 +157,8 @@ export function updateSelectedBookInfo() {
   const book = bookRepository.getBookById(selectedBookId);
   if (!book) return;
 
-  // 選択中の本のタイトルを表示
-  infoContainer.innerHTML = `
-    <div class="selected-book-title">${escapeHtml(book.title)}</div>
-  `;
+  // タイトルは各本の上に表示されるので、infoContainerは空にする
+  infoContainer.innerHTML = '';
 
   // ボタンを有効化
   startBtn.disabled = false;

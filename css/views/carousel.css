@@ -140,9 +140,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-xs);
   transform-style: preserve-3d;
   position: relative;
+}
+
+/* カルーセル内の本のタイトル */
+.carousel-book-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  padding: 0 var(--space-xs);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.carousel-book.selected .carousel-book-title {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .carousel-book:not(.selected) {
@@ -239,6 +260,122 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+/* 表紙画像がない場合の本らしいデザイン */
+.carousel-book-cover--no-image {
+  background: linear-gradient(
+    135deg,
+    #8b5a2b 0%,
+    #a0522d 20%,
+    #8b5a2b 40%,
+    #6b4226 60%,
+    #8b5a2b 80%,
+    #a0522d 100%
+  );
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背表紙の質感（革調） */
+.carousel-book-cover--no-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.15) 0%,
+      transparent 8%,
+      transparent 92%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* 背表紙の光沢ライン */
+.carousel-book-cover--no-image::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  border-radius: 2px;
+}
+
+/* 背表紙タイトル（縦書き） */
+.carousel-book-spine-title {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: #f5e6d3;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  max-height: 85%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: var(--space-md);
+  z-index: 1;
+}
+
+/* 表紙なしの本は選択時のシャインアニメーションを無効化 */
+.carousel-book.selected .carousel-book-cover--no-image::before {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.15) 0%,
+      transparent 8%,
+      transparent 92%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  animation: none;
+}
+
+.carousel-book.selected .carousel-book-cover--no-image::after {
+  top: 0;
+  left: 6px;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  animation: none;
+}
+
+/* 選択時の本らしいシャドウ */
+.carousel-book.selected .carousel-book-cover--no-image {
+  box-shadow:
+    0 20px 50px rgba(139, 90, 43, 0.4),
+    0 10px 25px rgba(0, 0, 0, 0.25),
+    inset 0 0 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Selected Book Info - 選択中の本の情報表示 */
@@ -391,6 +528,19 @@
     max-height: 90px;
     right: 28px;
   }
+
+  .carousel-book-title {
+    font-size: 13px;
+  }
+
+  .carousel-book-spine-title {
+    font-size: 16px;
+  }
+
+  .carousel-book-cover--no-image::after {
+    left: 8px;
+    width: 4px;
+  }
 }
 
 /* ==========================================================================
@@ -440,5 +590,18 @@
     max-height: 100px;
     right: 36px;
     padding: 10px 6px 14px;
+  }
+
+  .carousel-book-title {
+    font-size: 14px;
+  }
+
+  .carousel-book-spine-title {
+    font-size: 18px;
+  }
+
+  .carousel-book-cover--no-image::after {
+    left: 10px;
+    width: 5px;
   }
 }
