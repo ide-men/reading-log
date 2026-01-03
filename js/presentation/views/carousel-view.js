@@ -162,7 +162,7 @@ export function updateSelectedBookInfo() {
 
   // ボタンを有効化
   startBtn.disabled = false;
-  startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>この本を読む</span>';
+  startBtn.innerHTML = '<span>この本を読む</span>';
   completeBtn.disabled = false;
   dropBtn.disabled = false;
   menuBtn.disabled = false;
