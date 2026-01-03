@@ -516,10 +516,13 @@ export function initAddBookEvents() {
         linkInput.value = result.fullUrl;
         showToast('短縮URLを展開しました');
       } else {
-        showToast('URLの展開に失敗しました。フルURLを手動で入力してください', 4000);
+        // デバッグ: 失敗理由を表示
+        const debug = result.debug || {};
+        const info = debug.error || `statusUrl=${debug.statusUrl}, htmlLen=${debug.htmlLen}`;
+        showToast(`展開失敗: ${info}`, 6000);
       }
     } catch (error) {
-      showToast('URLの展開に失敗しました', 4000);
+      showToast(`エラー: ${error.message}`, 4000);
     } finally {
       linkInput.disabled = false;
       linkInput.placeholder = originalPlaceholder;

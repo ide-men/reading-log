@@ -102,10 +102,11 @@ export async function expandAmazonShortUrl(shortUrl) {
       return { fullUrl: `https://www.amazon.co.jp/dp/${asin}`, asin };
     }
 
-    return { fullUrl: null, asin: null };
+    // デバッグ: 失敗時の情報を返す
+    return { fullUrl: null, asin: null, debug: { statusUrl: redirectUrl, htmlLen: html.length } };
   } catch (error) {
     // ネットワークエラーやタイムアウト
-    return { fullUrl: null, asin: null };
+    return { fullUrl: null, asin: null, debug: { error: error.message } };
   }
 }
 
