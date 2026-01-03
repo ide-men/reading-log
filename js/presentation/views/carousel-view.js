@@ -47,8 +47,8 @@ export function renderReadingBooks() {
         <div class="empty-state__icon">📖</div>
         <div class="empty-state__text">読んでいる本はありません</div>
         <div class="empty-state__hint">本を追加して読書を始めましょう</div>
-        <button class="empty-state__add-btn" data-add-book="reading" aria-label="本を追加">
-          <span class="empty-state__add-icon">＋</span>
+        <button class="empty-state__add-btn round-action-btn" data-add-book="reading" aria-label="本を追加">
+          <span class="round-action-btn__icon">＋</span>
         </button>
       </div>`;
     infoContainer.innerHTML = '';

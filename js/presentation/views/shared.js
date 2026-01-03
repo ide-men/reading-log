@@ -93,8 +93,8 @@ export function renderShelfContent(options) {
         <div class="empty-state__icon">${emptyConfig.icon}</div>
         <div class="empty-state__text">${emptyConfig.text}</div>
         <div class="empty-state__hint">${emptyConfig.hint}</div>
-        <button class="empty-state__add-btn" data-add-book="${addBookType}" aria-label="本を追加">
-          <span class="empty-state__add-icon">＋</span>
+        <button class="empty-state__add-btn round-action-btn" data-add-book="${addBookType}" aria-label="本を追加">
+          <span class="round-action-btn__icon">＋</span>
         </button>
       </div>`;
     containerEl.innerHTML = '';
@@ -183,7 +183,7 @@ export function renderDetailView(book, type = 'study') {
 
   return `
     <div class="detail-view ${modifier}">
-      <button class="detail-view__close" data-close-detail>✕</button>
+      <button class="detail-view__close close-btn close-btn--md close-btn--glass" data-close-detail>✕</button>
       <div class="detail-view__content">
         <div class="detail-view__cover">
           ${coverHtml}

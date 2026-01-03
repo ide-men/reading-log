@@ -222,8 +222,8 @@
     </main>
 
     <!-- 本追加FAB -->
-    <button class="fab hidden" id="addBookFab" aria-label="本を追加">
-      <span class="fab-icon" aria-hidden="true">＋</span>
+    <button class="fab round-action-btn hidden" id="addBookFab" aria-label="本を追加">
+      <span class="round-action-btn__icon" aria-hidden="true">＋</span>
     </button>
 
     <nav class="nav" role="tablist" aria-label="メインナビゲーション">
@@ -262,7 +262,7 @@
     <!-- フッター -->
     <div class="reading-footer">
       <button class="reading-end-btn" id="stopBtn">
-        <span class="reading-end-btn__icon">✓</span>
+        <span class="reading-end-btn__icon circle-badge circle-badge--success">✓</span>
         <span class="reading-end-btn__text">読書をおわる</span>
       </button>
     </div>
@@ -273,7 +273,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 id="addBookModalTitle">本を追加</h2>
-        <button class="modal-close" data-close="addBookModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="addBookModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -328,7 +328,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 id="editBookModalTitle">本を編集</h2>
-        <button class="modal-close" data-close="editBookModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="editBookModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -365,7 +365,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 id="settingsModalTitle">設定</h2>
-        <button class="modal-close" data-close="settingsModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="settingsModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="settings-section">
@@ -445,7 +445,7 @@
     <div class="modal book-detail-modal">
       <div class="modal-header">
         <h2 id="bookDetailModalTitle">書籍詳細</h2>
-        <button class="modal-close" data-close="bookDetailModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="bookDetailModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="book-detail-content">
@@ -492,7 +492,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 id="dropBookModalTitle">📑 どこまで読んだ？</h2>
-        <button class="modal-close" data-close="dropBookModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="dropBookModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="drop-book-info">
@@ -515,7 +515,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 id="readingBookmarkModalTitle">🔖 どこまで読んだ？</h2>
-        <button class="modal-close" data-close="readingBookmarkModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="readingBookmarkModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="drop-book-info">
@@ -538,7 +538,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 id="completeNoteModalTitle">🎉 読了おめでとう！</h2>
-        <button class="modal-close" data-close="completeNoteModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="completeNoteModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="drop-book-info">
@@ -562,7 +562,7 @@
     <div class="modal reunion-modal">
       <div class="modal-header">
         <h2 id="reunionModalTitle">📚 久しぶりの再会</h2>
-        <button class="modal-close" data-close="reunionModal" aria-label="閉じる">×</button>
+        <button class="modal-close close-btn close-btn--sm" data-close="reunionModal" aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
         <div class="reunion-book-title" id="reunionBookTitle"></div>
@@ -657,15 +657,15 @@
           <p class="onboarding-text">まずは本を登録してみましょう</p>
           <div class="onboarding-how-to">
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">1</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">1</span>
               <span class="onboarding-how-to-text">画面下の<strong>＋ボタン</strong>をタップ</span>
             </div>
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">2</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">2</span>
               <span class="onboarding-how-to-text"><strong>タイトル</strong>を入力</span>
             </div>
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">3</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">3</span>
               <span class="onboarding-how-to-text"><strong>保管場所</strong>を選んで追加</span>
             </div>
           </div>
@@ -678,11 +678,11 @@
           <p class="onboarding-text">読みたい本をカバンに入れて読書開始</p>
           <div class="onboarding-how-to">
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">1</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">1</span>
               <span class="onboarding-how-to-text"><strong>カバンに入れる</strong>で読書開始</span>
             </div>
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">2</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">2</span>
               <span class="onboarding-how-to-text">カバン画面から<strong>タイマー</strong>で読書開始</span>
             </div>
           </div>
@@ -695,11 +695,11 @@
           <p class="onboarding-text">読了を記録して書斎に保管</p>
           <div class="onboarding-how-to">
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">1</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">1</span>
               <span class="onboarding-how-to-text"><strong>最後まで読んだ！</strong>で読了を記録</span>
             </div>
             <div class="onboarding-how-to-item">
-              <span class="onboarding-how-to-number">2</span>
+              <span class="onboarding-how-to-number circle-badge circle-badge--primary circle-badge--lg">2</span>
               <span class="onboarding-how-to-text"><strong>書斎</strong>に保管されて読書記録に</span>
             </div>
           </div>

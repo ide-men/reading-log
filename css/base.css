@@ -290,6 +290,117 @@ html, body {
   background: rgba(0, 0, 0, 0.15);
 }
 
+/* Round Action Button - 円形アクションボタンの共通スタイル */
+.round-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow:
+    0 4px 12px rgba(232, 168, 124, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.round-action-btn:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 6px 16px rgba(232, 168, 124, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.round-action-btn:active {
+  transform: scale(0.95);
+}
+
+.round-action-btn__icon {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--bg);
+  line-height: 1;
+}
+
+/* Circle Badge - 丸いナンバー/アイコンバッジ */
+.circle-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: var(--font-md);
+  font-weight: var(--weight-bold);
+  flex-shrink: 0;
+}
+
+.circle-badge--accent {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.circle-badge--success {
+  background: var(--success);
+  color: white;
+}
+
+.circle-badge--primary {
+  background: var(--accent);
+  color: white;
+}
+
+.circle-badge--lg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Close Button - 閉じるボタンの共通スタイル */
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--elevated);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.close-btn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.close-btn--sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-xl);
+}
+
+.close-btn--md {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+
+.close-btn--glass {
+  border: 1px solid var(--glass-border);
+  background: rgba(var(--surface-rgb), 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-lg);
+}
+
+.close-btn--glass:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
 /* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
