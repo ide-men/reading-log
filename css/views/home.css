@@ -312,7 +312,7 @@
 
 /* Home Actions Fixed (ボタン固定エリア) - モダンフローティングカード */
 .home-actions-fixed {
-  padding: var(--space-xs) var(--space-lg);
+  padding: 0 var(--space-lg);
   padding-bottom: var(--space-md);
   display: flex;
   flex-direction: column;

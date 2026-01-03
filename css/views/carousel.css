@@ -368,7 +368,7 @@
 /* Selected Book Info - 選択中の本の情報表示 */
 .selected-book-info {
   text-align: center;
-  padding: var(--space-sm) var(--space-lg);
+  padding: 0 var(--space-lg);
   min-height: 28px;
 }
 
