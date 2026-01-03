@@ -481,6 +481,7 @@ export function initAddBookEvents() {
   });
 
   // タイトル入力時にAmazon検索リンクを更新
+  // <a>タグのhrefを直接設定し、通常のリンククリック動作でブラウザを開く（PWA対応）
   const bookInput = document.getElementById('bookInput');
   const amazonSearchLink = document.getElementById('amazonSearchLink');
 
@@ -488,19 +489,11 @@ export function initAddBookEvents() {
     const title = bookInput.value.trim();
     if (title) {
       const searchUrl = `https://www.amazon.co.jp/s?k=${encodeURIComponent(title)}`;
-      amazonSearchLink.dataset.url = searchUrl;
+      amazonSearchLink.href = searchUrl;
       amazonSearchLink.style.display = 'inline-block';
     } else {
+      amazonSearchLink.href = '#';
       amazonSearchLink.style.display = 'none';
-    }
-  });
-
-  // Amazon検索リンクをブラウザで開く
-  amazonSearchLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    const url = amazonSearchLink.dataset.url;
-    if (url) {
-      openLink(url);
     }
   });
 
