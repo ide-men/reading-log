@@ -213,16 +213,9 @@
   flex: 1;
 }
 
-/* カバン画面ではスクロールを無効化（高さが十分ある場合） */
+/* カバン画面でも縦スクロールを許可 */
 .content:has(#tab-home.active) {
-  overflow-y: hidden;
-}
-
-/* 高さが足りない場合はスクロールを許可 */
-@media (max-height: 600px) {
-  .content:has(#tab-home.active) {
-    overflow-y: auto;
-  }
+  overflow-y: auto;
 }
 
 /* ==========================================================================
