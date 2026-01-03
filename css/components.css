@@ -530,10 +530,17 @@ select.form-input {
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--elevated);
   border: 1px solid var(--border);
-  color: var(--text-dim);
+  color: var(--text-secondary);
   margin-top: var(--space-gutter);
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 .btn-danger {
