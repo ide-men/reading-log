@@ -253,8 +253,6 @@
 .book-icon {
   width: 40px;
   height: 54px;
-  background: var(--elevated);
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;

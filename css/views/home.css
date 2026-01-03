@@ -225,8 +225,6 @@
 .reading-book-cover {
   width: 70px;
   height: 100px;
-  background: var(--elevated);
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
