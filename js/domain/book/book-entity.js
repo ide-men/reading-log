@@ -52,9 +52,9 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils
  * @returns {Book}
  */
 export function createBook({ title, link, triggerNote, status = BOOK_STATUS.READING }, options = {}) {
-  const { onShortUrl = null, now = () => new Date() } = options;
+  const { now = () => new Date() } = options;
   const currentDate = now();
-  const coverUrl = getCoverUrlFromLink(link, onShortUrl);
+  const coverUrl = getCoverUrlFromLink(link);
   const today = currentDate.toISOString().split('T')[0];
 
   // ステータスに応じて日付を設定

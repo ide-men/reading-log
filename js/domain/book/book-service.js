@@ -30,7 +30,7 @@ const ADD_BOOK_MESSAGES = {
  * @param {string} [params.link] - リンク
  * @param {string} [params.triggerNote] - きっかけ
  * @param {string} [params.status] - ステータス
- * @returns {{ success: boolean, message: string, book?: Book, shortUrlWarning?: boolean }}
+ * @returns {{ success: boolean, message: string, book?: Book }}
  */
 export function addBook({ title, link, triggerNote, status = BOOK_STATUS.READING }) {
   // バリデーション
@@ -39,14 +39,8 @@ export function addBook({ title, link, triggerNote, status = BOOK_STATUS.READING
     return { success: false, message: validation.error };
   }
 
-  // 短縮URLフラグ
-  let shortUrlWarning = false;
-
   // 本を作成
-  const book = createBook(
-    { title, link, triggerNote, status },
-    { onShortUrl: () => { shortUrlWarning = true; } }
-  );
+  const book = createBook({ title, link, triggerNote, status });
 
   // 保存
   bookRepository.addBook(book);
@@ -54,8 +48,7 @@ export function addBook({ title, link, triggerNote, status = BOOK_STATUS.READING
   return {
     success: true,
     message: ADD_BOOK_MESSAGES[status] || '本を追加しました',
-    book,
-    shortUrlWarning
+    book
   };
 }
 
@@ -72,7 +65,7 @@ export function addBook({ title, link, triggerNote, status = BOOK_STATUS.READING
  * @param {string} [updates.status] - ステータス
  * @param {string} [updates.triggerNote] - きっかけ
  * @param {string} [updates.completionNote] - 読了時の感想
- * @returns {{ success: boolean, message: string, shortUrlWarning?: boolean }}
+ * @returns {{ success: boolean, message: string }}
  */
 export function editBook(id, updates) {
   const book = bookRepository.getBookById(id);
@@ -89,19 +82,15 @@ export function editBook(id, updates) {
   }
 
   // リンクが変更された場合はカバー画像を再取得
-  let shortUrlWarning = false;
   if (updates.link !== undefined && updates.link !== book.link) {
-    updates.coverUrl = getCoverUrlFromLink(updates.link, () => {
-      shortUrlWarning = true;
-    });
+    updates.coverUrl = getCoverUrlFromLink(updates.link);
   }
 
   bookRepository.updateBook(id, updates);
 
   return {
     success: true,
-    message: '保存しました',
-    shortUrlWarning
+    message: '保存しました'
   };
 }
 
