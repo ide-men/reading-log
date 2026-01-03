@@ -648,19 +648,7 @@ select.form-input {
   color: var(--text);
 }
 
-.modal-close {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--elevated);
-  border: none;
-  border-radius: var(--radius-md);
-  color: var(--text-dim);
-  font-size: var(--font-xl);
-  cursor: pointer;
-}
+/* .modal-close は .close-btn .close-btn--sm を継承 */
 
 .modal-body {
   padding: 0 var(--space-xl) var(--layout-modal-padding);
@@ -977,17 +965,9 @@ select.form-input {
   transform: scale(0.98);
 }
 
+/* .reading-end-btn__icon は .circle-badge .circle-badge--success を継承 */
 .reading-end-btn__icon {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--success);
-  border-radius: 50%;
   font-size: var(--font-sm);
-  color: white;
-  font-weight: var(--weight-bold);
 }
 
 .reading-end-btn__text {
@@ -1023,43 +1003,13 @@ select.form-input {
    FAB (Floating Action Button)
    ========================================================================== */
 
+/* .fab は .round-action-btn を継承、ポジションのみ追加 */
 .fab {
   position: fixed;
   bottom: calc(var(--nav-height) + var(--layout-fab-offset) + env(safe-area-inset-bottom));
   right: var(--layout-toast-top);
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 4px 12px rgba(232, 168, 124, 0.4),
-    0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 100;
-  transition: transform 0.2s, box-shadow 0.2s;
   max-width: var(--max-width);
-}
-
-.fab:hover {
-  transform: scale(1.05);
-  box-shadow:
-    0 6px 16px rgba(232, 168, 124, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.fab:active {
-  transform: scale(0.95);
-}
-
-.fab-icon {
-  font-size: 24px;
-  font-weight: var(--weight-bold);
-  color: var(--bg);
-  line-height: 1;
 }
 
 /* 記録タブではFABを非表示 */
@@ -1134,7 +1084,7 @@ select.form-input {
     right: var(--layout-fab-offset);
   }
 
-  .fab-icon {
+  .round-action-btn__icon {
     font-size: 28px;
   }
 
@@ -1238,7 +1188,7 @@ select.form-input {
     right: var(--space-3xl);
   }
 
-  .fab-icon {
+  .round-action-btn__icon {
     font-size: 32px;
   }
 
@@ -1393,19 +1343,7 @@ select.form-input {
   padding: var(--space-sm) 0;
 }
 
-.onboarding-flow-num {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--accent);
-  color: var(--bg);
-  border-radius: 50%;
-  font-size: var(--font-md);
-  font-weight: var(--weight-bold);
-  flex-shrink: 0;
-}
+/* .onboarding-flow-num は .circle-badge .circle-badge--accent を継承 */
 
 .onboarding-flow-text {
   font-size: var(--font-lg);
@@ -1535,19 +1473,7 @@ select.form-input {
   text-align: left;
 }
 
-.onboarding-how-to-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  font-size: var(--font-md);
-  font-weight: 600;
-  flex-shrink: 0;
-}
+/* .onboarding-how-to-number は .circle-badge .circle-badge--primary .circle-badge--lg を継承 */
 
 .onboarding-how-to-text {
   font-size: var(--font-lg);

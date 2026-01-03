@@ -115,39 +115,9 @@
   line-height: 1.5;
 }
 
+/* .empty-state__add-btn は .round-action-btn を継承 */
 .empty-state__add-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
   margin: var(--space-lg) auto 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow:
-    0 4px 12px rgba(232, 168, 124, 0.4),
-    0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.empty-state__add-btn:hover {
-  transform: scale(1.05);
-  box-shadow:
-    0 6px 16px rgba(232, 168, 124, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.empty-state__add-btn:active {
-  transform: scale(0.95);
-}
-
-.empty-state__add-icon {
-  font-size: 28px;
-  font-weight: 300;
-  color: var(--bg);
-  line-height: 1;
 }
 
 /* 小サイズバリアント */
@@ -726,31 +696,12 @@
   border-radius: var(--radius-2xl);
 }
 
+/* .detail-view__close は .close-btn .close-btn--md .close-btn--glass を継承 */
 .detail-view__close {
   position: absolute;
   top: var(--space-md);
   right: var(--space-md);
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--glass-border);
-  background: rgba(var(--surface-rgb), 0.8);
-  backdrop-filter: blur(8px);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--text-dim);
-  transition: all var(--transition-bounce);
   z-index: 10;
-}
-
-.detail-view__close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: var(--text);
-  transform: scale(1.1);
 }
 
 .detail-view__content {
