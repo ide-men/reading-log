@@ -477,7 +477,8 @@
     0 8px 24px rgba(0, 0, 0, 0.3),
     inset 0 0 20px rgba(0, 0, 0, 0.2);
   position: relative;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 /* Wire mesh pattern overlay */
