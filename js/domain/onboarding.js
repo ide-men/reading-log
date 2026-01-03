@@ -3,7 +3,7 @@
 // ========================================
 import { STORAGE_KEYS } from '../shared/constants.js';
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 /**
  * オンボーディング完了状態を取得
