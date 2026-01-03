@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { STORAGE_KEYS, SCHEMA_VERSION, CONFIG } from '../../js/shared/constants.js';
+import { cleanupHistoryPure } from '../../js/core/storage.js';
 
 // stateManagerとeventBusをモック
 vi.mock('../../js/shared/event-bus.js', () => ({
@@ -159,6 +160,79 @@ describe('storage.js', () => {
 
       expect(showToast).toHaveBeenCalledWith('バックアップデータが破損しています', 4000);
       expect(onSuccess).not.toHaveBeenCalled();
+    });
+  });
+
+  // ========================================
+  // Pure関数のテスト（モック不要）
+  // ========================================
+
+  describe('cleanupHistoryPure', () => {
+    it('保持期間内の履歴を返す', () => {
+      // CONFIG.historyRetentionDays = 90日
+      const now = new Date('2024-06-15T12:00:00.000Z');
+      const state = {
+        history: [
+          { d: '2024-06-14T10:00:00.000Z', m: 30, h: 10 }, // 1日前（保持）
+          { d: '2024-06-10T10:00:00.000Z', m: 25, h: 10 }, // 5日前（保持）
+          { d: '2024-03-01T10:00:00.000Z', m: 20, h: 10 }  // 約106日前（アーカイブ対象）
+        ],
+        archived: {}
+      };
+
+      const result = cleanupHistoryPure(state, { now });
+
+      expect(result.recentHistory).toHaveLength(2);
+      expect(result.recentHistory[0].d).toBe('2024-06-14T10:00:00.000Z');
+    });
+
+    it('古い履歴を月別にアーカイブデータとしてまとめる', () => {
+      // CONFIG.historyRetentionDays = 90日
+      const now = new Date('2024-06-15T12:00:00.000Z');
+      const state = {
+        history: [
+          { d: '2024-02-10T10:00:00.000Z', m: 30, h: 10 }, // 約125日前
+          { d: '2024-02-15T10:00:00.000Z', m: 20, h: 14 }  // 約120日前
+        ],
+        archived: {}
+      };
+
+      const result = cleanupHistoryPure(state, { now });
+
+      expect(result.recentHistory).toHaveLength(0);
+      expect(result.archiveUpdates['2024-02']).toBeDefined();
+      expect(result.archiveUpdates['2024-02'].sessions).toBe(2);
+      expect(result.archiveUpdates['2024-02'].totalMinutes).toBe(50);
+    });
+
+    it('1年以上前のアーカイブを削除対象にする', () => {
+      const now = new Date('2024-06-15T12:00:00.000Z');
+      const state = {
+        history: [],
+        archived: {
+          '2023-01': { sessions: 10, totalMinutes: 300 }, // 17ヶ月前（削除対象）
+          '2024-01': { sessions: 5, totalMinutes: 150 }   // 5ヶ月前（保持）
+        }
+      };
+
+      const result = cleanupHistoryPure(state, { now });
+
+      expect(result.archiveKeysToRemove).toContain('2023-01');
+      expect(result.archiveKeysToRemove).not.toContain('2024-01');
+    });
+
+    it('履歴が空の場合は空の結果を返す', () => {
+      const now = new Date();
+      const state = {
+        history: [],
+        archived: {}
+      };
+
+      const result = cleanupHistoryPure(state, { now });
+
+      expect(result.recentHistory).toEqual([]);
+      expect(result.archiveUpdates).toEqual({});
+      expect(result.archiveKeysToRemove).toEqual([]);
     });
   });
 });

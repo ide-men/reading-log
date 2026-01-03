@@ -9,14 +9,34 @@ import { calculateStreak } from '../../domain/stats/stats-service.js';
 // ボタンアニメーション
 // ========================================
 
-export function getButtonAnimation() {
-  const streak = calculateStreak();
-
-  if (streak >= ANIMATION_CONFIG.streakThreshold && Math.random() < ANIMATION_CONFIG.streakProbability) {
-    return randomItem(BUTTON_ANIMATIONS.streak);
+/**
+ * ボタンアニメーション設定を取得（Pure版）
+ * @param {Object} options - オプション
+ * @param {number} options.streak - 連続日数
+ * @param {string} [options.timeSlot] - 時間帯（省略時はgetTimeSlot()を使用）
+ * @param {Function} [options.random] - 乱数関数（テスト用）
+ * @param {Function} [options.pickItem] - 配列からアイテムを選択する関数（テスト用）
+ * @returns {Object} アニメーション設定
+ */
+export function getButtonAnimationPure({
+  streak,
+  timeSlot = getTimeSlot(),
+  random = Math.random,
+  pickItem = randomItem
+}) {
+  if (streak >= ANIMATION_CONFIG.streakThreshold && random() < ANIMATION_CONFIG.streakProbability) {
+    return pickItem(BUTTON_ANIMATIONS.streak);
   }
 
-  return randomItem(BUTTON_ANIMATIONS[getTimeSlot()]);
+  return pickItem(BUTTON_ANIMATIONS[timeSlot]);
+}
+
+/**
+ * ボタンアニメーション設定を取得
+ * @returns {Object} アニメーション設定
+ */
+export function getButtonAnimation() {
+  return getButtonAnimationPure({ streak: calculateStreak() });
 }
 
 export function updateButtonAnimation() {

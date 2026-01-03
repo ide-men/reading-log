@@ -14,6 +14,43 @@ import { initModalValidation, updateButtonState } from '../utils/modal-validatio
 import { initClearButton } from '../utils/form-clear-button.js';
 
 // ========================================
+// Pure関数（テスト用）
+// ========================================
+
+/**
+ * 読書画面の表示データを生成
+ * @param {Object|null} book - 本のオブジェクト
+ * @returns {Object} 表示データ
+ */
+export function prepareReadingScreenData(book) {
+  if (book && book.coverUrl) {
+    return {
+      hasCover: true,
+      coverHtml: `<img src="${escapeAttr(book.coverUrl)}" alt="">`,
+      title: book.title
+    };
+  }
+  return {
+    hasCover: false,
+    coverHtml: '<span class="reading-book__icon">📖</span>',
+    title: book?.title || ''
+  };
+}
+
+/**
+ * 栞保存時の処理データを生成
+ * @param {string} bookmarkValue - 入力された栞の値
+ * @returns {Object} 処理データ
+ */
+export function prepareBookmarkData(bookmarkValue) {
+  const bookmark = bookmarkValue?.trim() || null;
+  return {
+    bookmark,
+    shouldShowToast: !!bookmark
+  };
+}
+
+// ========================================
 // 読書開始
 // ========================================
 export function handleStartReading() {
@@ -26,17 +63,17 @@ export function handleStartReading() {
   const bookCover = document.getElementById('readingBookCover');
   const readingTitle = document.getElementById('readingTitle');
 
-  if (book && book.coverUrl) {
-    bookCover.innerHTML = `<img src="${escapeAttr(book.coverUrl)}" alt="">`;
+  const screenData = prepareReadingScreenData(book);
+  bookCover.innerHTML = screenData.coverHtml;
+  if (screenData.hasCover) {
     bookCover.classList.add('has-cover');
   } else {
-    bookCover.innerHTML = '<span class="reading-book__icon">📖</span>';
     bookCover.classList.remove('has-cover');
   }
 
   // 本のタイトルを表示
-  if (book && readingTitle) {
-    readingTitle.textContent = book.title;
+  if (readingTitle) {
+    readingTitle.textContent = screenData.title;
   }
 
   applyReadingAnimation();
@@ -78,11 +115,12 @@ export function saveReadingBookmark() {
   const bookId = stateManager.getReadingBookmarkBookId();
   if (!bookId) return;
 
-  const bookmark = document.getElementById('readingBookmarkInput').value.trim() || null;
+  const inputValue = document.getElementById('readingBookmarkInput').value;
+  const { bookmark, shouldShowToast } = prepareBookmarkData(inputValue);
   bookService.editBook(bookId, { bookmark });
 
   closeModal('readingBookmarkModal');
-  if (bookmark) {
+  if (shouldShowToast) {
     showToast('栞を挟みました');
   }
   renderReadingBooks();

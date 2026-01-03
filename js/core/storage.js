@@ -79,17 +79,26 @@ export function saveStateToStorage(s) {
   localStorage.setItem(STORAGE_KEYS.archived, JSON.stringify(s.archived));
 }
 
-export function saveState() {
-  saveStateToStorage(stateManager.getState());
+/**
+ * 状態を保存
+ * @param {Object} [sm] - 状態マネージャー（テスト用にオーバーライド可能）
+ */
+export function saveState(sm = stateManager) {
+  saveStateToStorage(sm.getState());
 }
 
 // ========================================
 // 履歴クリーンアップ
 // ========================================
 
-export function cleanupHistory() {
-  const state = stateManager.getState();
-  const now = new Date();
+/**
+ * 履歴クリーンアップのロジック（Pure版）
+ * @param {Object} state - 現在の状態
+ * @param {Object} options - オプション
+ * @param {Date} [options.now] - 現在日時（テスト用）
+ * @returns {Object} クリーンアップ結果
+ */
+export function cleanupHistoryPure(state, { now = new Date() } = {}) {
   const retentionCutoff = new Date(now - CONFIG.historyRetentionDays * CONFIG.msPerDay);
   const archiveCutoff = new Date(now - CONFIG.archiveRetentionDays * CONFIG.msPerDay);
 
@@ -106,20 +115,50 @@ export function cleanupHistory() {
   }
 
   // 古い履歴を月別に集約
+  const archiveUpdates = {};
   for (const entry of toArchive) {
     const monthKey = entry.d.substring(0, 7);
-    stateManager.updateArchived(monthKey, { sessions: 1, totalMinutes: entry.m });
-  }
-
-  // 1年以上前のアーカイブを削除
-  for (const monthKey of Object.keys(state.archived)) {
-    const monthDate = new Date(monthKey + '-01');
-    if (monthDate < archiveCutoff) {
-      stateManager.removeArchived(monthKey);
+    if (!archiveUpdates[monthKey]) {
+      archiveUpdates[monthKey] = { sessions: 0, totalMinutes: 0 };
     }
+    archiveUpdates[monthKey].sessions += 1;
+    archiveUpdates[monthKey].totalMinutes += entry.m;
   }
 
-  stateManager.setHistory(recentHistory);
+  // 1年以上前のアーカイブを削除対象に
+  const archiveKeysToRemove = Object.keys(state.archived).filter(monthKey => {
+    const monthDate = new Date(monthKey + '-01');
+    return monthDate < archiveCutoff;
+  });
+
+  return {
+    recentHistory,
+    archiveUpdates,
+    archiveKeysToRemove
+  };
+}
+
+/**
+ * 履歴クリーンアップを実行
+ * @param {Object} [sm] - 状態マネージャー（テスト用にオーバーライド可能）
+ * @param {Object} [options] - オプション
+ * @param {Date} [options.now] - 現在日時（テスト用）
+ */
+export function cleanupHistory(sm = stateManager, options = {}) {
+  const state = sm.getState();
+  const { recentHistory, archiveUpdates, archiveKeysToRemove } = cleanupHistoryPure(state, options);
+
+  // アーカイブを更新
+  for (const [monthKey, updates] of Object.entries(archiveUpdates)) {
+    sm.updateArchived(monthKey, updates);
+  }
+
+  // 古いアーカイブを削除
+  for (const monthKey of archiveKeysToRemove) {
+    sm.removeArchived(monthKey);
+  }
+
+  sm.setHistory(recentHistory);
 }
 
 // ========================================

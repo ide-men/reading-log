@@ -33,7 +33,12 @@ import {
   getBookColor,
   addBook,
   updateBook,
-  removeBook
+  removeBook,
+  // Pure関数
+  getAllBooksPure,
+  getBookByIdPure,
+  getBooksByStatusPure,
+  getBookColorPure
 } from '../../js/domain/book/book-repository.js';
 import { saveState } from '../../js/core/storage.js';
 import { stateManager } from '../../js/core/state-manager.js';
@@ -166,6 +171,118 @@ describe('book-repository.js', () => {
 
       expect(stateManager.removeBook).toHaveBeenCalledWith(1);
       expect(saveState).toHaveBeenCalled();
+    });
+  });
+
+  // ========================================
+  // Pure関数のテスト（モック不要）
+  // ========================================
+
+  describe('getAllBooksPure', () => {
+    it('状態から全ての本を取得', () => {
+      const state = {
+        books: [
+          { id: 1, title: 'Book1' },
+          { id: 2, title: 'Book2' }
+        ]
+      };
+
+      const books = getAllBooksPure(state);
+
+      expect(books).toHaveLength(2);
+      expect(books[0].title).toBe('Book1');
+    });
+
+    it('本がない場合は空配列', () => {
+      const state = { books: [] };
+
+      const books = getAllBooksPure(state);
+
+      expect(books).toEqual([]);
+    });
+  });
+
+  describe('getBookByIdPure', () => {
+    it('IDで本を取得', () => {
+      const state = {
+        books: [
+          { id: 1, title: 'Test Book' },
+          { id: 2, title: 'Another Book' }
+        ]
+      };
+
+      const book = getBookByIdPure(state, 1);
+
+      expect(book).toBeDefined();
+      expect(book.title).toBe('Test Book');
+    });
+
+    it('存在しないIDはundefined', () => {
+      const state = { books: [{ id: 1, title: 'Test' }] };
+
+      const book = getBookByIdPure(state, 999);
+
+      expect(book).toBeUndefined();
+    });
+  });
+
+  describe('getBooksByStatusPure', () => {
+    it('ステータスでフィルタリング', () => {
+      const state = {
+        books: [
+          { id: 1, title: 'A', status: BOOK_STATUS.READING },
+          { id: 2, title: 'B', status: BOOK_STATUS.READING },
+          { id: 3, title: 'C', status: BOOK_STATUS.COMPLETED },
+          { id: 4, title: 'D', status: BOOK_STATUS.UNREAD }
+        ]
+      };
+
+      const reading = getBooksByStatusPure(state, BOOK_STATUS.READING);
+      expect(reading).toHaveLength(2);
+
+      const completed = getBooksByStatusPure(state, BOOK_STATUS.COMPLETED);
+      expect(completed).toHaveLength(1);
+    });
+
+    it('該当なしは空配列', () => {
+      const state = {
+        books: [{ id: 1, status: BOOK_STATUS.READING }]
+      };
+
+      const wishlist = getBooksByStatusPure(state, BOOK_STATUS.WISHLIST);
+
+      expect(wishlist).toEqual([]);
+    });
+  });
+
+  describe('getBookColorPure', () => {
+    it('インデックスに基づいた色を返す', () => {
+      const state = {
+        books: [
+          { id: 1, title: 'A' },
+          { id: 2, title: 'B' },
+          { id: 3, title: 'C' }
+        ]
+      };
+
+      const color1 = getBookColorPure(state, { id: 1 });
+      const color2 = getBookColorPure(state, { id: 2 });
+
+      expect(color1).toBe(BOOK_COLORS[0]);
+      expect(color2).toBe(BOOK_COLORS[1]);
+    });
+
+    it('配列長を超えるとループする', () => {
+      const books = [];
+      for (let i = 1; i <= BOOK_COLORS.length + 1; i++) {
+        books.push({ id: i, title: `Book${i}` });
+      }
+      const state = { books };
+
+      const lastBook = { id: BOOK_COLORS.length + 1 };
+      const color = getBookColorPure(state, lastBook);
+
+      expect(BOOK_COLORS).toContain(color);
     });
   });
 });
