@@ -3,7 +3,7 @@
 // 本のデータ構造・バリデーション・ヘルパー
 // ========================================
 import { BOOK_STATUS, BOOK_COLORS } from '../../shared/constants.js';
-import { escapeHtml, adjustColor, getCoverUrlFromLink } from '../../shared/utils.js';
+import { escapeHtml, adjustColor, getCoverUrlFromLink, toLocalDateString } from '../../shared/utils.js';
 
 // ========================================
 // Book型定義（JSDoc）
@@ -55,7 +55,7 @@ export function createBook({ title, link, triggerNote, status = BOOK_STATUS.READ
   const { now = () => new Date() } = options;
   const currentDate = now();
   const coverUrl = getCoverUrlFromLink(link);
-  const today = currentDate.toISOString().split('T')[0];
+  const today = toLocalDateString(currentDate);
 
   // ステータスに応じて日付を設定
   let startedAt = null;
