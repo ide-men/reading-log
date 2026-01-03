@@ -64,29 +64,34 @@ export function closeModal(id) {
 }
 
 // ========================================
-// トースト
+// トースト（キュー方式）
 // ========================================
-let currentToast = null;
+const toastQueue = [];
+let isShowingToast = false;
 
-export function showToast(message, duration = 3000) {
-  // 既存のトーストを消す
-  if (currentToast) {
-    currentToast.remove();
-  }
+function showNextToast() {
+  if (isShowingToast || toastQueue.length === 0) return;
+
+  isShowingToast = true;
+  const { message, duration } = toastQueue.shift();
 
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.textContent = message;
   document.body.appendChild(toast);
-  currentToast = toast;
+
+  eventBus.emit(Events.TOAST_SHOW, { message });
 
   setTimeout(() => {
-    if (currentToast === toast) {
-      toast.remove();
-      currentToast = null;
-    }
+    toast.remove();
+    isShowingToast = false;
+    showNextToast();
   }, duration);
-  eventBus.emit(Events.TOAST_SHOW, { message });
+}
+
+export function showToast(message, duration = 3000) {
+  toastQueue.push({ message, duration });
+  showNextToast();
 }
 
 // ========================================
