@@ -3,7 +3,7 @@
 // 本のCRUD・ステータス変更の制御
 // ========================================
 import { BOOK_STATUS, UI_CONFIG, CELEBRATION_CONFIG } from '../../shared/constants.js';
-import { openLink } from '../../shared/utils.js';
+import { openLink, isAmazonShortUrl, expandAmazonShortUrl } from '../../shared/utils.js';
 import * as bookService from '../../domain/book/book-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
 import { stateManager } from '../../core/state-manager.js';
@@ -497,6 +497,36 @@ export function initAddBookEvents() {
     }
   });
 
+  // リンク入力時に短縮URLを自動展開
+  const linkInput = document.getElementById('linkInput');
+  let expandingUrl = false;
+
+  linkInput.addEventListener('change', async () => {
+    const url = linkInput.value.trim();
+    if (!url || !isAmazonShortUrl(url) || expandingUrl) return;
+
+    expandingUrl = true;
+    linkInput.disabled = true;
+    const originalPlaceholder = linkInput.placeholder;
+    linkInput.placeholder = '短縮URLを展開中...';
+
+    try {
+      const result = await expandAmazonShortUrl(url);
+      if (result.fullUrl) {
+        linkInput.value = result.fullUrl;
+        showToast('短縮URLを展開しました');
+      } else {
+        showToast('URLの展開に失敗しました。フルURLを手動で入力してください', 4000);
+      }
+    } catch (error) {
+      showToast('URLの展開に失敗しました', 4000);
+    } finally {
+      linkInput.disabled = false;
+      linkInput.placeholder = originalPlaceholder;
+      expandingUrl = false;
+    }
+  });
+
   // 「なぜこの本？」トグル
   const triggerNoteToggle = document.getElementById('triggerNoteToggle');
   const triggerNoteGroup = document.getElementById('triggerNoteGroup');
@@ -517,6 +547,36 @@ export function initAddBookEvents() {
 // ========================================
 export function initEditDeleteEvents() {
   document.getElementById('saveEditBtn').addEventListener('click', saveEditBook);
+
+  // 編集モーダルのリンク入力時に短縮URLを自動展開
+  const editLinkInput = document.getElementById('editBookLink');
+  let expandingEditUrl = false;
+
+  editLinkInput.addEventListener('change', async () => {
+    const url = editLinkInput.value.trim();
+    if (!url || !isAmazonShortUrl(url) || expandingEditUrl) return;
+
+    expandingEditUrl = true;
+    editLinkInput.disabled = true;
+    const originalPlaceholder = editLinkInput.placeholder;
+    editLinkInput.placeholder = '短縮URLを展開中...';
+
+    try {
+      const result = await expandAmazonShortUrl(url);
+      if (result.fullUrl) {
+        editLinkInput.value = result.fullUrl;
+        showToast('短縮URLを展開しました');
+      } else {
+        showToast('URLの展開に失敗しました。フルURLを手動で入力してください', 4000);
+      }
+    } catch (error) {
+      showToast('URLの展開に失敗しました', 4000);
+    } finally {
+      editLinkInput.disabled = false;
+      editLinkInput.placeholder = originalPlaceholder;
+      expandingEditUrl = false;
+    }
+  });
 
   document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
     confirmDeleteBook();
