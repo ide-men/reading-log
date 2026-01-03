@@ -7,7 +7,51 @@ import { stateManager } from '../../core/state-manager.js';
 import { saveState } from '../../core/storage.js';
 
 // ========================================
-// 読み取り操作
+// Pure関数版（テスト用）
+// ========================================
+
+/**
+ * 全ての本を取得（Pure版）
+ * @param {Object} state - 状態オブジェクト
+ * @returns {Book[]}
+ */
+export function getAllBooksPure(state) {
+  return state.books;
+}
+
+/**
+ * IDで本を取得（Pure版）
+ * @param {Object} state - 状態オブジェクト
+ * @param {number} id - 本のID
+ * @returns {Book|undefined}
+ */
+export function getBookByIdPure(state, id) {
+  return state.books.find(book => book.id === id);
+}
+
+/**
+ * ステータスで本をフィルタリング（Pure版）
+ * @param {Object} state - 状態オブジェクト
+ * @param {string} status - ステータス
+ * @returns {Book[]}
+ */
+export function getBooksByStatusPure(state, status) {
+  return state.books.filter(book => book.status === status);
+}
+
+/**
+ * 本のカラーを取得（Pure版）
+ * @param {Object} state - 状態オブジェクト
+ * @param {Book} book - 本
+ * @returns {string}
+ */
+export function getBookColorPure(state, book) {
+  const bookIndex = state.books.findIndex(b => b.id === book.id);
+  return BOOK_COLORS[bookIndex % BOOK_COLORS.length];
+}
+
+// ========================================
+// 読み取り操作（stateManagerを使用）
 // ========================================
 
 /**
@@ -15,7 +59,7 @@ import { saveState } from '../../core/storage.js';
  * @returns {Book[]}
  */
 export function getAllBooks() {
-  return stateManager.getState().books;
+  return getAllBooksPure(stateManager.getState());
 }
 
 /**
@@ -24,7 +68,7 @@ export function getAllBooks() {
  * @returns {Book|undefined}
  */
 export function getBookById(id) {
-  return stateManager.getBook(id);
+  return getBookByIdPure(stateManager.getState(), id);
 }
 
 /**
@@ -33,8 +77,7 @@ export function getBookById(id) {
  * @returns {Book[]}
  */
 export function getBooksByStatus(status) {
-  const state = stateManager.getState();
-  return state.books.filter(book => book.status === status);
+  return getBooksByStatusPure(stateManager.getState(), status);
 }
 
 /**
@@ -43,8 +86,7 @@ export function getBooksByStatus(status) {
  * @returns {string}
  */
 export function getBookColor(book) {
-  const bookIndex = stateManager.getState().books.findIndex(b => b.id === book.id);
-  return BOOK_COLORS[bookIndex % BOOK_COLORS.length];
+  return getBookColorPure(stateManager.getState(), book);
 }
 
 // ========================================
