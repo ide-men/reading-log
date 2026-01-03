@@ -77,23 +77,24 @@
 
 .nav {
   position: fixed;
-  bottom: var(--layout-nav-inset);
-  left: var(--layout-nav-inset);
-  right: var(--layout-nav-inset);
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
-  background: rgba(var(--surface-rgb, 40, 40, 48), 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-2xl);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 0;
   padding: var(--space-xs) var(--space-sm);
-  padding-bottom: max(var(--space-xs), calc(env(safe-area-inset-bottom) - 8px));
-  max-width: calc(var(--max-width) - 24px);
-  margin: 0 auto;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding-bottom: max(var(--space-xs), env(safe-area-inset-bottom));
+  max-width: 100%;
+  margin: 0;
+  box-shadow: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.nav--hidden {
+  transform: translateY(100%);
 }
 
 .nav button {
@@ -1082,10 +1083,10 @@ select.form-input {
   }
 
   .nav {
-    bottom: var(--space-lg);
-    left: var(--space-lg);
-    right: var(--space-lg);
-    max-width: calc(var(--max-width) - 32px);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
     padding: var(--space-sm);
   }
 
@@ -1183,10 +1184,10 @@ select.form-input {
   }
 
   .nav {
-    bottom: var(--layout-toast-top);
-    left: var(--layout-toast-top);
-    right: var(--layout-toast-top);
-    max-width: calc(var(--max-width) - 40px);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
     padding: var(--space-sm) var(--space-md);
   }
 

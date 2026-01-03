@@ -120,6 +120,42 @@ export function initNavigationEvents() {
 }
 
 // ========================================
+// スクロール連動ナビゲーション
+// ========================================
+export function initScrollNavigation() {
+  const nav = document.querySelector('.nav');
+  const content = document.querySelector('.content');
+  if (!nav || !content) return;
+
+  let lastScrollTop = 0;
+  let ticking = false;
+  const SCROLL_THRESHOLD = 10;
+
+  content.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const scrollTop = content.scrollTop;
+        const scrollDelta = scrollTop - lastScrollTop;
+
+        if (Math.abs(scrollDelta) > SCROLL_THRESHOLD) {
+          if (scrollDelta > 0 && scrollTop > 50) {
+            // 下スクロール時は非表示
+            nav.classList.add('nav--hidden');
+          } else {
+            // 上スクロール時は表示
+            nav.classList.remove('nav--hidden');
+          }
+          lastScrollTop = scrollTop;
+        }
+
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+// ========================================
 // モーダルイベント初期化
 // ========================================
 export function initModalEvents() {
