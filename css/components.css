@@ -205,6 +205,8 @@
 #tab-home {
   min-height: 0;
   position: relative;
+  /* ナビゲーションバーの高さ分のスペースを確保 */
+  padding-bottom: var(--nav-height);
 }
 
 #tab-home.active {
