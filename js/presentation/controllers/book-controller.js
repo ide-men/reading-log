@@ -14,6 +14,7 @@ import { renderStoreBooks } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
 import { showToast, closeModal, openModal, renderBooks, updateUI } from './navigation.js';
 import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
+import { initClearButtons } from '../utils/form-clear-button.js';
 
 // ========================================
 // 本の追加
@@ -502,6 +503,9 @@ export function initAddBookEvents() {
       document.getElementById('bookCommentInput').focus();
     }
   });
+
+  // クリアボタンを初期化
+  initClearButtons(['bookInput', 'linkInput', 'bookCommentInput']);
 }
 
 // ========================================
@@ -567,6 +571,9 @@ export function initEditDeleteEvents() {
     requiredFields: [],
     optionalFields: ['completeNoteInput']
   });
+
+  // クリアボタンを初期化
+  initClearButtons(['editBookTitle', 'editBookLink', 'bookmarkInput']);
 }
 
 // ========================================

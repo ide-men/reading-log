@@ -11,6 +11,7 @@ import { applyReadingAnimation } from '../effects/animations.js';
 import { renderReadingBooks } from '../views/carousel-view.js';
 import { updateUI, openModal, closeModal, showToast } from './navigation.js';
 import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
+import { initClearButton } from '../utils/form-clear-button.js';
 
 // ========================================
 // 読書開始
@@ -123,6 +124,9 @@ export function initTimerEvents() {
     requiredFields: [],
     optionalFields: ['readingBookmarkInput']
   });
+
+  // クリアボタンを初期化
+  initClearButton('readingBookmarkInput');
 }
 
 // ========================================

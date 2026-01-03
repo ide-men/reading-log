@@ -251,6 +251,48 @@
   border-color: var(--accent);
 }
 
+.form-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input-wrapper .form-input {
+  padding-right: 36px;
+}
+
+.form-input-clear {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: var(--font-lg);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s, visibility 0.15s, background 0.15s;
+}
+
+.form-input-wrapper:focus-within .form-input-clear--visible,
+.form-input-wrapper:hover .form-input-clear--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.form-input-clear:hover {
+  background: var(--bg-tertiary);
+  color: var(--text);
+}
+
 .form-row {
   display: flex;
   gap: var(--space-md);
