@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   adjustColor,
   isValidUrl,
@@ -9,6 +9,7 @@ import {
   getTimeSlotIndex,
   escapeAttr,
   toLocalDateString,
+  expandAmazonShortUrl,
 } from '../../js/shared/utils.js';
 
 describe('adjustColor', () => {
@@ -145,5 +146,95 @@ describe('toLocalDateString', () => {
   it('月末の日付を正しく処理', () => {
     const date = new Date(2025, 11, 31); // 2025年12月31日
     expect(toLocalDateString(date)).toBe('2025-12-31');
+  });
+});
+
+describe('expandAmazonShortUrl', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('短縮URLでない場合はnullを返す', async () => {
+    const result = await expandAmazonShortUrl('https://www.amazon.co.jp/dp/B123456789');
+    expect(result).toEqual({ fullUrl: null, asin: null });
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('canonical URLからASINを抽出', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        contents: '<html><head><link rel="canonical" href="https://www.amazon.co.jp/dp/B08N5WRWNW"></head></html>'
+      })
+    });
+
+    const result = await expandAmazonShortUrl('https://amzn.asia/d/abc123');
+    expect(result).toEqual({
+      fullUrl: 'https://www.amazon.co.jp/dp/B08N5WRWNW',
+      asin: 'B08N5WRWNW'
+    });
+  });
+
+  it('og:urlからASINを抽出', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        contents: '<html><head><meta property="og:url" content="https://www.amazon.co.jp/dp/4422100980"></head></html>'
+      })
+    });
+
+    const result = await expandAmazonShortUrl('https://amzn.to/xyz789');
+    expect(result).toEqual({
+      fullUrl: 'https://www.amazon.co.jp/dp/4422100980',
+      asin: '4422100980'
+    });
+  });
+
+  it('HTML内の/dp/パターンからASINを抽出', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        contents: '<html><body><a href="/dp/B08N5WRWNW">商品リンク</a></body></html>'
+      })
+    });
+
+    const result = await expandAmazonShortUrl('https://amzn.asia/d/test');
+    expect(result).toEqual({
+      fullUrl: 'https://www.amazon.co.jp/dp/B08N5WRWNW',
+      asin: 'B08N5WRWNW'
+    });
+  });
+
+  it('ASINが見つからない場合はnullを返す', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        contents: '<html><body>No ASIN here</body></html>'
+      })
+    });
+
+    const result = await expandAmazonShortUrl('https://amzn.asia/d/test');
+    expect(result).toEqual({ fullUrl: null, asin: null });
+  });
+
+  it('ネットワークエラー時はnullを返す', async () => {
+    fetch.mockRejectedValue(new Error('Network error'));
+
+    const result = await expandAmazonShortUrl('https://amzn.asia/d/test');
+    expect(result).toEqual({ fullUrl: null, asin: null });
+  });
+
+  it('HTTPエラー時はnullを返す', async () => {
+    fetch.mockResolvedValue({
+      ok: false,
+      status: 500
+    });
+
+    const result = await expandAmazonShortUrl('https://amzn.asia/d/test');
+    expect(result).toEqual({ fullUrl: null, asin: null });
   });
 });

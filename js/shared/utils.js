@@ -42,6 +42,64 @@ export function adjustColor(hex, amount) {
 export const isValidUrl = (str) => str && /^https?:\/\//i.test(str);
 export const isAmazonShortUrl = (url) => url && /^https?:\/\/(amzn\.asia|amzn\.to)\//i.test(url);
 
+/**
+ * Amazon短縮URLを展開してフルURLを取得する
+ * CORSプロキシ（allorigins）経由でHTMLを取得し、canonical URLまたはASINを抽出
+ * @param {string} shortUrl - 短縮URL (amzn.asia/d/xxx または amzn.to/xxx)
+ * @returns {Promise<{fullUrl: string|null, asin: string|null}>}
+ */
+export async function expandAmazonShortUrl(shortUrl) {
+  if (!isAmazonShortUrl(shortUrl)) {
+    return { fullUrl: null, asin: null };
+  }
+
+  try {
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(shortUrl)}`;
+    const response = await fetch(proxyUrl, {
+      signal: AbortSignal.timeout(10000) // 10秒タイムアウト
+    });
+
+    if (!response.ok) {
+      return { fullUrl: null, asin: null };
+    }
+
+    const data = await response.json();
+    const html = data.contents || '';
+
+    // 1. canonical URLからASINを抽出
+    const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) ||
+                           html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
+    if (canonicalMatch) {
+      const asin = extractAsinFromUrl(canonicalMatch[1]);
+      if (asin) {
+        return { fullUrl: canonicalMatch[1], asin };
+      }
+    }
+
+    // 2. og:urlからASINを抽出
+    const ogUrlMatch = html.match(/<meta[^>]+property=["']og:url["'][^>]+content=["']([^"']+)["']/i) ||
+                       html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:url["']/i);
+    if (ogUrlMatch) {
+      const asin = extractAsinFromUrl(ogUrlMatch[1]);
+      if (asin) {
+        return { fullUrl: ogUrlMatch[1], asin };
+      }
+    }
+
+    // 3. HTML内から/dp/ASINパターンを探す
+    const dpMatch = html.match(/\/dp\/([A-Z0-9]{10})/i);
+    if (dpMatch) {
+      const asin = dpMatch[1].toUpperCase();
+      return { fullUrl: `https://www.amazon.co.jp/dp/${asin}`, asin };
+    }
+
+    return { fullUrl: null, asin: null };
+  } catch (error) {
+    // ネットワークエラーやタイムアウト
+    return { fullUrl: null, asin: null };
+  }
+}
+
 export function extractAsinFromUrl(url) {
   if (!url) return null;
   const patterns = [
