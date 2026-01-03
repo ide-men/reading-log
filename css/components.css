@@ -1469,6 +1469,49 @@ select.form-input {
   color: var(--text-secondary);
 }
 
+/* 使い方ステップ */
+.onboarding-how-to {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.onboarding-how-to-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.onboarding-how-to-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: var(--font-md);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.onboarding-how-to-text {
+  font-size: var(--font-lg);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.onboarding-how-to-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 @media (min-width: 600px) {
   .onboarding-modal {
     max-width: 420px;

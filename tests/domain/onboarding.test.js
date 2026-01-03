@@ -77,14 +77,26 @@ describe('getNextStep', () => {
     expect(result.isLastStep).toBe(false);
   });
 
-  it('ステップ5の次はisLastStep: true', () => {
+  it('ステップ5の次はステップ6', () => {
     const result = getNextStep(5);
+    expect(result.nextStep).toBe(6);
+    expect(result.isLastStep).toBe(false);
+  });
+
+  it('ステップ6の次はステップ7', () => {
+    const result = getNextStep(6);
+    expect(result.nextStep).toBe(7);
+    expect(result.isLastStep).toBe(false);
+  });
+
+  it('ステップ7の次はisLastStep: true', () => {
+    const result = getNextStep(7);
     expect(result.isLastStep).toBe(true);
   });
 });
 
 describe('getTotalSteps', () => {
-  it('ステップ総数は5', () => {
-    expect(getTotalSteps()).toBe(5);
+  it('ステップ総数は7', () => {
+    expect(getTotalSteps()).toBe(7);
   });
 });
