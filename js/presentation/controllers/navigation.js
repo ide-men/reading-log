@@ -66,12 +66,26 @@ export function closeModal(id) {
 // ========================================
 // トースト
 // ========================================
+let currentToast = null;
+
 export function showToast(message, duration = 3000) {
+  // 既存のトーストを消す
+  if (currentToast) {
+    currentToast.remove();
+  }
+
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.textContent = message;
   document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), duration);
+  currentToast = toast;
+
+  setTimeout(() => {
+    if (currentToast === toast) {
+      toast.remove();
+      currentToast = null;
+    }
+  }, duration);
   eventBus.emit(Events.TOAST_SHOW, { message });
 }
 
