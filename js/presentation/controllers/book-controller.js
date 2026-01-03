@@ -480,7 +480,7 @@ export function initAddBookEvents() {
   bookInput.addEventListener('input', () => {
     const title = bookInput.value.trim();
     if (title) {
-      const searchUrl = `https://www.amazon.co.jp/s?k=${encodeURIComponent(title)}`;
+      const searchUrl = `https://www.amazon.co.jp/gp/aw/s/ref=is_s?k=${encodeURIComponent(title)}`;
       amazonSearchLink.href = searchUrl;
       amazonSearchLink.style.display = 'inline-block';
     } else {
