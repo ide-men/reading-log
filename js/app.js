@@ -9,6 +9,7 @@ import { loadState, cleanupHistory, saveState } from './core/storage.js';
 // Presentation - Controllers
 import {
   initNavigationEvents,
+  initScrollNavigation,
   initModalEvents,
   initSettingsEvents,
   updateUI,
@@ -37,6 +38,7 @@ import { initTermHintEvents } from './presentation/controllers/term-hint-control
 // ========================================
 function initializeEventListeners() {
   initNavigationEvents();
+  initScrollNavigation();
   initTimerEvents();
   initSettingsEvents();
   initAddBookEvents();
