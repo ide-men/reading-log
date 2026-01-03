@@ -727,6 +727,23 @@ export function initStoreEvents() {
 // ========================================
 let reunionBookId = null;
 
+// セクションの条件付き表示ヘルパー
+function showSection(sectionId, contentId, content, renderFn = null) {
+  const section = document.getElementById(sectionId);
+  const contentEl = document.getElementById(contentId);
+
+  if (content) {
+    if (renderFn) {
+      contentEl.innerHTML = renderFn(content);
+    } else {
+      contentEl.textContent = content;
+    }
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
+}
+
 export function openReunionModal(id) {
   const book = bookRepository.getBookById(id);
   if (!book) return;
@@ -737,39 +754,23 @@ export function openReunionModal(id) {
   document.getElementById('reunionBookTitle').textContent = book.title;
 
   // きっかけ
-  const triggerSection = document.getElementById('reunionTriggerSection');
-  const triggerNote = document.getElementById('reunionTriggerNote');
-  if (book.triggerNote) {
-    triggerNote.textContent = book.triggerNote;
-    triggerSection.style.display = 'block';
-  } else {
-    triggerSection.style.display = 'none';
-  }
+  showSection('reunionTriggerSection', 'reunionTriggerNote', book.triggerNote);
 
   // 読了時の感想
-  const completionSection = document.getElementById('reunionCompletionSection');
-  const completionNote = document.getElementById('reunionCompletionNote');
-  if (book.completionNote) {
-    completionNote.textContent = book.completionNote;
-    completionSection.style.display = 'block';
-  } else {
-    completionSection.style.display = 'none';
-  }
+  showSection('reunionCompletionSection', 'reunionCompletionNote', book.completionNote);
 
   // 過去の振り返り
-  const reflectionsSection = document.getElementById('reunionReflectionsSection');
-  const reflectionsList = document.getElementById('reunionReflectionsList');
-  if (book.reflections && book.reflections.length > 0) {
-    reflectionsList.innerHTML = book.reflections.map(r => `
+  showSection(
+    'reunionReflectionsSection',
+    'reunionReflectionsList',
+    book.reflections?.length > 0 ? book.reflections : null,
+    (reflections) => reflections.map(r => `
       <div class="reflection-item">
         <span class="reflection-date">${r.date}</span>
         <p class="reflection-note">${r.note}</p>
       </div>
-    `).join('');
-    reflectionsSection.style.display = 'block';
-  } else {
-    reflectionsSection.style.display = 'none';
-  }
+    `).join('')
+  );
 
   // 入力欄クリア
   document.getElementById('reunionInput').value = '';

@@ -7,6 +7,23 @@ import * as bookRepository from '../../domain/book/book-repository.js';
 import { stateManager } from '../../core/state-manager.js';
 
 // ========================================
+// カルーセルボタンの状態を一括設定
+// ========================================
+function setCarouselButtonsState(enabled, linkEnabled = false) {
+  const startBtn = document.getElementById('startBtn');
+  const completeBtn = document.getElementById('completeSelectedBtn');
+  const dropBtn = document.getElementById('dropSelectedBtn');
+  const menuBtn = document.getElementById('bookActionsMenuBtn');
+  const linkBtn = document.getElementById('openLinkSelectedBtn');
+
+  startBtn.disabled = !enabled;
+  completeBtn.disabled = !enabled;
+  dropBtn.disabled = !enabled;
+  menuBtn.disabled = !enabled;
+  if (linkBtn) linkBtn.disabled = !linkEnabled;
+}
+
+// ========================================
 // カバン（読書中）のレンダリング
 // ========================================
 export function renderReadingBooks() {
@@ -35,11 +52,8 @@ export function renderReadingBooks() {
         </button>
       </div>`;
     infoContainer.innerHTML = '';
-    startBtn.disabled = true;
+    setCarouselButtonsState(false);
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を追加してください</span>';
-    completeBtn.disabled = true;
-    dropBtn.disabled = true;
-    menuBtn.disabled = true;
     stateManager.setSelectedBookId(null);
     if (dotsContainer) {
       dotsContainer.innerHTML = '';
@@ -138,19 +152,11 @@ export function updateSelectedBookInfo() {
   const selectedBookId = stateManager.getSelectedBookId();
   const infoContainer = document.getElementById('selectedBookInfo');
   const startBtn = document.getElementById('startBtn');
-  const completeBtn = document.getElementById('completeSelectedBtn');
-  const dropBtn = document.getElementById('dropSelectedBtn');
-  const menuBtn = document.getElementById('bookActionsMenuBtn');
-  const linkBtn = document.getElementById('openLinkSelectedBtn');
 
   if (!selectedBookId) {
     infoContainer.innerHTML = '';
-    startBtn.disabled = true;
+    setCarouselButtonsState(false);
     startBtn.innerHTML = '<span class="main-btn-icon">📖</span><span>本を選んでください</span>';
-    completeBtn.disabled = true;
-    dropBtn.disabled = true;
-    menuBtn.disabled = true;
-    if (linkBtn) linkBtn.disabled = true;
     return;
   }
 
@@ -160,14 +166,9 @@ export function updateSelectedBookInfo() {
   // タイトルは各本の上に表示されるので、infoContainerは空にする
   infoContainer.innerHTML = '';
 
-  // ボタンを有効化
-  startBtn.disabled = false;
+  // ボタンを有効化（リンクボタンはリンクがある場合のみ）
+  setCarouselButtonsState(true, !!book.link);
   startBtn.innerHTML = '<span>この本を読む</span>';
-  completeBtn.disabled = false;
-  dropBtn.disabled = false;
-  menuBtn.disabled = false;
-  // リンクボタンはリンクがある場合のみ有効化
-  if (linkBtn) linkBtn.disabled = !book.link;
 }
 
 // ========================================
