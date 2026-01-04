@@ -1182,3 +1182,99 @@
   border-radius: var(--radius-sm);
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
 }
+
+/* ==========================================================================
+   Install Prompt Banner (ホーム画面追加バナー)
+   ========================================================================== */
+
+.install-prompt {
+  position: fixed;
+  bottom: calc(60px + env(safe-area-inset-bottom, 0px) + var(--space-md));
+  left: var(--space-md);
+  right: var(--space-md);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.install-prompt.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.install-prompt__content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(145deg,
+    rgba(30, 35, 45, 0.98) 0%,
+    rgba(25, 30, 40, 0.98) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.install-prompt__icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.install-prompt__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.install-prompt__title {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  margin-bottom: var(--space-xs);
+}
+
+.install-prompt__instruction {
+  font-size: var(--font-md);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.install-prompt__step {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.install-prompt__close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.install-prompt__close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+}

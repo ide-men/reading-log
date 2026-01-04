@@ -32,6 +32,7 @@ import {
   showOnboardingIfNeeded
 } from './presentation/controllers/onboarding-controller.js';
 import { initTermHintEvents } from './presentation/controllers/term-hint-controller.js';
+import { initInstallPrompt } from './presentation/controllers/install-prompt-controller.js';
 
 // ========================================
 // 全イベントリスナー初期化
@@ -78,6 +79,9 @@ function init() {
 
   // 初回起動時はオンボーディングを表示
   showOnboardingIfNeeded();
+
+  // モバイルでホーム画面追加を促す
+  initInstallPrompt();
 
   // 状態変更時に自動保存
   stateManager.subscribe(() => {
