@@ -681,7 +681,6 @@
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.25),
     0 4px 16px rgba(0, 0, 0, 0.15);
-  animation: slideUp 0.4s var(--transition-bounce);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   overflow: hidden;
