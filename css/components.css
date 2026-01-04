@@ -481,6 +481,7 @@ select.form-input {
   font-size: 10px;
   font-weight: var(--weight-bold);
   color: var(--bg);
+  -webkit-text-fill-color: var(--bg);
   background: linear-gradient(135deg, #f59e0b, #d97706);
   border-radius: var(--radius-sm);
   vertical-align: middle;
