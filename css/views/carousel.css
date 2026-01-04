@@ -369,7 +369,6 @@
 .selected-book-info {
   text-align: center;
   padding: 0 var(--space-lg);
-  min-height: 28px;
 }
 
 .selected-book-title {
