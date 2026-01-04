@@ -6,7 +6,7 @@ import { BOOK_STATUS, CELEBRATION_CONFIG } from '../../shared/constants.js';
 import { getCoverUrlFromLink, toLocalDateString } from '../../shared/utils.js';
 import { eventBus, Events } from '../../shared/event-bus.js';
 import * as bookRepository from './book-repository.js';
-import { createBook, validateBookTitle } from './book-entity.js';
+import { createBook, validateBookTitle, checkDuplicateTitlePure, checkDuplicateLinkPure } from './book-entity.js';
 
 // ========================================
 // 追加時のメッセージ
@@ -37,6 +37,18 @@ export function addBook({ title, link, triggerNote, status = BOOK_STATUS.READING
   const validation = validateBookTitle(title);
   if (!validation.valid) {
     return { success: false, message: validation.error };
+  }
+
+  // 重複チェック
+  const existingBooks = bookRepository.getAllBooks();
+  const titleCheck = checkDuplicateTitlePure(title, existingBooks);
+  if (titleCheck.isDuplicate) {
+    return { success: false, message: `「${titleCheck.duplicateBook.title}」は既に登録されています` };
+  }
+
+  const linkCheck = checkDuplicateLinkPure(link, existingBooks);
+  if (linkCheck.isDuplicate) {
+    return { success: false, message: `このリンクは「${linkCheck.duplicateBook.title}」で既に登録されています` };
   }
 
   // 本を作成

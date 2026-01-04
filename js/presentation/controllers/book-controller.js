@@ -6,6 +6,7 @@ import { BOOK_STATUS, UI_CONFIG, CELEBRATION_CONFIG } from '../../shared/constan
 import { openLink, escapeHtml } from '../../shared/utils.js';
 import * as bookService from '../../domain/book/book-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
+import { checkDuplicateTitlePure, checkDuplicateLinkPure } from '../../domain/book/book-entity.js';
 import { stateManager } from '../../core/state-manager.js';
 import { showAcquireCelebration } from '../effects/celebrations.js';
 import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenteredBook } from '../views/carousel-view.js';
@@ -46,6 +47,12 @@ export function addBook(status = BOOK_STATUS.READING) {
   bookInput.value = '';
   if (bookCommentInput) bookCommentInput.value = '';
   if (linkInput) linkInput.value = '';
+
+  // エラーメッセージもクリア
+  const bookInputError = document.getElementById('bookInputError');
+  const linkInputError = document.getElementById('linkInputError');
+  if (bookInputError) bookInputError.style.display = 'none';
+  if (linkInputError) linkInputError.style.display = 'none';
 
   renderBooks();
   showToast(result.message);
@@ -509,7 +516,66 @@ export function initAddBookEvents() {
   // タイトル入力時にAmazon検索リンクを更新
   // <a>タグのhrefを直接設定し、通常のリンククリック動作でブラウザを開く（PWA対応）
   const bookInput = document.getElementById('bookInput');
+  const linkInput = document.getElementById('linkInput');
   const amazonSearchLink = document.getElementById('amazonSearchLink');
+  const bookInputError = document.getElementById('bookInputError');
+  const linkInputError = document.getElementById('linkInputError');
+  const addBookBtn = document.getElementById('addBookBtn');
+
+  // 重複バリデーション状態を追跡
+  let hasTitleDuplicate = false;
+  let hasLinkDuplicate = false;
+
+  // 追加ボタンの状態を更新
+  function updateAddBookButtonState() {
+    const title = bookInput.value.trim();
+    const hasTitle = title !== '';
+    addBookBtn.disabled = !hasTitle || hasTitleDuplicate || hasLinkDuplicate;
+  }
+
+  // タイトル重複チェック
+  function validateTitleDuplicate() {
+    const title = bookInput.value.trim();
+    if (!title) {
+      hasTitleDuplicate = false;
+      bookInputError.style.display = 'none';
+      return;
+    }
+
+    const existingBooks = bookRepository.getAllBooks();
+    const result = checkDuplicateTitlePure(title, existingBooks);
+
+    if (result.isDuplicate) {
+      hasTitleDuplicate = true;
+      bookInputError.textContent = `「${result.duplicateBook.title}」は既に登録されています`;
+      bookInputError.style.display = 'block';
+    } else {
+      hasTitleDuplicate = false;
+      bookInputError.style.display = 'none';
+    }
+  }
+
+  // リンク重複チェック
+  function validateLinkDuplicate() {
+    const link = linkInput.value.trim();
+    if (!link) {
+      hasLinkDuplicate = false;
+      linkInputError.style.display = 'none';
+      return;
+    }
+
+    const existingBooks = bookRepository.getAllBooks();
+    const result = checkDuplicateLinkPure(link, existingBooks);
+
+    if (result.isDuplicate) {
+      hasLinkDuplicate = true;
+      linkInputError.textContent = `このリンクは「${result.duplicateBook.title}」で既に登録されています`;
+      linkInputError.style.display = 'block';
+    } else {
+      hasLinkDuplicate = false;
+      linkInputError.style.display = 'none';
+    }
+  }
 
   bookInput.addEventListener('input', () => {
     const title = bookInput.value.trim();
@@ -521,6 +587,15 @@ export function initAddBookEvents() {
       amazonSearchLink.href = '#';
       amazonSearchLink.style.display = 'none';
     }
+
+    // 重複バリデーション
+    validateTitleDuplicate();
+    updateAddBookButtonState();
+  });
+
+  linkInput.addEventListener('input', () => {
+    validateLinkDuplicate();
+    updateAddBookButtonState();
   });
 
   // 「なぜこの本？」トグル

@@ -76,6 +76,41 @@ describe('book-service.js', () => {
 
       expect(result.book.status).toBe(BOOK_STATUS.READING);
     });
+
+    it('重複するタイトルはエラー', () => {
+      mockBooks.set(1, { id: 1, title: '既存の本', link: null, status: BOOK_STATUS.READING });
+
+      const result = addBook({ title: '既存の本' });
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('「既存の本」は既に登録されています');
+    });
+
+    it('重複するタイトル（大文字小文字を無視）はエラー', () => {
+      mockBooks.set(1, { id: 1, title: 'Test Book', link: null, status: BOOK_STATUS.READING });
+
+      const result = addBook({ title: 'test book' });
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('「Test Book」は既に登録されています');
+    });
+
+    it('重複するリンクはエラー', () => {
+      mockBooks.set(1, { id: 1, title: '既存の本', link: 'https://amazon.co.jp/dp/123', status: BOOK_STATUS.READING });
+
+      const result = addBook({ title: '新しい本', link: 'https://amazon.co.jp/dp/123' });
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('このリンクは「既存の本」で既に登録されています');
+    });
+
+    it('リンクなしの本は重複チェックをスキップ', () => {
+      mockBooks.set(1, { id: 1, title: '既存の本', link: null, status: BOOK_STATUS.READING });
+
+      const result = addBook({ title: '新しい本', link: '' });
+
+      expect(result.success).toBe(true);
+    });
   });
 
   describe('editBook', () => {

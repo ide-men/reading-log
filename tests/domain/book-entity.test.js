@@ -10,6 +10,8 @@ import {
   getBookColorByIndex,
   getMiniBookStyle,
   resetIdCounter,
+  checkDuplicateTitlePure,
+  checkDuplicateLinkPure,
 } from '../../js/domain/book/book-entity.js';
 import { BOOK_STATUS, BOOK_COLORS } from '../../js/shared/constants.js';
 import {
@@ -256,5 +258,94 @@ describe('getMiniBookStyle', () => {
     expect(style.height).toBeGreaterThan(0);
     expect(style.width).toBeGreaterThan(0);
     expect(style.bgStyle).toContain('linear-gradient');
+  });
+});
+
+describe('checkDuplicateTitlePure', () => {
+  const existingBooks = [
+    { id: 1, title: '人を動かす', link: 'https://amazon.co.jp/dp/123' },
+    { id: 2, title: '7つの習慣', link: 'https://amazon.co.jp/dp/456' },
+    { id: 3, title: 'Test Book', link: null },
+  ];
+
+  it('重複するタイトルを検出する', () => {
+    const result = checkDuplicateTitlePure('人を動かす', existingBooks);
+
+    expect(result.isDuplicate).toBe(true);
+    expect(result.duplicateBook.id).toBe(1);
+    expect(result.duplicateBook.title).toBe('人を動かす');
+  });
+
+  it('大文字小文字を無視して重複を検出する', () => {
+    const result = checkDuplicateTitlePure('test book', existingBooks);
+
+    expect(result.isDuplicate).toBe(true);
+    expect(result.duplicateBook.title).toBe('Test Book');
+  });
+
+  it('重複がない場合はfalseを返す', () => {
+    const result = checkDuplicateTitlePure('新しい本', existingBooks);
+
+    expect(result.isDuplicate).toBe(false);
+    expect(result.duplicateBook).toBeUndefined();
+  });
+
+  it('空のタイトルは重複なしとして扱う', () => {
+    expect(checkDuplicateTitlePure('', existingBooks).isDuplicate).toBe(false);
+    expect(checkDuplicateTitlePure('   ', existingBooks).isDuplicate).toBe(false);
+    expect(checkDuplicateTitlePure(null, existingBooks).isDuplicate).toBe(false);
+  });
+
+  it('excludeIdで指定されたIDの本を除外する', () => {
+    const result = checkDuplicateTitlePure('人を動かす', existingBooks, 1);
+
+    expect(result.isDuplicate).toBe(false);
+  });
+
+  it('前後の空白を無視して重複を検出する', () => {
+    const result = checkDuplicateTitlePure('  人を動かす  ', existingBooks);
+
+    expect(result.isDuplicate).toBe(true);
+  });
+});
+
+describe('checkDuplicateLinkPure', () => {
+  const existingBooks = [
+    { id: 1, title: '人を動かす', link: 'https://amazon.co.jp/dp/123' },
+    { id: 2, title: '7つの習慣', link: 'https://amazon.co.jp/dp/456' },
+    { id: 3, title: 'リンクなし', link: null },
+  ];
+
+  it('重複するリンクを検出する', () => {
+    const result = checkDuplicateLinkPure('https://amazon.co.jp/dp/123', existingBooks);
+
+    expect(result.isDuplicate).toBe(true);
+    expect(result.duplicateBook.id).toBe(1);
+    expect(result.duplicateBook.title).toBe('人を動かす');
+  });
+
+  it('重複がない場合はfalseを返す', () => {
+    const result = checkDuplicateLinkPure('https://amazon.co.jp/dp/999', existingBooks);
+
+    expect(result.isDuplicate).toBe(false);
+    expect(result.duplicateBook).toBeUndefined();
+  });
+
+  it('空のリンクは重複なしとして扱う', () => {
+    expect(checkDuplicateLinkPure('', existingBooks).isDuplicate).toBe(false);
+    expect(checkDuplicateLinkPure('   ', existingBooks).isDuplicate).toBe(false);
+    expect(checkDuplicateLinkPure(null, existingBooks).isDuplicate).toBe(false);
+  });
+
+  it('excludeIdで指定されたIDの本を除外する', () => {
+    const result = checkDuplicateLinkPure('https://amazon.co.jp/dp/123', existingBooks, 1);
+
+    expect(result.isDuplicate).toBe(false);
+  });
+
+  it('リンクがnullの本とは重複しない', () => {
+    const result = checkDuplicateLinkPure('https://example.com', existingBooks);
+
+    expect(result.isDuplicate).toBe(false);
   });
 });
