@@ -326,6 +326,23 @@
             </label>
           </div>
         </div>
+        <div class="form-group label-selector" id="addLabelSelector">
+          <label class="form-label">ラベル（任意）</label>
+          <div class="label-selector__selected" id="addLabelSelected">
+            <!-- 選択済みラベルがここに表示される -->
+          </div>
+          <div class="label-selector__add-wrapper" style="position: relative;">
+            <button type="button" class="label-selector__add-btn" id="addLabelAddBtn">+ ラベルを追加</button>
+            <div class="label-selector__dropdown" id="addLabelDropdown">
+              <div class="label-selector__search">
+                <input type="text" id="addLabelSearchInput" placeholder="検索/新規作成">
+              </div>
+              <div class="label-selector__options" id="addLabelOptions">
+                <!-- ラベル候補がここに表示される -->
+              </div>
+            </div>
+          </div>
+        </div>
         <label class="continue-checkbox">
           <input type="checkbox" id="continueAddCheckbox">
           <span>続けて追加</span>
