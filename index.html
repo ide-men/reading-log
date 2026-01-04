@@ -6,6 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0a0a0f">
+  <meta name="robots" content="noindex, nofollow">
   <title>Honoka</title>
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
@@ -27,7 +28,7 @@
   <div class="app">
     <main class="content" role="main">
       <header class="header">
-        <h1>Honoka</h1>
+        <h1>Honoka<span class="beta-badge">β</span></h1>
         <button class="header-btn" id="settingsBtn" aria-label="設定を開く">⚙️</button>
       </header>
       <!-- ホームタブ（カバン） -->
@@ -396,6 +397,18 @@
           <h3 class="settings-section-title">⚠️ 危険な操作</h3>
           <button class="btn btn-danger" id="resetBtn">すべてのデータをリセット</button>
           <p class="settings-hint">読書記録・登録した本がすべて削除されます</p>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-section-title">📋 このアプリについて</h3>
+          <div class="beta-notice">
+            <span class="beta-notice-badge">β</span>
+            <p>現在ベータ版として試験公開中です。ご意見・不具合報告をお待ちしています。</p>
+          </div>
+          <div class="settings-links">
+            <a href="https://github.com/ide-men/reading-log/issues" class="settings-link" target="_blank" rel="noopener noreferrer">💬 フィードバックを送る</a>
+            <a href="privacy.html" class="settings-link">プライバシーポリシー</a>
+            <a href="terms.html" class="settings-link">利用規約</a>
+          </div>
         </div>
       </div>
     </div>
