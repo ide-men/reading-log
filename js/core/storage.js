@@ -40,12 +40,19 @@ export function loadState() {
     const meta = localStorage.getItem(STORAGE_KEYS.meta);
     if (meta) {
       const parsedMeta = JSON.parse(meta);
+      const books = JSON.parse(localStorage.getItem(STORAGE_KEYS.books) || '[]');
+      // 既存の本にlabelIdsがない場合は空配列を追加（マイグレーション）
+      const migratedBooks = books.map(book => ({
+        ...book,
+        labelIds: book.labelIds ?? []
+      }));
       const loadedState = {
         meta: parsedMeta,
         stats: JSON.parse(localStorage.getItem(STORAGE_KEYS.stats) || '{}'),
-        books: JSON.parse(localStorage.getItem(STORAGE_KEYS.books) || '[]'),
+        books: migratedBooks,
         history: JSON.parse(localStorage.getItem(STORAGE_KEYS.history) || '[]'),
-        archived: JSON.parse(localStorage.getItem(STORAGE_KEYS.archived) || '{}')
+        archived: JSON.parse(localStorage.getItem(STORAGE_KEYS.archived) || '{}'),
+        labels: JSON.parse(localStorage.getItem(STORAGE_KEYS.labels) || '[]')
       };
 
       // 日付リセット
@@ -78,6 +85,7 @@ export function saveStateToStorage(s) {
     localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(s.books));
     localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(s.history));
     localStorage.setItem(STORAGE_KEYS.archived, JSON.stringify(s.archived));
+    localStorage.setItem(STORAGE_KEYS.labels, JSON.stringify(s.labels || []));
   } catch (e) {
     console.error('Failed to save state to storage:', e);
     // QuotaExceededError等の場合、ユーザーに通知するためにイベントを発行
@@ -217,7 +225,8 @@ export function exportData(showToast) {
     stats: state.stats,
     books: state.books,
     history: state.history,
-    archived: state.archived
+    archived: state.archived,
+    labels: state.labels || []
   };
 
   const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
@@ -271,7 +280,29 @@ function sanitizeImportedBooks(books) {
       completionNote: book.completionNote || null,
       reflections: Array.isArray(book.reflections) ? book.reflections : [],
       readingTime: typeof book.readingTime === 'number' ? book.readingTime : 0,
-      bookmark: book.bookmark || null
+      bookmark: book.bookmark || null,
+      labelIds: Array.isArray(book.labelIds) ? book.labelIds : []
+    }));
+}
+
+/**
+ * インポートされたラベルをサニタイズ
+ * @param {Array} labels - ラベルの配列
+ * @returns {Array}
+ */
+function sanitizeImportedLabels(labels) {
+  if (!Array.isArray(labels)) return [];
+  return labels
+    .filter(label =>
+      typeof label === 'object' &&
+      label !== null &&
+      typeof label.id === 'number' &&
+      typeof label.name === 'string' &&
+      label.name.trim()
+    )
+    .map(label => ({
+      id: label.id,
+      name: label.name.trim()
     }));
 }
 
@@ -308,6 +339,9 @@ export function importData(file, { showToast, onSuccess }) {
         return;
       }
 
+      // ラベルのデータをサニタイズ
+      const sanitizedLabels = sanitizeImportedLabels(imported.labels);
+
       stateManager.initialize({
         meta: {
           schemaVersion: SCHEMA_VERSION,
@@ -325,7 +359,8 @@ export function importData(file, { showToast, onSuccess }) {
         },
         books: sanitizedBooks,
         history: imported.history || [],
-        archived: imported.archived || {}
+        archived: imported.archived || {},
+        labels: sanitizedLabels
       });
 
       saveState();
@@ -363,7 +398,8 @@ export function loadSampleData({ showToast, onSuccess }) {
       startedAt: daysToDate(book.startedAt),
       completedAt: daysToDate(book.completedAt),
       note: book.note || null,
-      readingTime: book.status === 'completed' ? 60 + Math.floor(Math.random() * 180) : 0
+      readingTime: book.status === 'completed' ? 60 + Math.floor(Math.random() * 180) : 0,
+      labelIds: []
     };
   });
 
@@ -403,7 +439,8 @@ export function loadSampleData({ showToast, onSuccess }) {
     },
     books,
     history,
-    archived: {}
+    archived: {},
+    labels: []
   });
 
   saveState();

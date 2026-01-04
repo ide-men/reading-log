@@ -1278,3 +1278,318 @@
   background: rgba(255, 255, 255, 0.15);
   color: var(--text);
 }
+
+/* ==========================================================================
+   Label Management (ラベル管理)
+   ========================================================================== */
+
+.label-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.label-list:empty::after {
+  content: 'ラベルがありません';
+  color: var(--text-dim);
+  font-size: var(--font-md);
+  text-align: center;
+  padding: var(--space-md);
+}
+
+.label-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.label-item__name {
+  flex: 1;
+  font-size: var(--font-lg);
+  color: var(--text);
+}
+
+.label-item__count {
+  font-size: var(--font-sm);
+  color: var(--text-dim);
+  background: var(--bg);
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.label-item__actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.label-item__btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-md);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.label-item__btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.label-item__btn--danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+}
+
+.label-add-form {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.label-add-form .form-input {
+  flex: 1;
+}
+
+/* ==========================================================================
+   Label Badges (ラベルバッジ)
+   ========================================================================== */
+
+.label-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.label-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--space-sm);
+  background: rgba(139, 90, 43, 0.3);
+  border: 1px solid rgba(139, 90, 43, 0.5);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  color: var(--text);
+}
+
+.label-badge--removable {
+  cursor: pointer;
+}
+
+.label-badge--removable:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.label-badge__remove {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   Label Selector (ラベル選択UI)
+   ========================================================================== */
+
+.label-selector {
+  margin-top: var(--space-md);
+}
+
+.label-selector__title {
+  font-size: var(--font-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.label-selector__selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  min-height: 28px;
+}
+
+.label-selector__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.label-selector__add-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-secondary);
+  color: var(--text);
+}
+
+.label-selector__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+}
+
+.label-selector__dropdown.visible {
+  display: block;
+}
+
+.label-selector__search {
+  padding: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.label-selector__search input {
+  width: 100%;
+  padding: var(--space-sm);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--font-md);
+}
+
+.label-selector__options {
+  padding: var(--space-xs);
+}
+
+.label-selector__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.label-selector__option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.label-selector__option--selected {
+  background: rgba(139, 90, 43, 0.2);
+}
+
+.label-selector__option--create {
+  color: var(--accent);
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-xs);
+  padding-top: var(--space-md);
+}
+
+.label-selector__checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label-selector__option--selected .label-selector__checkbox {
+  background: var(--color-study);
+  border-color: var(--color-study);
+}
+
+.label-selector__option--selected .label-selector__checkbox::after {
+  content: '✓';
+  color: white;
+  font-size: 10px;
+}
+
+/* ==========================================================================
+   Label Filter (書斎のラベルフィルター)
+   ========================================================================== */
+
+.label-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-sm) 0;
+}
+
+.label-filter__btn {
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.label-filter__btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.label-filter__btn.active {
+  background: rgba(139, 90, 43, 0.3);
+  border-color: var(--color-study);
+  color: var(--text);
+}
+
+/* モーダル小サイズ */
+.modal--sm {
+  max-width: 320px;
+}
+
+/* ==========================================================================
+   Label Stats (ラベル別統計)
+   ========================================================================== */
+
+.label-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.label-stats__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.label-stats__name {
+  font-size: var(--font-lg);
+  color: var(--text);
+}
+
+.label-stats__count {
+  font-size: var(--font-md);
+  color: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+}

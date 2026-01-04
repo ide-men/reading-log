@@ -33,12 +33,14 @@ export function createInitialUI() {
     studySelectedBookId: null,   // 書斎で選択中
     storeSelectedBookId: null,   // 本屋で選択中
     currentStudyStatus: BOOK_STATUS.UNREAD,  // 書斎の現在のタブ
+    selectedLabelId: null,       // 書斎でフィルタリング中のラベル
     editingBookId: null,         // 編集中の本
     deletingBookId: null,        // 削除確認中の本
     detailBookId: null,          // 詳細ダイアログで開いている本
     droppingBookId: null,        // 中断確認中の本
     readingNoteBookId: null,     // 読了時の感想入力中の本
-    readingBookmarkBookId: null  // 読書終了時の栞入力中の本
+    readingBookmarkBookId: null, // 読書終了時の栞入力中の本
+    editingLabelId: null         // 編集中のラベル
   };
 }
 
@@ -48,7 +50,8 @@ export function createInitialState() {
     stats: createInitialStats(),
     books: [],
     history: [],
-    archived: {}
+    archived: {},
+    labels: []
   };
 }
 
@@ -120,6 +123,14 @@ class StateManager {
   getReadingBookmarkBookId() { return this._ui.readingBookmarkBookId; }
   setReadingBookmarkBookId(id) { this._ui.readingBookmarkBookId = id; }
 
+  // ラベルフィルター
+  getSelectedLabelId() { return this._ui.selectedLabelId; }
+  setSelectedLabelId(id) { this._ui.selectedLabelId = id; }
+
+  // ラベル編集
+  getEditingLabelId() { return this._ui.editingLabelId; }
+  setEditingLabelId(id) { this._ui.editingLabelId = id; }
+
   // ========================================
   // 永続化状態の getter/setter
   // ========================================
@@ -179,6 +190,42 @@ class StateManager {
 
   getBook(id) {
     return this._state.books.find(b => b.id === id);
+  }
+
+  // ========================================
+  // ラベルの操作
+  // ========================================
+
+  addLabel(label) {
+    this._state.labels.push(label);
+    this._notifyListeners();
+  }
+
+  updateLabel(id, updates) {
+    const label = this._state.labels.find(l => l.id === id);
+    if (label) {
+      Object.assign(label, updates);
+      this._notifyListeners();
+    }
+  }
+
+  removeLabel(id) {
+    this._state.labels = this._state.labels.filter(l => l.id !== id);
+    // ラベルが削除されたら、本からもそのラベルIDを除外
+    this._state.books.forEach(book => {
+      if (book.labelIds && book.labelIds.includes(id)) {
+        book.labelIds = book.labelIds.filter(labelId => labelId !== id);
+      }
+    });
+    this._notifyListeners();
+  }
+
+  getLabel(id) {
+    return this._state.labels.find(l => l.id === id);
+  }
+
+  getLabels() {
+    return this._state.labels;
   }
 
   // ========================================

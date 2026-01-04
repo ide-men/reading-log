@@ -29,6 +29,7 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink, toLocalDateString } from 
  * @property {Reflection[]} reflections - 振り返りの履歴
  * @property {number} readingTime - 累計読書時間（分）
  * @property {string|null} bookmark - 栞メモ（どこまで読んだか等）
+ * @property {number[]} labelIds - ラベルIDの配列
  */
 
 // ========================================
@@ -102,7 +103,8 @@ export function createBook({ title, link, triggerNote, status = BOOK_STATUS.READ
     completionNote: null,
     reflections: [],
     readingTime: 0,
-    bookmark: null
+    bookmark: null,
+    labelIds: []
   };
 }
 
