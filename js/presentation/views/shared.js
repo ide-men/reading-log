@@ -10,6 +10,7 @@ import {
   createBookCoverHtml,
   renderMiniBookShelf
 } from '../../domain/book/book-entity.js';
+import { getBookLabels } from '../../domain/label/label-service.js';
 
 // ========================================
 // 再会判定ヘルパー
@@ -20,6 +21,22 @@ function isReunionBook(book, months = 3) {
   const thresholdDate = new Date(now.setMonth(now.getMonth() - months));
   const completedDate = new Date(book.completedAt);
   return completedDate <= thresholdDate;
+}
+
+// ========================================
+// ラベルバッジヘルパー
+// ========================================
+function renderLabelBadges(bookId) {
+  const labels = getBookLabels(bookId);
+  if (labels.length === 0) return '';
+
+  return `
+    <div class="label-badges">
+      ${labels.map(label => `
+        <span class="label-badge">${escapeHtml(label.name)}</span>
+      `).join('')}
+    </div>
+  `;
 }
 
 // ========================================
@@ -49,6 +66,7 @@ export function renderBookGrid(books, type = 'study') {
     const coverHtml = createBookCoverHtml(book, placeholder);
     const reunion = isReunionBook(book);
     const reunionBadge = reunion ? '<div class="book-card__reunion-badge">久しぶり</div>' : '';
+    const labelBadges = renderLabelBadges(book.id);
 
     return `
       <div class="book-card ${modifier}" data-book-id="${book.id}" ${reunion ? 'data-reunion="true"' : ''}>
@@ -58,6 +76,7 @@ export function renderBookGrid(books, type = 'study') {
         </div>
         <div class="book-card__info">
           <div class="book-card__title">${escapeHtml(book.title)}</div>
+          ${labelBadges}
         </div>
         <div class="book-card__actions">
           ${renderActions(book)}
@@ -145,6 +164,9 @@ export function renderDetailView(book, type = 'study') {
     ? `<div class="detail-view__note"><strong>✨ 読了時:</strong> ${escapeHtml(book.completionNote)}</div>`
     : '';
 
+  // ラベルバッジ
+  const labelBadges = renderLabelBadges(book.id);
+
   // 再会判定
   const reunion = isReunionBook(book);
 
@@ -190,6 +212,7 @@ export function renderDetailView(book, type = 'study') {
         </div>
         <div class="detail-view__info">
           <div class="detail-view__title">${escapeHtml(book.title)}</div>
+          ${labelBadges}
           ${bookmarkHtml}
           ${triggerHtml}
           ${completionHtml}

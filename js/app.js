@@ -12,6 +12,8 @@ import {
   initScrollNavigation,
   initModalEvents,
   initSettingsEvents,
+  initLabelEvents,
+  renderLabelList,
   updateUI,
   renderBooks
 } from './presentation/controllers/navigation.js';
@@ -42,6 +44,7 @@ function initializeEventListeners() {
   initScrollNavigation();
   initTimerEvents();
   initSettingsEvents();
+  initLabelEvents();
   initAddBookEvents();
   initEditDeleteEvents();
   initModalEvents();

@@ -28,6 +28,7 @@ export const STORAGE_KEYS = {
   books: 'rl_v1_books',
   history: 'rl_v1_history',
   archived: 'rl_v1_archived',
+  labels: 'rl_v1_labels',
   onboarding: 'rl_v1_onboarding',
   installPromptDismissed: 'rl_v1_install_prompt_dismissed'
 };

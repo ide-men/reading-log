@@ -100,6 +100,10 @@
             </button>
           </div>
 
+          <div class="label-filter" id="studyLabelFilter" style="display: none;">
+            <!-- ラベルフィルターがここに動的に追加される -->
+          </div>
+
           <div class="shelf">
             <div class="shelf__board">
               <div class="shelf__visual" id="studyShelf"></div>
@@ -183,6 +187,11 @@
     <div class="rhythm-container">
       <div class="rhythm-grid" id="rhythmGrid"></div>
       <div class="rhythm-insight" id="rhythmInsight"></div>
+    </div>
+
+    <div class="label-stats-section" id="labelStatsSection" style="display: none;">
+      <h3 class="section-title">🏷️ ラベル別の本</h3>
+      <div class="label-stats" id="labelStats"></div>
     </div>
 
     <h3 class="section-title">📖 あなたらしい読書</h3>
@@ -357,6 +366,23 @@
           <label class="form-label">きっかけ（任意）</label>
           <textarea class="form-input form-textarea" id="editBookNote" placeholder="なぜこの本を手に取った？" rows="3"></textarea>
         </div>
+        <div class="form-group label-selector" id="editLabelSelector">
+          <label class="form-label">ラベル</label>
+          <div class="label-selector__selected" id="editLabelSelected">
+            <!-- 選択済みラベルがここに表示される -->
+          </div>
+          <div class="label-selector__add-wrapper" style="position: relative;">
+            <button type="button" class="label-selector__add-btn" id="editLabelAddBtn">+ ラベルを追加</button>
+            <div class="label-selector__dropdown" id="editLabelDropdown">
+              <div class="label-selector__search">
+                <input type="text" id="editLabelSearchInput" placeholder="検索/新規作成">
+              </div>
+              <div class="label-selector__options" id="editLabelOptions">
+                <!-- ラベル候補がここに表示される -->
+              </div>
+            </div>
+          </div>
+        </div>
         <button class="btn btn-primary" id="saveEditBtn">保存</button>
         <button class="btn btn-secondary" data-close="editBookModal">キャンセル</button>
       </div>
@@ -374,6 +400,16 @@
         <div class="settings-section">
           <h3 class="settings-section-title">❓ ヘルプ</h3>
           <button class="btn btn-secondary" id="showOnboardingBtn">📖 使い方を見る</button>
+        </div>
+        <div class="settings-section">
+          <h3 class="settings-section-title">🏷️ ラベル管理</h3>
+          <div class="label-list" id="labelList">
+            <!-- ラベル一覧がここに動的に追加される -->
+          </div>
+          <div class="label-add-form">
+            <input type="text" class="form-input" id="newLabelInput" placeholder="新しいラベル名">
+            <button class="btn btn-secondary" id="addLabelBtn">追加</button>
+          </div>
         </div>
         <div class="settings-section">
           <h3 class="settings-section-title">💾 データ管理</h3>
@@ -412,6 +448,39 @@
             <a href="terms.html" class="settings-link">利用規約</a>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ラベル編集モーダル -->
+  <div class="modal-overlay" id="editLabelModal" role="dialog" aria-modal="true" aria-labelledby="editLabelModalTitle">
+    <div class="modal modal--sm">
+      <div class="modal-header">
+        <h2 id="editLabelModalTitle">ラベルを編集</h2>
+        <button class="modal-close close-btn close-btn--sm" data-close="editLabelModal" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">ラベル名</label>
+          <input type="text" class="form-input" id="editLabelName" placeholder="ラベル名">
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" data-close="editLabelModal">キャンセル</button>
+          <button class="btn btn-primary" id="saveLabelBtn">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ラベル削除確認 -->
+  <div class="confirm-overlay" id="deleteLabelConfirm" role="alertdialog" aria-modal="true" aria-labelledby="deleteLabelConfirmTitle">
+    <div class="confirm-box">
+      <div class="confirm-icon" aria-hidden="true">🏷️</div>
+      <div class="confirm-title" id="deleteLabelConfirmTitle">ラベルを削除しますか？</div>
+      <div class="confirm-text" id="deleteLabelConfirmText"></div>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" data-close="deleteLabelConfirm">いいえ</button>
+        <button class="confirm-ok" id="confirmDeleteLabelBtn">はい</button>
       </div>
     </div>
   </div>

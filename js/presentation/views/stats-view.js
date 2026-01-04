@@ -1,8 +1,9 @@
 // ========================================
 // 統計ビュー
 // ========================================
-import { randomItem } from '../../shared/utils.js';
+import { randomItem, escapeHtml } from '../../shared/utils.js';
 import * as statsService from '../../domain/stats/stats-service.js';
+import { getAllLabels, getLabelUsageCount } from '../../domain/label/label-service.js';
 
 // ========================================
 // 統計のレンダリング
@@ -17,6 +18,7 @@ export function renderStats() {
   renderWeekChart();
   renderCalendar();
   renderRhythmHeatmap();
+  renderLabelStats();
   renderReadingInsights();
 }
 
@@ -163,6 +165,38 @@ function renderRhythmHeatmap() {
   const insightEl = document.getElementById('rhythmInsight');
   insightEl.textContent = insight || '';
   insightEl.style.display = insight ? 'block' : 'none';
+}
+
+// ========================================
+// ラベル別統計のレンダリング
+// ========================================
+function renderLabelStats() {
+  const section = document.getElementById('labelStatsSection');
+  const container = document.getElementById('labelStats');
+
+  if (!section || !container) return;
+
+  const labels = getAllLabels();
+
+  if (labels.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+
+  // ラベルごとに本の数を取得してソート（多い順）
+  const labelData = labels.map(label => ({
+    ...label,
+    count: getLabelUsageCount(label.id)
+  })).sort((a, b) => b.count - a.count);
+
+  container.innerHTML = labelData.map(label => `
+    <div class="label-stats__item">
+      <span class="label-stats__name">${escapeHtml(label.name)}</span>
+      <span class="label-stats__count">${label.count}冊</span>
+    </div>
+  `).join('');
 }
 
 // ========================================
