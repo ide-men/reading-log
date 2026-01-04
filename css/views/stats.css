@@ -706,61 +706,28 @@
 }
 
 /* ==========================================================================
-   Responsive - Tablet (600px~)
+   Responsive - Tablet/Desktop (600px~)
+   比率維持・サイズ変更最小限
    ========================================================================== */
 
 @media (min-width: 600px) {
-  .stats-grid {
-    gap: var(--space-md);
-  }
-
+  /* 角丸のみ微調整（サイズは変更しない） */
   .stats-card {
-    padding: var(--space-xl);
     border-radius: 24px;
   }
 
-  .stats-card-value {
-    font-size: 32px;
-  }
-
-  .stats-card-label {
-    font-size: 11px;
-  }
-
   .week-chart {
-    height: 130px;
-    padding: var(--space-xl);
     border-radius: 28px;
-  }
-
-  .week-bar-fill {
-    max-width: 36px;
-    border-radius: 10px 10px 5px 5px;
   }
 
   .prediction-card,
   .style-card {
-    padding: var(--space-xl) var(--space-2xl);
     border-radius: 28px;
-  }
-
-  .prediction-icon,
-  .style-icon {
-    font-size: 38px;
-  }
-
-  .prediction-value {
-    font-size: 26px;
-  }
-
-  .style-value {
-    font-size: 24px;
   }
 
   .calendar-container,
   .rhythm-container {
     border-radius: 28px;
-    padding: var(--space-xl);
   }
 
   .calendar-cell {
@@ -772,57 +739,23 @@
   }
 }
 
-/* ==========================================================================
-   Responsive - Desktop (1024px~)
-   ========================================================================== */
-
 @media (min-width: 1024px) {
+  /* 角丸のみ微調整（サイズは変更しない） */
   .stats-card {
-    padding: var(--space-2xl);
-  }
-
-  .stats-card-value {
-    font-size: 36px;
-  }
-
-  .stats-card-label {
-    font-size: 12px;
+    border-radius: 26px;
   }
 
   .week-chart {
-    height: 150px;
-    border-radius: 32px;
-  }
-
-  .week-bar-fill {
-    max-width: 44px;
+    border-radius: 30px;
   }
 
   .prediction-card,
   .style-card {
-    border-radius: 32px;
-  }
-
-  .prediction-icon,
-  .style-icon {
-    font-size: 42px;
-  }
-
-  .prediction-value {
-    font-size: 28px;
-  }
-
-  .style-value {
-    font-size: 26px;
+    border-radius: 30px;
   }
 
   .calendar-container,
   .rhythm-container {
-    border-radius: 32px;
-  }
-
-  .tip {
-    padding: var(--space-lg) var(--space-2xl);
-    border-radius: 24px;
+    border-radius: 30px;
   }
 }
