@@ -752,6 +752,12 @@ select.form-input {
   margin-top: var(--space-sm);
 }
 
+.form-error {
+  font-size: var(--font-md);
+  color: var(--danger);
+  margin-top: var(--space-sm);
+}
+
 /* Celebration (in modal) */
 .celebration {
   text-align: center;

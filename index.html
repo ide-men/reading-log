@@ -280,6 +280,7 @@
         <div class="form-group">
           <label class="form-label">タイトル</label>
           <input type="text" class="form-input" id="bookInput" placeholder="例：人を動かす">
+          <p class="form-error" id="bookInputError" style="display: none;"></p>
           <a href="#" id="amazonSearchLink" class="amazon-search-link" target="_blank" rel="noopener noreferrer" style="display: none;">
             📦 Amazonで検索してリンクを取得
           </a>
@@ -287,6 +288,7 @@
         <div class="form-group">
           <label class="form-label">リンク先（任意）</label>
           <input type="url" class="form-input" id="linkInput" placeholder="AmazonのフルURL">
+          <p class="form-error" id="linkInputError" style="display: none;"></p>
           <p class="form-hint">表紙画像の表示にはWebアプリのAmazonのURL（/dp/を含む）が必要です</p>
         </div>
         <button type="button" class="optional-field-toggle" id="triggerNoteToggle">

@@ -131,6 +131,50 @@ export function isValidStatus(status) {
   return Object.values(BOOK_STATUS).includes(status);
 }
 
+/**
+ * タイトルの重複をチェック（Pure版）
+ * @param {string} title - チェックするタイトル
+ * @param {Book[]} books - 既存の本の配列
+ * @param {number|null} [excludeId] - 除外する本のID（編集時用）
+ * @returns {{ isDuplicate: boolean, duplicateBook?: Book }}
+ */
+export function checkDuplicateTitlePure(title, books, excludeId = null) {
+  if (!title || !title.trim()) {
+    return { isDuplicate: false };
+  }
+  const normalizedTitle = title.trim().toLowerCase();
+  const duplicateBook = books.find(book =>
+    book.title.toLowerCase() === normalizedTitle &&
+    book.id !== excludeId
+  );
+  return {
+    isDuplicate: !!duplicateBook,
+    duplicateBook
+  };
+}
+
+/**
+ * リンクの重複をチェック（Pure版）
+ * @param {string} link - チェックするリンク
+ * @param {Book[]} books - 既存の本の配列
+ * @param {number|null} [excludeId] - 除外する本のID（編集時用）
+ * @returns {{ isDuplicate: boolean, duplicateBook?: Book }}
+ */
+export function checkDuplicateLinkPure(link, books, excludeId = null) {
+  if (!link || !link.trim()) {
+    return { isDuplicate: false };
+  }
+  const normalizedLink = link.trim();
+  const duplicateBook = books.find(book =>
+    book.link && book.link === normalizedLink &&
+    book.id !== excludeId
+  );
+  return {
+    isDuplicate: !!duplicateBook,
+    duplicateBook
+  };
+}
+
 // ========================================
 // 日付フォーマット
 // ========================================
