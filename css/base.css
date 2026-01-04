@@ -136,8 +136,6 @@ html, body {
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  max-width: var(--max-width);
-  margin: 0 auto;
 }
 
 /* ==========================================================================
@@ -408,7 +406,6 @@ html, body {
 /* Tablet (600px~) */
 @media (min-width: 600px) {
   :root {
-    --max-width: 700px;
     --space-xl: 28px;
     --space-2xl: 32px;
     --space-3xl: 40px;
@@ -418,7 +415,6 @@ html, body {
 /* Desktop (1024px~) */
 @media (min-width: 1024px) {
   :root {
-    --max-width: 900px;
     --space-xl: 32px;
     --space-2xl: 40px;
     --space-3xl: 48px;
