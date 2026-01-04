@@ -1355,10 +1355,21 @@
 .label-add-form {
   display: flex;
   gap: var(--space-sm);
+  align-items: stretch;
 }
 
 .label-add-form .form-input {
   flex: 1;
+  min-width: 0;
+}
+
+.label-add-form .btn {
+  width: auto;
+  flex-shrink: 0;
+  padding: var(--space-sm) var(--space-md);
+  margin-top: 0;
+  font-size: var(--font-md);
+  font-weight: var(--weight-medium);
 }
 
 /* ==========================================================================

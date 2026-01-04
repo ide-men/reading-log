@@ -49,10 +49,19 @@ export function addBook(status = BOOK_STATUS.READING) {
     return;
   }
 
+  // 追加された本にラベルを設定
+  if (result.book && addSelectedLabelIds.length > 0) {
+    setBookLabels(result.book.id, addSelectedLabelIds);
+  }
+
   // フォームをクリア
   bookInput.value = '';
   if (bookCommentInput) bookCommentInput.value = '';
   if (linkInput) linkInput.value = '';
+
+  // ラベル選択状態もクリア
+  addSelectedLabelIds = [];
+  renderAddLabelSelector();
 
   // エラーメッセージもクリア
   const bookInputError = document.getElementById('bookInputError');
@@ -75,6 +84,9 @@ export function addBook(status = BOOK_STATUS.READING) {
 // ========================================
 // 編集モーダル用のラベル選択状態
 let editSelectedLabelIds = [];
+
+// 追加モーダル用のラベル選択状態
+let addSelectedLabelIds = [];
 
 export function editBook(id) {
   const book = bookRepository.getBookById(id);
@@ -470,6 +482,10 @@ function openAddBookModalWithStatus(status) {
     statusSelector.style.display = 'none';
   }
 
+  // ラベル選択状態を初期化
+  addSelectedLabelIds = [];
+  renderAddLabelSelector();
+
   openModal('addBookModal');
 
   // バリデーション状態を更新
@@ -631,6 +647,9 @@ export function initAddBookEvents() {
 
   // クリアボタンを初期化
   initClearButtons(['bookInput', 'linkInput', 'bookCommentInput']);
+
+  // ラベルセレクターのイベント初期化
+  initAddLabelSelectorEvents();
 }
 
 // ========================================
@@ -852,15 +871,172 @@ function toggleLabelSelection(labelId) {
   renderEditLabelSelector();
 }
 
-function createAndSelectLabel(name) {
+function createAndSelectLabel(name, isAddModal = false) {
   const result = addNewLabel(name);
   if (result.success && result.label) {
-    editSelectedLabelIds.push(result.label.id);
-    renderEditLabelSelector();
+    if (isAddModal) {
+      addSelectedLabelIds.push(result.label.id);
+      renderAddLabelSelector();
+    } else {
+      editSelectedLabelIds.push(result.label.id);
+      renderEditLabelSelector();
+    }
     showToast(result.message);
   } else {
     showToast(result.message);
   }
+}
+
+// ========================================
+// 追加モーダル ラベルセレクター
+// ========================================
+
+function renderAddLabelSelector() {
+  const selectedContainer = document.getElementById('addLabelSelected');
+  if (!selectedContainer) return;
+
+  const allLabels = getAllLabels();
+
+  // 選択済みラベルを表示
+  if (addSelectedLabelIds.length === 0) {
+    selectedContainer.innerHTML = '<span style="color: var(--text-dim); font-size: var(--font-sm);">ラベルなし</span>';
+  } else {
+    selectedContainer.innerHTML = addSelectedLabelIds.map(labelId => {
+      const label = allLabels.find(l => l.id === labelId);
+      if (!label) return '';
+      return `
+        <span class="label-badge label-badge--removable" data-label-id="${label.id}">
+          ${escapeHtml(label.name)}
+          <span class="label-badge__remove">×</span>
+        </span>
+      `;
+    }).join('');
+  }
+
+  // ドロップダウンのオプションを更新
+  renderAddLabelOptions();
+}
+
+function renderAddLabelOptions(searchTerm = '') {
+  const optionsContainer = document.getElementById('addLabelOptions');
+  if (!optionsContainer) return;
+
+  const allLabels = getAllLabels();
+
+  const filteredLabels = allLabels.filter(label =>
+    label.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  let html = filteredLabels.map(label => {
+    const isSelected = addSelectedLabelIds.includes(label.id);
+    return `
+      <div class="label-selector__option ${isSelected ? 'label-selector__option--selected' : ''}" data-label-id="${label.id}">
+        <span class="label-selector__checkbox"></span>
+        <span>${escapeHtml(label.name)}</span>
+      </div>
+    `;
+  }).join('');
+
+  // 検索語が存在し、完全一致するラベルがない場合は新規作成オプションを表示
+  if (searchTerm && !allLabels.some(l => l.name.toLowerCase() === searchTerm.toLowerCase())) {
+    html += `
+      <div class="label-selector__option label-selector__option--create" data-create-label="${escapeHtml(searchTerm)}">
+        + 「${escapeHtml(searchTerm)}」を作成
+      </div>
+    `;
+  }
+
+  optionsContainer.innerHTML = html || '<div style="padding: var(--space-md); color: var(--text-dim);">ラベルがありません</div>';
+}
+
+function initAddLabelSelectorEvents() {
+  const addBtn = document.getElementById('addLabelAddBtn');
+  const dropdown = document.getElementById('addLabelDropdown');
+  const searchInput = document.getElementById('addLabelSearchInput');
+  const optionsContainer = document.getElementById('addLabelOptions');
+  const selectedContainer = document.getElementById('addLabelSelected');
+
+  if (!addBtn || !dropdown) return;
+
+  // ドロップダウンの開閉
+  addBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('visible');
+    if (dropdown.classList.contains('visible')) {
+      searchInput.value = '';
+      searchInput.focus();
+      renderAddLabelOptions();
+    }
+  });
+
+  // 検索入力
+  searchInput.addEventListener('input', () => {
+    renderAddLabelOptions(searchInput.value.trim());
+  });
+
+  // 検索入力でEnterキー押下時に新規作成
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const searchTerm = searchInput.value.trim();
+      if (!searchTerm) return;
+
+      const allLabels = getAllLabels();
+      const existingLabel = allLabels.find(l => l.name.toLowerCase() === searchTerm.toLowerCase());
+
+      if (existingLabel) {
+        // 既存ラベルをトグル
+        toggleAddLabelSelection(existingLabel.id);
+      } else {
+        // 新規作成
+        createAndSelectLabel(searchTerm, true);
+      }
+
+      searchInput.value = '';
+      renderAddLabelOptions();
+    }
+  });
+
+  // オプションクリック
+  optionsContainer.addEventListener('click', (e) => {
+    const option = e.target.closest('.label-selector__option');
+    if (!option) return;
+
+    const createLabel = option.dataset.createLabel;
+    if (createLabel) {
+      createAndSelectLabel(createLabel, true);
+      searchInput.value = '';
+      renderAddLabelOptions();
+    } else {
+      const labelId = parseInt(option.dataset.labelId, 10);
+      toggleAddLabelSelection(labelId);
+    }
+  });
+
+  // 選択済みラベルの削除
+  selectedContainer.addEventListener('click', (e) => {
+    const badge = e.target.closest('.label-badge--removable');
+    if (!badge) return;
+
+    const labelId = parseInt(badge.dataset.labelId, 10);
+    addSelectedLabelIds = addSelectedLabelIds.filter(id => id !== labelId);
+    renderAddLabelSelector();
+  });
+
+  // ドロップダウン外クリックで閉じる
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#addLabelSelector')) {
+      dropdown.classList.remove('visible');
+    }
+  });
+}
+
+function toggleAddLabelSelection(labelId) {
+  if (addSelectedLabelIds.includes(labelId)) {
+    addSelectedLabelIds = addSelectedLabelIds.filter(id => id !== labelId);
+  } else {
+    addSelectedLabelIds.push(labelId);
+  }
+  renderAddLabelSelector();
 }
 
 // ========================================
