@@ -234,9 +234,45 @@ function validateImportedStats(stats) {
   if (typeof stats !== 'object' || stats === null) return false;
   if (typeof stats.total !== 'number') return false;
   if (typeof stats.sessions !== 'number') return false;
-  if (typeof stats.xp !== 'number') return false;
-  if (typeof stats.lv !== 'number') return false;
   return true;
+}
+
+/**
+ * インポートされた本のデータを検証
+ * @param {Object} book - 本のデータ
+ * @returns {boolean}
+ */
+function validateImportedBook(book) {
+  if (typeof book !== 'object' || book === null) return false;
+  // 必須フィールド: id（数値）とtitle（文字列）
+  if (typeof book.id !== 'number' || !Number.isFinite(book.id)) return false;
+  if (typeof book.title !== 'string' || !book.title.trim()) return false;
+  return true;
+}
+
+/**
+ * インポートされた本の配列をサニタイズ
+ * 無効なデータを除外し、欠損フィールドにデフォルト値を設定
+ * @param {Array} books - 本の配列
+ * @returns {Array}
+ */
+function sanitizeImportedBooks(books) {
+  return books
+    .filter(book => validateImportedBook(book))
+    .map(book => ({
+      id: book.id,
+      title: book.title,
+      link: book.link || null,
+      coverUrl: book.coverUrl || null,
+      status: book.status || 'unread',
+      startedAt: book.startedAt || null,
+      completedAt: book.completedAt || null,
+      triggerNote: book.triggerNote || null,
+      completionNote: book.completionNote || null,
+      reflections: Array.isArray(book.reflections) ? book.reflections : [],
+      readingTime: typeof book.readingTime === 'number' ? book.readingTime : 0,
+      bookmark: book.bookmark || null
+    }));
 }
 
 export function importData(file, { showToast, onSuccess }) {
@@ -265,6 +301,13 @@ export function importData(file, { showToast, onSuccess }) {
         return;
       }
 
+      // 本のデータをサニタイズ（無効なデータを除外、欠損フィールドにデフォルト値）
+      const sanitizedBooks = sanitizeImportedBooks(imported.books);
+      if (sanitizedBooks.length === 0 && imported.books.length > 0) {
+        showToast('有効な本のデータがありません', 4000);
+        return;
+      }
+
       stateManager.initialize({
         meta: {
           schemaVersion: SCHEMA_VERSION,
@@ -280,7 +323,7 @@ export function importData(file, { showToast, onSuccess }) {
           lv: imported.stats.lv || 1,
           firstSessionDate: imported.stats.firstSessionDate || null
         },
-        books: imported.books || [],
+        books: sanitizedBooks,
         history: imported.history || [],
         archived: imported.archived || {}
       });

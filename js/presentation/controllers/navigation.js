@@ -31,11 +31,20 @@ const tabCallbacks = {
 // タブ切り替え
 // ========================================
 export function switchTab(name) {
+  const tab = document.getElementById(`tab-${name}`);
+  const navButton = document.querySelector(`.nav button[data-tab="${name}"]`);
+
+  // タブまたはナビボタンが存在しない場合は何もしない
+  if (!tab || !navButton) {
+    console.error(`switchTab: Tab or nav button not found for "${name}"`);
+    return;
+  }
+
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
 
-  document.getElementById(`tab-${name}`).classList.add('active');
-  document.querySelector(`.nav button[data-tab="${name}"]`).classList.add('active');
+  tab.classList.add('active');
+  navButton.classList.add('active');
 
   // FABの表示/非表示を切り替え（カバン・記録タブでは非表示）
   const fab = document.getElementById('addBookFab');
@@ -54,12 +63,22 @@ export function switchTab(name) {
 // モーダル操作
 // ========================================
 export function openModal(id) {
-  document.getElementById(id).classList.add('active');
+  const modal = document.getElementById(id);
+  if (!modal) {
+    console.error(`openModal: Modal not found for "${id}"`);
+    return;
+  }
+  modal.classList.add('active');
   eventBus.emit(Events.MODAL_OPENED, { id });
 }
 
 export function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
+  const modal = document.getElementById(id);
+  if (!modal) {
+    console.error(`closeModal: Modal not found for "${id}"`);
+    return;
+  }
+  modal.classList.remove('active');
   eventBus.emit(Events.MODAL_CLOSED, { id });
 }
 

@@ -275,3 +275,13 @@ export function selectCenteredBook() {
     }
   }, 100);
 }
+
+/**
+ * カルーセルビューのクリーンアップ（タイマー解放）
+ */
+export function cleanupCarouselView() {
+  if (scrollEndTimer) {
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = null;
+  }
+}

@@ -9,6 +9,7 @@ import {
   getBookDateText,
   getBookColorByIndex,
   getMiniBookStyle,
+  resetIdCounter,
 } from '../../js/domain/book/book-entity.js';
 import { BOOK_STATUS, BOOK_COLORS } from '../../js/shared/constants.js';
 import {
@@ -26,16 +27,34 @@ import {
 describe('createBook', () => {
   const fixedDate = new Date(DEFAULT_TEST_DATE);
 
+  beforeEach(() => {
+    // テスト前にIDカウンターをリセット
+    resetIdCounter();
+  });
+
   it('決定論的なIDと日付を生成できる', () => {
     const book = createBook(
       { title: 'テスト本' },
       { now: () => fixedDate }
     );
 
-    expect(book.id).toBe(fixedDate.getTime());
+    // ID = timestamp * 1000 + counter (counter is 0 for first book)
+    expect(book.id).toBe(fixedDate.getTime() * 1000);
     expect(book.title).toBe('テスト本');
     expect(book.startedAt).toBe('2024-06-15');
     expect(book.status).toBe(BOOK_STATUS.READING);
+  });
+
+  it('同一ミリ秒内で連続作成してもユニークなIDを生成する', () => {
+    const book1 = createBook({ title: '本1' }, { now: () => fixedDate });
+    const book2 = createBook({ title: '本2' }, { now: () => fixedDate });
+    const book3 = createBook({ title: '本3' }, { now: () => fixedDate });
+
+    expect(book1.id).toBe(fixedDate.getTime() * 1000);
+    expect(book2.id).toBe(fixedDate.getTime() * 1000 + 1);
+    expect(book3.id).toBe(fixedDate.getTime() * 1000 + 2);
+    expect(book1.id).not.toBe(book2.id);
+    expect(book2.id).not.toBe(book3.id);
   });
 
   it('読書中ステータスでstartedAtが設定される', () => {
