@@ -72,11 +72,20 @@ export function loadState() {
 }
 
 export function saveStateToStorage(s) {
-  localStorage.setItem(STORAGE_KEYS.meta, JSON.stringify(s.meta));
-  localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(s.stats));
-  localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(s.books));
-  localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(s.history));
-  localStorage.setItem(STORAGE_KEYS.archived, JSON.stringify(s.archived));
+  try {
+    localStorage.setItem(STORAGE_KEYS.meta, JSON.stringify(s.meta));
+    localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(s.stats));
+    localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(s.books));
+    localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(s.history));
+    localStorage.setItem(STORAGE_KEYS.archived, JSON.stringify(s.archived));
+  } catch (e) {
+    console.error('Failed to save state to storage:', e);
+    // QuotaExceededError等の場合、ユーザーに通知するためにイベントを発行
+    eventBus.emit(Events.STORAGE_ERROR, {
+      error: e,
+      message: 'ストレージの容量が不足しています。不要なデータを削除してください。'
+    });
+  }
 }
 
 /**

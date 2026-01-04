@@ -30,6 +30,7 @@ export const Events = {
   STATE_CHANGED: 'state:changed',
   DATA_IMPORTED: 'data:imported',
   DATA_RESET: 'data:reset',
+  STORAGE_ERROR: 'storage:error',
 
   // レンダリング関連
   RENDER_REQUESTED: 'render:requested',

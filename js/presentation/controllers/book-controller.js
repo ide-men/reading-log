@@ -20,9 +20,20 @@ import { initClearButtons } from '../utils/form-clear-button.js';
 // 本の追加
 // ========================================
 export function addBook(status = BOOK_STATUS.READING) {
-  const title = document.getElementById('bookInput').value.trim();
-  const link = document.getElementById('linkInput').value.trim();
-  const triggerNote = document.getElementById('bookCommentInput').value.trim();
+  const bookInput = document.getElementById('bookInput');
+  const linkInput = document.getElementById('linkInput');
+  const bookCommentInput = document.getElementById('bookCommentInput');
+  const continueAddCheckbox = document.getElementById('continueAddCheckbox');
+
+  // DOM要素が存在しない場合は早期リターン
+  if (!bookInput) {
+    console.error('addBook: Required DOM element not found');
+    return;
+  }
+
+  const title = bookInput.value.trim();
+  const link = linkInput?.value.trim() || '';
+  const triggerNote = bookCommentInput?.value.trim() || '';
 
   const result = bookService.addBook({ title, link, triggerNote, status });
 
@@ -32,15 +43,15 @@ export function addBook(status = BOOK_STATUS.READING) {
   }
 
   // フォームをクリア
-  document.getElementById('bookInput').value = '';
-  document.getElementById('bookCommentInput').value = '';
-  document.getElementById('linkInput').value = '';
+  bookInput.value = '';
+  if (bookCommentInput) bookCommentInput.value = '';
+  if (linkInput) linkInput.value = '';
 
   renderBooks();
   showToast(result.message);
 
   // 続けて追加がOFFならモーダルを閉じる
-  const continueAdd = document.getElementById('continueAddCheckbox').checked;
+  const continueAdd = continueAddCheckbox?.checked ?? false;
   if (!continueAdd) {
     closeModal('addBookModal');
   }
@@ -53,11 +64,21 @@ export function editBook(id) {
   const book = bookRepository.getBookById(id);
   if (!book) return;
 
+  const editBookTitle = document.getElementById('editBookTitle');
+  const editBookLink = document.getElementById('editBookLink');
+  const editBookStatus = document.getElementById('editBookStatus');
+  const editBookNote = document.getElementById('editBookNote');
+
+  if (!editBookTitle) {
+    console.error('editBook: Required DOM element not found');
+    return;
+  }
+
   stateManager.setEditingBookId(id);
-  document.getElementById('editBookTitle').value = book.title;
-  document.getElementById('editBookLink').value = book.link || '';
-  document.getElementById('editBookStatus').value = book.status || BOOK_STATUS.COMPLETED;
-  document.getElementById('editBookNote').value = book.triggerNote || '';
+  editBookTitle.value = book.title;
+  if (editBookLink) editBookLink.value = book.link || '';
+  if (editBookStatus) editBookStatus.value = book.status || BOOK_STATUS.COMPLETED;
+  if (editBookNote) editBookNote.value = book.triggerNote || '';
   openModal('editBookModal');
 
   // バリデーション状態を更新
@@ -66,10 +87,22 @@ export function editBook(id) {
 
 export function saveEditBook() {
   const editingBookId = stateManager.getEditingBookId();
-  const title = document.getElementById('editBookTitle').value.trim();
-  const link = document.getElementById('editBookLink').value.trim() || null;
-  const status = document.getElementById('editBookStatus').value;
-  const triggerNote = document.getElementById('editBookNote').value.trim() || null;
+  if (!editingBookId) return;
+
+  const editBookTitle = document.getElementById('editBookTitle');
+  const editBookLink = document.getElementById('editBookLink');
+  const editBookStatus = document.getElementById('editBookStatus');
+  const editBookNote = document.getElementById('editBookNote');
+
+  if (!editBookTitle) {
+    console.error('saveEditBook: Required DOM element not found');
+    return;
+  }
+
+  const title = editBookTitle.value.trim();
+  const link = editBookLink?.value.trim() || null;
+  const status = editBookStatus?.value || BOOK_STATUS.COMPLETED;
+  const triggerNote = editBookNote?.value.trim() || null;
 
   const result = bookService.editBook(editingBookId, { title, link, status, triggerNote });
 
