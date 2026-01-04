@@ -3,7 +3,7 @@
 // 本のCRUD・ステータス変更の制御
 // ========================================
 import { BOOK_STATUS, UI_CONFIG, CELEBRATION_CONFIG } from '../../shared/constants.js';
-import { openLink } from '../../shared/utils.js';
+import { openLink, escapeHtml } from '../../shared/utils.js';
 import * as bookService from '../../domain/book/book-service.js';
 import * as bookRepository from '../../domain/book/book-repository.js';
 import { stateManager } from '../../core/state-manager.js';
@@ -766,8 +766,8 @@ export function openReunionModal(id) {
     book.reflections?.length > 0 ? book.reflections : null,
     (reflections) => reflections.map(r => `
       <div class="reflection-item">
-        <span class="reflection-date">${r.date}</span>
-        <p class="reflection-note">${r.note}</p>
+        <span class="reflection-date">${escapeHtml(r.date)}</span>
+        <p class="reflection-note">${escapeHtml(r.note)}</p>
       </div>
     `).join('')
   );
