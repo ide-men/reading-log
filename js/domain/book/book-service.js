@@ -313,7 +313,8 @@ export function addReflection(id, note) {
 export function getBooksForReunion(months = 3) {
   const completedBooks = bookRepository.getBooksByStatus(BOOK_STATUS.COMPLETED);
   const now = new Date();
-  const thresholdDate = new Date(now.setMonth(now.getMonth() - months));
+  // nowを変更しないように新しいDateオブジェクトを作成
+  const thresholdDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
 
   return completedBooks.filter(book => {
     if (!book.completedAt) return false;

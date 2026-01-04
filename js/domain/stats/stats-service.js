@@ -54,9 +54,11 @@ export function calculateYearlyPredictionPure(books, history, now = new Date()) 
   const booksPerDay = books.length / daysSinceStart;
 
   const endOfYear = new Date(now.getFullYear(), 11, 31);
-  const daysLeft = Math.ceil((endOfYear - now) / CONFIG.msPerDay);
+  const daysLeft = Math.max(0, Math.ceil((endOfYear - now) / CONFIG.msPerDay));
 
-  return (books.length + Math.round(booksPerDay * daysLeft)) + '冊';
+  // 年末を過ぎた場合（daysLeft が 0）は現在の冊数をそのまま返す
+  const predictedBooks = books.length + Math.round(booksPerDay * daysLeft);
+  return predictedBooks + '冊';
 }
 
 /**

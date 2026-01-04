@@ -103,12 +103,26 @@ export class TimerService {
 
     const minutes = Math.floor(this.seconds / 60);
     const state = this.deps.getState();
+    const now = this.deps.now();
+    const isValidSession = minutes >= CONFIG.minSessionMinutes;
 
-    this.deps.updateStats({
+    // すべての統計更新を一度に計算
+    const statsUpdates = {
       total: state.stats.total + minutes,
       today: state.stats.today + minutes
-    });
+    };
 
+    if (isValidSession) {
+      statsUpdates.sessions = state.stats.sessions + 1;
+      if (!state.stats.firstSessionDate) {
+        statsUpdates.firstSessionDate = now.toISOString();
+      }
+    }
+
+    // 統計を一度に更新
+    this.deps.updateStats(statsUpdates);
+
+    // 本の読書時間を更新
     if (this.currentBookId) {
       const book = this.deps.getBook(this.currentBookId);
       if (book) {
@@ -118,19 +132,8 @@ export class TimerService {
       }
     }
 
-    const isValidSession = minutes >= CONFIG.minSessionMinutes;
+    // 有効なセッションの場合は履歴を追加
     if (isValidSession) {
-      const currentState = this.deps.getState();
-      const now = this.deps.now();
-      const updates = {
-        sessions: currentState.stats.sessions + 1
-      };
-
-      if (!currentState.stats.firstSessionDate) {
-        updates.firstSessionDate = now.toISOString();
-      }
-
-      this.deps.updateStats(updates);
       this.deps.addHistory({
         d: now.toISOString(),
         m: minutes,

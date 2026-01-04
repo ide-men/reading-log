@@ -66,6 +66,9 @@ const TERMS = {
 
 // 現在表示中のポップアップ
 let activePopup = null;
+// イベントリスナーが登録済みかどうか
+let isOutsideClickListenerActive = false;
+let isInitialized = false;
 
 // ========================================
 // ツールチップを表示
@@ -113,10 +116,13 @@ function showTermHint(termKey, anchorElement) {
   // 閉じるボタン
   popup.querySelector('.term-hint-popup__close').addEventListener('click', closeTermHint);
 
-  // 外側クリックで閉じる
-  setTimeout(() => {
-    document.addEventListener('click', handleOutsideClick);
-  }, 0);
+  // 外側クリックで閉じる（二重登録を防止）
+  if (!isOutsideClickListenerActive) {
+    setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick);
+      isOutsideClickListenerActive = true;
+    }, 0);
+  }
 }
 
 // ========================================
@@ -126,7 +132,10 @@ function closeTermHint() {
   if (activePopup) {
     activePopup.remove();
     activePopup = null;
+  }
+  if (isOutsideClickListenerActive) {
     document.removeEventListener('click', handleOutsideClick);
+    isOutsideClickListenerActive = false;
   }
 }
 
@@ -140,6 +149,10 @@ function handleOutsideClick(e) {
 // イベント初期化
 // ========================================
 export function initTermHintEvents() {
+  // 二重初期化を防止
+  if (isInitialized) return;
+  isInitialized = true;
+
   // 用語ヒントボタンのクリックイベント（委譲）
   document.addEventListener('click', (e) => {
     if (e.target.classList.contains('term-hint')) {

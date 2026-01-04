@@ -35,6 +35,30 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink, toLocalDateString } from 
 // Book生成
 // ========================================
 
+// ID生成用のカウンター（同一ミリ秒内の重複を防止）
+let lastIdTimestamp = 0;
+let idCounter = 0;
+
+/**
+ * ユニークなIDを生成
+ * 同一ミリ秒内での連続呼び出しでも重複しないIDを生成
+ * @param {Date} date - 基準日時
+ * @returns {number}
+ */
+function generateUniqueId(date) {
+  const timestamp = date.getTime();
+  if (timestamp === lastIdTimestamp) {
+    // 同じミリ秒内なのでカウンターを増加
+    idCounter++;
+  } else {
+    // 新しいミリ秒なのでカウンターをリセット
+    lastIdTimestamp = timestamp;
+    idCounter = 0;
+  }
+  // タイムスタンプ + カウンター（最大999まで対応）
+  return timestamp * 1000 + idCounter;
+}
+
 /**
  * @typedef {Object} CreateBookOptions
  * @property {Function} [onShortUrl] - 短縮URL検出時のコールバック
@@ -67,7 +91,7 @@ export function createBook({ title, link, triggerNote, status = BOOK_STATUS.READ
   }
 
   return {
-    id: currentDate.getTime(),
+    id: generateUniqueId(currentDate),
     title,
     link: link || null,
     coverUrl,
@@ -142,11 +166,22 @@ export function getRelativeDate(dateStr) {
 
 /**
  * 本の追加日（ID=タイムスタンプ）を日付文字列として取得
+ * IDは timestamp * 1000 + counter 形式なので、1000で割ってタイムスタンプを取得
  * @param {Book} book - 本
  * @returns {string}
  */
 export function getBookCreatedDateStr(book) {
-  return new Date(book.id).toISOString().split('T')[0];
+  // 新フォーマット（timestamp * 1000 + counter）と旧フォーマット（timestamp）の両方に対応
+  const timestamp = book.id > 1e15 ? Math.floor(book.id / 1000) : book.id;
+  return new Date(timestamp).toISOString().split('T')[0];
+}
+
+/**
+ * ID生成カウンターをリセット（テスト用）
+ */
+export function resetIdCounter() {
+  lastIdTimestamp = 0;
+  idCounter = 0;
 }
 
 /**

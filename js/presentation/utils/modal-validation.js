@@ -12,15 +12,19 @@
  * @property {string[]} optionalFields - 任意フィールドのID配列（任意のみのモーダル用）
  */
 
+// アクティブなオブザーバーを追跡（モーダルID -> observer）
+const activeObservers = new Map();
+
 /**
  * モーダルバリデーションを初期化
  * @param {ModalValidationConfig} config
+ * @returns {Function} クリーンアップ関数
  */
 export function initModalValidation(config) {
   const { modalId, buttonId, requiredFields = [], optionalFields = [] } = config;
 
   const button = document.getElementById(buttonId);
-  if (!button) return;
+  if (!button) return () => {};
 
   const allFieldIds = [...requiredFields, ...optionalFields];
   const fields = allFieldIds
@@ -41,6 +45,12 @@ export function initModalValidation(config) {
   // 初期状態でバリデーション
   validate();
 
+  // 既存のオブザーバーがあれば解放
+  if (activeObservers.has(modalId)) {
+    activeObservers.get(modalId).disconnect();
+    activeObservers.delete(modalId);
+  }
+
   // モーダルが開かれた時にバリデーションを実行するためのオブザーバー
   const modal = document.getElementById(modalId);
   if (modal) {
@@ -55,7 +65,23 @@ export function initModalValidation(config) {
       });
     });
     observer.observe(modal, { attributes: true });
+    activeObservers.set(modalId, observer);
+
+    // クリーンアップ関数を返す
+    return () => {
+      observer.disconnect();
+      activeObservers.delete(modalId);
+      fields.forEach(field => {
+        field.removeEventListener('input', validate);
+      });
+    };
   }
+
+  return () => {
+    fields.forEach(field => {
+      field.removeEventListener('input', validate);
+    });
+  };
 }
 
 /**
