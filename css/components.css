@@ -1007,7 +1007,6 @@ select.form-input {
   bottom: calc(var(--nav-height) + var(--layout-fab-offset) + env(safe-area-inset-bottom));
   right: var(--layout-toast-top);
   z-index: 100;
-  max-width: var(--max-width);
 }
 
 /* 記録タブではFABを非表示 */
