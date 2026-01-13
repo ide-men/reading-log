@@ -98,9 +98,12 @@ describe('timer-service.js', () => {
   });
 
   describe('getFormattedTime', () => {
+    it('タイマー未開始時は0:00', () => {
+      expect(timerService.getFormattedTime()).toBe('0:00');
+    });
+
     it('秒数をMM:SS形式でフォーマット', () => {
       timerService.startReading();
-      expect(timerService.getFormattedTime()).toBe('0:00');
       vi.advanceTimersByTime(65000);
       expect(timerService.getFormattedTime()).toBe('1:05');
     });

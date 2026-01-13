@@ -37,10 +37,11 @@ export class TimerService {
       save: deps.save ?? (() => saveState()),
       emit: deps.emit ?? ((event, data) => eventBus.emit(event, data)),
       now: deps.now ?? (() => new Date()),
+      nowMs: deps.nowMs ?? (() => Date.now()),
     };
 
     this.timerId = null;
-    this.seconds = 0;
+    this.startTime = null;
     this.currentBookId = null;
   }
 
@@ -53,7 +54,8 @@ export class TimerService {
   }
 
   getSeconds() {
-    return this.seconds;
+    if (!this.startTime) return 0;
+    return Math.floor((this.deps.nowMs() - this.startTime) / 1000);
   }
 
   getCurrentBookId() {
@@ -61,8 +63,9 @@ export class TimerService {
   }
 
   getFormattedTime() {
-    const mins = Math.floor(this.seconds / 60);
-    const secs = this.seconds % 60;
+    const seconds = this.getSeconds();
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
@@ -75,15 +78,15 @@ export class TimerService {
       return { book: null };
     }
 
-    this.seconds = 0;
+    this.startTime = this.deps.nowMs();
     this.currentBookId = bookId;
 
     const book = bookId ? this.deps.getBook(bookId) : null;
 
+    // setIntervalは表示更新のみ（実際の経過時間はstartTimeから計算）
     this.timerId = setInterval(() => {
-      this.seconds++;
       this.deps.emit(Events.TIMER_TICK, {
-        seconds: this.seconds,
+        seconds: this.getSeconds(),
         formatted: this.getFormattedTime()
       });
     }, 1000);
@@ -101,7 +104,9 @@ export class TimerService {
     clearInterval(this.timerId);
     this.timerId = null;
 
-    const minutes = Math.floor(this.seconds / 60);
+    // 開始時刻から経過時間を計算（スリープ中も正確）
+    const seconds = this.getSeconds();
+    const minutes = Math.floor(seconds / 60);
     const state = this.deps.getState();
     const now = this.deps.now();
     const isValidSession = minutes >= CONFIG.minSessionMinutes;
@@ -143,7 +148,7 @@ export class TimerService {
     }
 
     const finishedBookId = this.currentBookId;
-    this.seconds = 0;
+    this.startTime = null;
     this.currentBookId = null;
 
     this.deps.save();
@@ -161,7 +166,7 @@ export class TimerService {
 
     clearInterval(this.timerId);
     this.timerId = null;
-    this.seconds = 0;
+    this.startTime = null;
     this.currentBookId = null;
 
     this.deps.emit(Events.TIMER_STOPPED, { minutes: 0, isValidSession: false, cancelled: true });
@@ -175,7 +180,7 @@ export class TimerService {
       clearInterval(this.timerId);
     }
     this.timerId = null;
-    this.seconds = 0;
+    this.startTime = null;
     this.currentBookId = null;
   }
 }
