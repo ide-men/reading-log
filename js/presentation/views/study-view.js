@@ -18,20 +18,21 @@ export function renderLabelFilter() {
   const labels = getAllLabels();
   const selectedLabelId = stateManager.getSelectedLabelId();
 
-  if (labels.length === 0) {
-    filterContainer.innerHTML = '';
-    filterContainer.style.display = 'none';
-    return;
-  }
-
+  // ラベルがなくても管理ボタンは表示する
   filterContainer.style.display = 'flex';
-  filterContainer.innerHTML = `
+
+  const labelButtons = labels.length > 0 ? `
     <button class="label-filter__btn ${selectedLabelId === null ? 'active' : ''}" data-label-id="">すべて</button>
     ${labels.map(label => `
       <button class="label-filter__btn ${selectedLabelId === label.id ? 'active' : ''}" data-label-id="${label.id}">
         ${escapeHtml(label.name)}
       </button>
     `).join('')}
+  ` : '';
+
+  filterContainer.innerHTML = `
+    ${labelButtons}
+    <button class="label-filter__manage" id="openLabelManagerBtn">⚙️ 管理</button>
   `;
 }
 
