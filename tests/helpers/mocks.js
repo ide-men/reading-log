@@ -142,6 +142,7 @@ export function createTimerDependenciesMock(overrides = {}) {
     save: vi.fn(),
     emit: vi.fn(),
     now: vi.fn(() => new Date('2024-06-15T12:00:00')),
+    nowMs: vi.fn(() => Date.now()),
     ...overrides
   };
 }
