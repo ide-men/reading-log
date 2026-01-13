@@ -419,16 +419,6 @@
           <button class="btn btn-secondary" id="showOnboardingBtn">📖 使い方を見る</button>
         </div>
         <div class="settings-section">
-          <h3 class="settings-section-title">🏷️ ラベル管理</h3>
-          <div class="label-list" id="labelList">
-            <!-- ラベル一覧がここに動的に追加される -->
-          </div>
-          <div class="label-add-form">
-            <input type="text" class="form-input" id="newLabelInput" placeholder="新しいラベル名">
-            <button class="btn btn-secondary" id="addLabelBtn">追加</button>
-          </div>
-        </div>
-        <div class="settings-section">
           <h3 class="settings-section-title">💾 データ管理</h3>
           <div class="storage-info">
             <div class="storage-label">ストレージ使用量</div>
@@ -464,6 +454,25 @@
             <a href="privacy.html" class="settings-link">プライバシーポリシー</a>
             <a href="terms.html" class="settings-link">利用規約</a>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ラベル管理画面 -->
+  <div class="label-manager-overlay" id="labelManagerOverlay">
+    <div class="label-manager">
+      <header class="label-manager__header">
+        <button class="label-manager__back" id="labelManagerBackBtn" aria-label="戻る">←</button>
+        <h2 class="label-manager__title">ラベル管理</h2>
+      </header>
+      <div class="label-manager__body">
+        <div class="label-manager__add">
+          <input type="text" class="form-input" id="labelManagerNewInput" placeholder="新しいラベルを追加...">
+          <button class="btn btn-primary" id="labelManagerAddBtn">追加</button>
+        </div>
+        <div class="label-manager__list" id="labelManagerList">
+          <!-- ラベル一覧がここに動的に追加される -->
         </div>
       </div>
     </div>

@@ -211,7 +211,6 @@ export function initModalEvents() {
 export function initSettingsEvents() {
   document.getElementById('settingsBtn').addEventListener('click', () => {
     updateStorageDisplay();
-    renderLabelList();
     openModal('settingsModal');
   });
 
@@ -276,28 +275,48 @@ export function initSettingsEvents() {
 }
 
 // ========================================
-// ラベル一覧レンダリング
+// ラベル管理画面
 // ========================================
-export function renderLabelList() {
-  const labelList = document.getElementById('labelList');
-  if (!labelList) return;
+let deletingLabelId = null;
+
+export function openLabelManager() {
+  const overlay = document.getElementById('labelManagerOverlay');
+  if (overlay) {
+    renderLabelManagerList();
+    overlay.classList.add('active');
+  }
+}
+
+export function closeLabelManager() {
+  const overlay = document.getElementById('labelManagerOverlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+  }
+}
+
+function renderLabelManagerList() {
+  const listContainer = document.getElementById('labelManagerList');
+  if (!listContainer) return;
 
   const labels = getAllLabels();
 
   if (labels.length === 0) {
-    labelList.innerHTML = '';
+    listContainer.innerHTML = '';
     return;
   }
 
-  labelList.innerHTML = labels.map(label => {
+  listContainer.innerHTML = labels.map(label => {
     const usageCount = getLabelUsageCount(label.id);
     return `
-      <div class="label-item" data-label-id="${label.id}">
-        <span class="label-item__name">${escapeHtml(label.name)}</span>
-        <span class="label-item__count">${usageCount}冊</span>
-        <div class="label-item__actions">
-          <button class="label-item__btn" data-action="edit" aria-label="編集">✏️</button>
-          <button class="label-item__btn label-item__btn--danger" data-action="delete" aria-label="削除">×</button>
+      <div class="label-manager__item" data-label-id="${label.id}">
+        <span class="label-manager__item-icon">🏷️</span>
+        <div class="label-manager__item-info">
+          <div class="label-manager__item-name">${escapeHtml(label.name)}</div>
+          <div class="label-manager__item-count">${usageCount}冊で使用中</div>
+        </div>
+        <div class="label-manager__item-actions">
+          <button class="label-manager__item-btn" data-action="edit" aria-label="編集">✏️</button>
+          <button class="label-manager__item-btn label-manager__item-btn--danger" data-action="delete" aria-label="削除">×</button>
         </div>
       </div>
     `;
@@ -307,12 +326,16 @@ export function renderLabelList() {
 // ========================================
 // ラベル管理イベント初期化
 // ========================================
-let deletingLabelId = null;
+export function initLabelManagerEvents() {
+  const listContainer = document.getElementById('labelManagerList');
+  const newLabelInput = document.getElementById('labelManagerNewInput');
+  const addLabelBtn = document.getElementById('labelManagerAddBtn');
+  const backBtn = document.getElementById('labelManagerBackBtn');
 
-export function initLabelEvents() {
-  const labelList = document.getElementById('labelList');
-  const newLabelInput = document.getElementById('newLabelInput');
-  const addLabelBtn = document.getElementById('addLabelBtn');
+  // 戻るボタン
+  if (backBtn) {
+    backBtn.addEventListener('click', closeLabelManager);
+  }
 
   // ラベル追加
   if (addLabelBtn && newLabelInput) {
@@ -323,7 +346,8 @@ export function initLabelEvents() {
       const result = addLabel(name);
       if (result.success) {
         newLabelInput.value = '';
-        renderLabelList();
+        renderLabelManagerList();
+        renderBooks();
         showToast(result.message);
       } else {
         showToast(result.message);
@@ -339,12 +363,12 @@ export function initLabelEvents() {
   }
 
   // ラベル一覧のクリックイベント（イベント委譲）
-  if (labelList) {
-    labelList.addEventListener('click', (e) => {
+  if (listContainer) {
+    listContainer.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-action]');
       if (!btn) return;
 
-      const labelItem = btn.closest('.label-item');
+      const labelItem = btn.closest('.label-manager__item');
       const labelId = parseInt(labelItem.dataset.labelId, 10);
       const action = btn.dataset.action;
 
@@ -368,7 +392,7 @@ export function initLabelEvents() {
 
       if (result.success) {
         closeModal('editLabelModal');
-        renderLabelList();
+        renderLabelManagerList();
         renderBooks();
         showToast(result.message);
       } else {
@@ -386,7 +410,7 @@ export function initLabelEvents() {
       const result = deleteLabel(deletingLabelId);
       if (result.success) {
         closeModal('deleteLabelConfirm');
-        renderLabelList();
+        renderLabelManagerList();
         renderBooks();
         showToast(result.message);
       } else {

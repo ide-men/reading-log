@@ -13,7 +13,7 @@ import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenter
 import { renderStudyBooks } from '../views/study-view.js';
 import { renderStoreBooks } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
-import { showToast, closeModal, openModal, renderBooks, updateUI } from './navigation.js';
+import { showToast, closeModal, openModal, renderBooks, updateUI, openLabelManager } from './navigation.js';
 import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
 import { initClearButtons } from '../utils/form-clear-button.js';
 import {
@@ -1159,6 +1159,14 @@ export function initStudyEvents() {
   const labelFilter = document.getElementById('studyLabelFilter');
   if (labelFilter) {
     labelFilter.addEventListener('click', (e) => {
+      // 管理ボタンのクリック
+      const manageBtn = e.target.closest('.label-filter__manage');
+      if (manageBtn) {
+        openLabelManager();
+        return;
+      }
+
+      // ラベルフィルターボタンのクリック
       const btn = e.target.closest('.label-filter__btn');
       if (!btn) return;
 
