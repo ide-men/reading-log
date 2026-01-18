@@ -116,16 +116,16 @@
               </button>
             </div>
 
-            <div class="label-filter-search" id="studyLabelFilter">
-              <div class="label-filter-search__input-wrapper">
-                <input type="text" class="form-input label-filter-search__input" id="labelFilterSearchInput" placeholder="ラベルで絞り込み..." readonly>
-                <button class="label-filter-search__clear hidden" id="labelFilterClearBtn" aria-label="フィルター解除">×</button>
+            <div class="book-search" id="studyBookSearch">
+              <div class="book-search__input-wrapper">
+                <span class="book-search__icon">🔍</span>
+                <input type="text" class="form-input book-search__input" id="studySearchInput" placeholder="本やラベルを検索...">
+                <button class="book-search__clear hidden" id="studySearchClearBtn" aria-label="検索をクリア">×</button>
               </div>
-              <button class="label-filter-search__manage" id="openLabelManagerBtn" aria-label="ラベル管理">⚙️</button>
-              <div class="label-filter-search__dropdown" id="labelFilterDropdown">
-                <input type="text" class="form-input label-filter-search__search" id="labelFilterDropdownSearch" placeholder="検索...">
-                <div class="label-filter-search__options" id="labelFilterOptions">
-                  <!-- ラベル一覧がここに動的に追加される -->
+              <button class="book-search__manage" id="openLabelManagerBtn" aria-label="ラベル管理">⚙️</button>
+              <div class="book-search__dropdown" id="studySearchDropdown">
+                <div class="book-search__options" id="studySearchOptions">
+                  <!-- 検索結果がここに動的に追加される -->
                 </div>
               </div>
             </div>
@@ -145,6 +145,19 @@
             <div class="store-stats">
               <span class="store-count" id="wishlistCount">0</span>
               <span class="store-label">冊の本を見つけた</span>
+            </div>
+
+            <div class="book-search book-search--store" id="storeBookSearch">
+              <div class="book-search__input-wrapper">
+                <span class="book-search__icon">🔍</span>
+                <input type="text" class="form-input book-search__input" id="storeSearchInput" placeholder="本を検索...">
+                <button class="book-search__clear hidden" id="storeSearchClearBtn" aria-label="検索をクリア">×</button>
+              </div>
+              <div class="book-search__dropdown" id="storeSearchDropdown">
+                <div class="book-search__options" id="storeSearchOptions">
+                  <!-- 検索結果がここに動的に追加される -->
+                </div>
+              </div>
             </div>
 
             <div class="shelf">

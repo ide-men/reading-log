@@ -10,8 +10,8 @@ import { checkDuplicateTitlePure, checkDuplicateLinkPure } from '../../domain/bo
 import { stateManager } from '../../core/state-manager.js';
 import { showAcquireCelebration } from '../effects/celebrations.js';
 import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenteredBook } from '../views/carousel-view.js';
-import { renderStudyBooks, renderLabelFilterOptions } from '../views/study-view.js';
-import { renderStoreBooks } from '../views/store-view.js';
+import { renderStudyBooks, renderStudySearchOptions } from '../views/study-view.js';
+import { renderStoreBooks, renderStoreSearchOptions } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
 import { showToast, closeModal, openModal, renderBooks, updateUI, openLabelManager } from './navigation.js';
 import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
@@ -1155,12 +1155,11 @@ export function initStudyEvents() {
     renderStudyBooks();
   });
 
-  // ラベルフィルター検索のイベント
-  const labelFilterInput = document.getElementById('labelFilterSearchInput');
-  const labelFilterDropdown = document.getElementById('labelFilterDropdown');
-  const labelFilterDropdownSearch = document.getElementById('labelFilterDropdownSearch');
-  const labelFilterOptions = document.getElementById('labelFilterOptions');
-  const labelFilterClearBtn = document.getElementById('labelFilterClearBtn');
+  // 検索ボックスのイベント
+  const studySearchInput = document.getElementById('studySearchInput');
+  const studySearchDropdown = document.getElementById('studySearchDropdown');
+  const studySearchOptions = document.getElementById('studySearchOptions');
+  const studySearchClearBtn = document.getElementById('studySearchClearBtn');
   const labelManagerBtn = document.getElementById('openLabelManagerBtn');
 
   // 管理ボタン
@@ -1170,40 +1169,49 @@ export function initStudyEvents() {
     });
   }
 
-  // クリアボタン
-  if (labelFilterClearBtn) {
-    labelFilterClearBtn.addEventListener('click', () => {
+  // クリアボタン（ラベルフィルター解除 + 検索クリア）
+  if (studySearchClearBtn) {
+    studySearchClearBtn.addEventListener('click', () => {
       stateManager.setSelectedLabelId(null);
       stateManager.clearStudySelection();
+      if (studySearchInput) {
+        studySearchInput.value = '';
+        studySearchInput.dataset.searching = '';
+      }
+      if (studySearchDropdown) {
+        studySearchDropdown.classList.remove('visible');
+      }
       renderStudyBooks();
     });
   }
 
-  // 入力欄クリックでドロップダウンを開く
-  if (labelFilterInput && labelFilterDropdown) {
-    labelFilterInput.addEventListener('click', () => {
-      if (labelFilterDropdownSearch) {
-        labelFilterDropdownSearch.value = '';
-      }
-      renderLabelFilterOptions();
-      labelFilterDropdown.classList.add('visible');
+  // 検索入力イベント
+  if (studySearchInput && studySearchDropdown) {
+    studySearchInput.addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+      studySearchInput.dataset.searching = query ? 'true' : '';
+      renderStudySearchOptions(query);
     });
 
-    // ドロップダウン検索
-    if (labelFilterDropdownSearch) {
-      labelFilterDropdownSearch.addEventListener('input', (e) => {
-        renderLabelFilterOptions(e.target.value.trim());
-      });
-    }
+    // フォーカスアウト時にドロップダウンを閉じる（遅延）
+    studySearchInput.addEventListener('blur', () => {
+      setTimeout(() => {
+        if (studySearchDropdown) {
+          studySearchDropdown.classList.remove('visible');
+        }
+      }, 200);
+    });
 
     // ラベル・本の選択
-    if (labelFilterOptions) {
-      labelFilterOptions.addEventListener('click', (e) => {
-        const option = e.target.closest('.label-filter-search__option');
+    if (studySearchOptions) {
+      studySearchOptions.addEventListener('click', (e) => {
+        const option = e.target.closest('.book-search__option');
         if (!option) return;
 
         const type = option.dataset.type;
-        labelFilterDropdown.classList.remove('visible');
+        studySearchDropdown.classList.remove('visible');
+        studySearchInput.value = '';
+        studySearchInput.dataset.searching = '';
 
         if (type === 'label') {
           // ラベルで絞り込み
@@ -1212,19 +1220,18 @@ export function initStudyEvents() {
           stateManager.clearStudySelection();
           renderStudyBooks();
         } else if (type === 'book') {
-          // 本を選択して表示
+          // 本を選択して詳細を表示
           const bookId = option.dataset.bookId;
           stateManager.setSelectedLabelId(null);
-          stateManager.setStudySelectedBookId(bookId);
-          renderStudyBooks();
+          openBookDetail(bookId);
         }
       });
     }
 
     // ドロップダウン外クリックで閉じる
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.label-filter-search')) {
-        labelFilterDropdown.classList.remove('visible');
+      if (!e.target.closest('.book-search')) {
+        studySearchDropdown.classList.remove('visible');
       }
     });
   }
@@ -1246,6 +1253,74 @@ export function initStudyEvents() {
 // 本屋イベント初期化
 // ========================================
 export function initStoreEvents() {
+  // 検索ボックスのイベント
+  const storeSearchInput = document.getElementById('storeSearchInput');
+  const storeSearchDropdown = document.getElementById('storeSearchDropdown');
+  const storeSearchOptions = document.getElementById('storeSearchOptions');
+  const storeSearchClearBtn = document.getElementById('storeSearchClearBtn');
+
+  // クリアボタン
+  if (storeSearchClearBtn) {
+    storeSearchClearBtn.addEventListener('click', () => {
+      if (storeSearchInput) {
+        storeSearchInput.value = '';
+      }
+      if (storeSearchDropdown) {
+        storeSearchDropdown.classList.remove('visible');
+      }
+    });
+  }
+
+  // 検索入力イベント
+  if (storeSearchInput && storeSearchDropdown) {
+    storeSearchInput.addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+      renderStoreSearchOptions(query);
+      // クリアボタンの表示/非表示
+      if (storeSearchClearBtn) {
+        if (query) {
+          storeSearchClearBtn.classList.remove('hidden');
+        } else {
+          storeSearchClearBtn.classList.add('hidden');
+        }
+      }
+    });
+
+    // フォーカスアウト時にドロップダウンを閉じる（遅延）
+    storeSearchInput.addEventListener('blur', () => {
+      setTimeout(() => {
+        if (storeSearchDropdown) {
+          storeSearchDropdown.classList.remove('visible');
+        }
+      }, 200);
+    });
+
+    // 本の選択
+    if (storeSearchOptions) {
+      storeSearchOptions.addEventListener('click', (e) => {
+        const option = e.target.closest('.book-search__option');
+        if (!option) return;
+
+        const type = option.dataset.type;
+        storeSearchDropdown.classList.remove('visible');
+        storeSearchInput.value = '';
+        if (storeSearchClearBtn) {
+          storeSearchClearBtn.classList.add('hidden');
+        }
+
+        if (type === 'book') {
+          // 本を選択して詳細を表示
+          const bookId = option.dataset.bookId;
+          openBookDetail(bookId);
+        }
+      });
+    }
+
+    // ドロップダウン外クリックで閉じる（書斎と共有する場合は1つだけで済む）
+    // 注: 書斎で既に document.addEventListener が設定されているため、
+    //     .book-search の外をクリックすると両方閉じる
+  }
+
   initShelfEvents({
     shelfId: 'storeShelf',
     bookListId: 'storeBookList',
