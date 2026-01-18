@@ -51,6 +51,14 @@ export function calculateYearlyPredictionPure(books, history, now = new Date()) 
 
   const firstSession = new Date(history[0].d);
   const daysSinceStart = Math.max(1, Math.ceil((now - firstSession) / CONFIG.msPerDay));
+
+  // 信頼性の閾値: 最低14日かつ3冊以上
+  const MIN_DAYS = 14;
+  const MIN_BOOKS = 3;
+  if (daysSinceStart < MIN_DAYS || books.length < MIN_BOOKS) {
+    return 'データ収集中';
+  }
+
   const booksPerDay = books.length / daysSinceStart;
 
   const endOfYear = new Date(now.getFullYear(), 11, 31);
