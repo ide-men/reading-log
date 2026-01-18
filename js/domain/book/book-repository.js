@@ -22,11 +22,12 @@ export function getAllBooksPure(state) {
 /**
  * IDで本を取得（Pure版）
  * @param {Object} state - 状態オブジェクト
- * @param {number} id - 本のID
+ * @param {number|string} id - 本のID
  * @returns {Book|undefined}
  */
 export function getBookByIdPure(state, id) {
-  return state.books.find(book => book.id === id);
+  const numId = typeof id === 'string' ? parseInt(id, 10) : id;
+  return state.books.find(book => book.id === numId);
 }
 
 /**
