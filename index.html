@@ -77,60 +77,73 @@
         </div>
       </section>
 
-      <!-- 書斎タブ -->
-      <section class="tab" id="tab-study" role="tabpanel" aria-labelledby="nav-study">
+      <!-- 本棚タブ（書斎・本屋を統合） -->
+      <section class="tab" id="tab-shelf" role="tabpanel" aria-labelledby="nav-shelf">
         <div class="page-layout">
-          <button class="term-hint term-hint--corner" data-term="study" aria-label="書斎の説明を見る">?</button>
-
-          <div class="status-tabs" id="studyStatusTabs">
-            <button class="status-tab" data-status="completed">
-              <span class="status-icon">✅</span>
-              <span class="status-label">読了</span>
-              <span class="status-count" id="completedCount">0</span>
+          <!-- 書斎/本屋 切り替えセグメント -->
+          <div class="shelf-segment">
+            <button class="shelf-segment__btn active" data-shelf-mode="study">
+              <span class="shelf-segment__icon">🏠</span>
+              <span class="shelf-segment__label">書斎</span>
             </button>
-            <button class="status-tab active" data-status="unread">
-              <span class="status-icon">📚</span>
-              <span class="status-label">未読</span>
-              <span class="status-count" id="unreadCount">0</span>
-            </button>
-            <button class="status-tab" data-status="dropped">
-              <span class="status-icon">⏸️</span>
-              <span class="status-label">中断</span>
-              <span class="status-count" id="droppedCount">0</span>
+            <button class="shelf-segment__btn" data-shelf-mode="store">
+              <span class="shelf-segment__icon">🏪</span>
+              <span class="shelf-segment__label">本屋</span>
             </button>
           </div>
 
-          <div class="label-filter" id="studyLabelFilter" style="display: none;">
-            <!-- ラベルフィルターがここに動的に追加される -->
-          </div>
+          <!-- 書斎モード -->
+          <div class="shelf-mode active" id="shelfModeStudy" data-mode="study">
+            <button class="term-hint term-hint--corner" data-term="study" aria-label="書斎の説明を見る">?</button>
 
-          <div class="shelf">
-            <div class="shelf__board">
-              <div class="shelf__visual" id="studyShelf"></div>
+            <div class="status-tabs" id="studyStatusTabs">
+              <button class="status-tab" data-status="completed">
+                <span class="status-icon">✅</span>
+                <span class="status-label">読了</span>
+                <span class="status-count" id="completedCount">0</span>
+              </button>
+              <button class="status-tab active" data-status="unread">
+                <span class="status-icon">📚</span>
+                <span class="status-label">未読</span>
+                <span class="status-count" id="unreadCount">0</span>
+              </button>
+              <button class="status-tab" data-status="dropped">
+                <span class="status-icon">⏸️</span>
+                <span class="status-label">中断</span>
+                <span class="status-count" id="droppedCount">0</span>
+              </button>
             </div>
-          </div>
 
-          <div id="studyBookList"></div>
-        </div>
-      </section>
-
-      <!-- 本屋タブ -->
-      <section class="tab" id="tab-store" role="tabpanel" aria-labelledby="nav-store">
-        <div class="page-layout">
-          <button class="term-hint term-hint--corner" data-term="store" aria-label="本屋の説明を見る">?</button>
-
-          <div class="store-stats">
-            <span class="store-count" id="wishlistCount">0</span>
-            <span class="store-label">冊の本を見つけた</span>
-          </div>
-
-          <div class="shelf">
-            <div class="shelf__board">
-              <div class="shelf__visual" id="storeShelf"></div>
+            <div class="label-filter" id="studyLabelFilter" style="display: none;">
+              <!-- ラベルフィルターがここに動的に追加される -->
             </div>
+
+            <div class="shelf">
+              <div class="shelf__board">
+                <div class="shelf__visual" id="studyShelf"></div>
+              </div>
+            </div>
+
+            <div id="studyBookList"></div>
           </div>
 
-          <div id="storeBookList"></div>
+          <!-- 本屋モード -->
+          <div class="shelf-mode" id="shelfModeStore" data-mode="store">
+            <button class="term-hint term-hint--corner" data-term="store" aria-label="本屋の説明を見る">?</button>
+
+            <div class="store-stats">
+              <span class="store-count" id="wishlistCount">0</span>
+              <span class="store-label">冊の本を見つけた</span>
+            </div>
+
+            <div class="shelf">
+              <div class="shelf__board">
+                <div class="shelf__visual" id="storeShelf"></div>
+              </div>
+            </div>
+
+            <div id="storeBookList"></div>
+          </div>
         </div>
       </section>
 
@@ -237,9 +250,8 @@
     </button>
 
     <nav class="nav" role="tablist" aria-label="メインナビゲーション">
-      <button class="active" id="nav-home" data-tab="home" role="tab" aria-selected="true" aria-controls="tab-home"><span aria-hidden="true">🎒</span><span>カバン</span></button>
-      <button id="nav-study" data-tab="study" role="tab" aria-selected="false" aria-controls="tab-study"><span aria-hidden="true">🏠</span><span>書斎</span></button>
-      <button id="nav-store" data-tab="store" role="tab" aria-selected="false" aria-controls="tab-store"><span aria-hidden="true">🏪</span><span>本屋</span></button>
+      <button id="nav-shelf" data-tab="shelf" role="tab" aria-selected="false" aria-controls="tab-shelf"><span aria-hidden="true">📚</span><span>本棚</span></button>
+      <button class="nav__center active" id="nav-home" data-tab="home" role="tab" aria-selected="true" aria-controls="tab-home"><span aria-hidden="true">🎒</span><span>カバン</span></button>
       <button id="nav-stats" data-tab="stats" role="tab" aria-selected="false" aria-controls="tab-stats"><span aria-hidden="true">📊</span><span>統計</span></button>
     </nav>
 
