@@ -1446,7 +1446,16 @@
 .label-manager__add {
   display: flex;
   gap: var(--space-sm);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
+  align-items: center;
+}
+
+.label-manager__search {
+  margin-bottom: var(--space-md);
+}
+
+.label-manager__search .form-input {
+  background: var(--bg);
 }
 
 .label-manager__add .form-input {
@@ -1455,8 +1464,12 @@
 }
 
 .label-manager__add .btn {
+  width: auto;
   flex-shrink: 0;
+  padding: var(--space-sm) var(--space-md);
   margin-top: 0;
+  font-size: var(--font-md);
+  font-weight: var(--weight-medium);
 }
 
 .label-manager__list {
@@ -1468,6 +1481,13 @@
 .label-manager__list:empty::after {
   content: 'ラベルがありません';
   display: block;
+  text-align: center;
+  color: var(--text-dim);
+  padding: var(--space-xl);
+  font-size: var(--font-md);
+}
+
+.label-manager__empty {
   text-align: center;
   color: var(--text-dim);
   padding: var(--space-xl);

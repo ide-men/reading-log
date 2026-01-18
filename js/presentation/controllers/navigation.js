@@ -331,6 +331,11 @@ let deletingLabelId = null;
 export function openLabelManager() {
   const overlay = document.getElementById('labelManagerOverlay');
   if (overlay) {
+    // 検索フィールドをリセット
+    const searchInput = document.getElementById('labelManagerSearchInput');
+    if (searchInput) {
+      searchInput.value = '';
+    }
     renderLabelManagerList();
     overlay.classList.add('active');
   }
@@ -343,14 +348,27 @@ export function closeLabelManager() {
   }
 }
 
-function renderLabelManagerList() {
+function getCurrentLabelSearchQuery() {
+  const searchInput = document.getElementById('labelManagerSearchInput');
+  return searchInput ? searchInput.value.trim() : '';
+}
+
+function renderLabelManagerList(searchQuery = '') {
   const listContainer = document.getElementById('labelManagerList');
   if (!listContainer) return;
 
-  const labels = getAllLabels();
+  let labels = getAllLabels();
+
+  // 検索フィルタリング
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    labels = labels.filter(label => label.name.toLowerCase().includes(query));
+  }
 
   if (labels.length === 0) {
-    listContainer.innerHTML = '';
+    listContainer.innerHTML = searchQuery
+      ? '<div class="label-manager__empty">該当するラベルがありません</div>'
+      : '';
     return;
   }
 
@@ -380,10 +398,18 @@ export function initLabelManagerEvents() {
   const newLabelInput = document.getElementById('labelManagerNewInput');
   const addLabelBtn = document.getElementById('labelManagerAddBtn');
   const backBtn = document.getElementById('labelManagerBackBtn');
+  const searchInput = document.getElementById('labelManagerSearchInput');
 
   // 戻るボタン
   if (backBtn) {
     backBtn.addEventListener('click', closeLabelManager);
+  }
+
+  // 検索機能
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      renderLabelManagerList(e.target.value.trim());
+    });
   }
 
   // ラベル追加
@@ -395,7 +421,7 @@ export function initLabelManagerEvents() {
       const result = addLabel(name);
       if (result.success) {
         newLabelInput.value = '';
-        renderLabelManagerList();
+        renderLabelManagerList(getCurrentLabelSearchQuery());
         renderBooks();
         showToast(result.message);
       } else {
@@ -441,7 +467,7 @@ export function initLabelManagerEvents() {
 
       if (result.success) {
         closeModal('editLabelModal');
-        renderLabelManagerList();
+        renderLabelManagerList(getCurrentLabelSearchQuery());
         renderBooks();
         showToast(result.message);
       } else {
@@ -459,7 +485,7 @@ export function initLabelManagerEvents() {
       const result = deleteLabel(deletingLabelId);
       if (result.success) {
         closeModal('deleteLabelConfirm');
-        renderLabelManagerList();
+        renderLabelManagerList(getCurrentLabelSearchQuery());
         renderBooks();
         showToast(result.message);
       } else {
