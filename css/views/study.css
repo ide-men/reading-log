@@ -4,9 +4,9 @@
 
 /* Status Tabs は home.css に定義済み */
 
-/* 書斎画面のヘッダー下マージン（統計画面と統一） */
-#tab-study .status-tabs {
-  margin-top: var(--space-xl);
+/* 本棚画面：ヒントマークとセグメントタブの重なりを解消 */
+#tab-shelf .shelf-segment-wrapper {
+  margin-top: var(--space-sm);
 }
 
 /* 書斎ヒントテキスト */
