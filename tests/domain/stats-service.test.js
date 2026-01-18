@@ -86,9 +86,23 @@ describe('calculateYearlyPrediction', () => {
     expect(calculateYearlyPrediction([{ id: 1 }], [])).toBe('--冊');
   });
 
-  it('予測を計算', () => {
+  it('14日未満の場合はデータ収集中', () => {
     const books = [createTestBook({ id: 1 }), createTestBook({ id: 2 }), createTestBook({ id: 3 })];
-    const history = [createHistoryEntry({ date: '2024-06-01T10:00:00' })];
+    const history = [createHistoryEntry({ date: '2024-06-10T10:00:00' })]; // 5日前
+    const result = calculateYearlyPrediction(books, history);
+    expect(result).toBe('データ収集中');
+  });
+
+  it('3冊未満の場合はデータ収集中', () => {
+    const books = [createTestBook({ id: 1 }), createTestBook({ id: 2 })]; // 2冊
+    const history = [createHistoryEntry({ date: '2024-05-01T10:00:00' })]; // 45日前
+    const result = calculateYearlyPrediction(books, history);
+    expect(result).toBe('データ収集中');
+  });
+
+  it('14日以上かつ3冊以上で予測を計算', () => {
+    const books = [createTestBook({ id: 1 }), createTestBook({ id: 2 }), createTestBook({ id: 3 })];
+    const history = [createHistoryEntry({ date: '2024-06-01T10:00:00' })]; // 14日前
     const result = calculateYearlyPrediction(books, history);
     expect(result).toMatch(/^\d+冊$/);
   });
