@@ -12,28 +12,54 @@ import { getAllLabels } from '../../domain/label/label-service.js';
 // ラベルフィルターのレンダリング
 // ========================================
 export function renderLabelFilter() {
-  const filterContainer = document.getElementById('studyLabelFilter');
-  if (!filterContainer) return;
+  const searchInput = document.getElementById('labelFilterSearchInput');
+  const clearBtn = document.getElementById('labelFilterClearBtn');
+  if (!searchInput || !clearBtn) return;
 
+  const selectedLabelId = stateManager.getSelectedLabelId();
   const labels = getAllLabels();
+
+  // 選択中のラベルを表示
+  if (selectedLabelId !== null) {
+    const selectedLabel = labels.find(l => l.id === selectedLabelId);
+    searchInput.value = selectedLabel ? selectedLabel.name : '';
+    searchInput.classList.add('has-value');
+    clearBtn.classList.remove('hidden');
+  } else {
+    searchInput.value = '';
+    searchInput.classList.remove('has-value');
+    clearBtn.classList.add('hidden');
+  }
+}
+
+// ========================================
+// ラベルフィルタードロップダウンのレンダリング
+// ========================================
+export function renderLabelFilterOptions(searchQuery = '') {
+  const optionsContainer = document.getElementById('labelFilterOptions');
+  if (!optionsContainer) return;
+
+  let labels = getAllLabels();
   const selectedLabelId = stateManager.getSelectedLabelId();
 
-  // ラベルがなくても管理ボタンは表示する
-  filterContainer.style.display = 'flex';
+  // 検索フィルタリング
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    labels = labels.filter(label => label.name.toLowerCase().includes(query));
+  }
 
-  const labelButtons = labels.length > 0 ? `
-    <button class="label-filter__btn ${selectedLabelId === null ? 'active' : ''}" data-label-id="">すべて</button>
-    ${labels.map(label => `
-      <button class="label-filter__btn ${selectedLabelId === label.id ? 'active' : ''}" data-label-id="${label.id}">
-        ${escapeHtml(label.name)}
-      </button>
-    `).join('')}
-  ` : '';
+  if (labels.length === 0) {
+    optionsContainer.innerHTML = searchQuery
+      ? '<div class="label-filter-search__empty">該当するラベルがありません</div>'
+      : '<div class="label-filter-search__empty">ラベルがありません</div>';
+    return;
+  }
 
-  filterContainer.innerHTML = `
-    ${labelButtons}
-    <button class="label-filter__manage" id="openLabelManagerBtn">⚙️ 管理</button>
-  `;
+  optionsContainer.innerHTML = labels.map(label => `
+    <button class="label-filter-search__option ${selectedLabelId === label.id ? 'selected' : ''}" data-label-id="${label.id}">
+      ${escapeHtml(label.name)}
+    </button>
+  `).join('');
 }
 
 // ========================================
