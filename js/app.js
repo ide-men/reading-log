@@ -13,6 +13,7 @@ import {
   initModalEvents,
   initSettingsEvents,
   initLabelManagerEvents,
+  initShelfSegmentEvents,
   updateUI,
   renderBooks
 } from './presentation/controllers/navigation.js';
@@ -40,6 +41,7 @@ import { initInstallPrompt } from './presentation/controllers/install-prompt-con
 // ========================================
 function initializeEventListeners() {
   initNavigationEvents();
+  initShelfSegmentEvents();
   initScrollNavigation();
   initTimerEvents();
   initSettingsEvents();

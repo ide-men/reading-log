@@ -31,10 +31,21 @@ import { escapeHtml } from '../../shared/utils.js';
 // ========================================
 const tabCallbacks = {
   home: renderReadingBooks,
-  study: renderStudyBooks,
-  store: renderStoreBooks,
+  shelf: renderShelfBooks,
   stats: renderStats
 };
+
+// 本棚の現在のモード（'study' or 'store'）
+let currentShelfMode = 'study';
+
+// 本棚タブのレンダリング（現在のモードに応じて切り替え）
+function renderShelfBooks() {
+  if (currentShelfMode === 'study') {
+    renderStudyBooks();
+  } else {
+    renderStoreBooks();
+  }
+}
 
 // ========================================
 // タブ切り替え
@@ -55,10 +66,10 @@ export function switchTab(name) {
   tab.classList.add('active');
   navButton.classList.add('active');
 
-  // FABの表示/非表示を切り替え（カバン・記録タブでは非表示）
+  // FABの表示/非表示を切り替え（本棚タブでのみ表示）
   const fab = document.getElementById('addBookFab');
   if (fab) {
-    fab.classList.toggle('hidden', name === 'home' || name === 'stats');
+    fab.classList.toggle('hidden', name !== 'shelf');
   }
 
   if (tabCallbacks[name]) {
@@ -144,6 +155,38 @@ export function renderBooks() {
 export function initNavigationEvents() {
   document.querySelectorAll('.nav button').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+}
+
+// ========================================
+// 本棚セグメント切り替え
+// ========================================
+export function switchShelfMode(mode) {
+  currentShelfMode = mode;
+
+  // セグメントボタンの状態更新
+  document.querySelectorAll('.shelf-segment__btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.shelfMode === mode);
+  });
+
+  // モード表示切り替え
+  document.querySelectorAll('.shelf-mode').forEach(el => {
+    el.classList.toggle('active', el.dataset.mode === mode);
+  });
+
+  // コンテンツをレンダリング
+  if (mode === 'study') {
+    renderStudyBooks();
+  } else {
+    renderStoreBooks();
+  }
+}
+
+export function initShelfSegmentEvents() {
+  document.querySelectorAll('.shelf-segment__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchShelfMode(btn.dataset.shelfMode);
+    });
   });
 }
 
