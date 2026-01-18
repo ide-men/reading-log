@@ -790,7 +790,7 @@ select.form-input {
   height: 100%;
   height: 100dvh;
   display: none;
-  z-index: 200;
+  z-index: 1100;
 }
 
 .modal-overlay.active,
@@ -811,7 +811,6 @@ select.form-input {
   background: rgba(0, 0, 0, 0.8);
   align-items: center;
   justify-content: center;
-  z-index: 300;
   padding: var(--space-xl);
 }
 
