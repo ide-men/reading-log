@@ -1196,17 +1196,28 @@ export function initStudyEvents() {
       });
     }
 
-    // ラベル選択
+    // ラベル・本の選択
     if (labelFilterOptions) {
       labelFilterOptions.addEventListener('click', (e) => {
         const option = e.target.closest('.label-filter-search__option');
         if (!option) return;
 
-        const labelId = parseInt(option.dataset.labelId, 10);
-        stateManager.setSelectedLabelId(labelId);
-        stateManager.clearStudySelection();
+        const type = option.dataset.type;
         labelFilterDropdown.classList.remove('visible');
-        renderStudyBooks();
+
+        if (type === 'label') {
+          // ラベルで絞り込み
+          const labelId = parseInt(option.dataset.labelId, 10);
+          stateManager.setSelectedLabelId(labelId);
+          stateManager.clearStudySelection();
+          renderStudyBooks();
+        } else if (type === 'book') {
+          // 本を選択して表示
+          const bookId = option.dataset.bookId;
+          stateManager.setSelectedLabelId(null);
+          stateManager.setStudySelectedBookId(bookId);
+          renderStudyBooks();
+        }
       });
     }
 

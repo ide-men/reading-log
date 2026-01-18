@@ -1884,8 +1884,30 @@
   padding: var(--space-xs);
 }
 
+/* 検索セクション */
+.search-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.search-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.search-section__header {
+  font-size: var(--font-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dim);
+  padding: var(--space-sm) var(--space-md) var(--space-xs);
+}
+
 .label-filter-search__option {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
   width: 100%;
   text-align: left;
   padding: var(--space-sm) var(--space-md);
@@ -1902,9 +1924,24 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
-.label-filter-search__option.selected {
-  background: rgba(139, 90, 43, 0.2);
-  color: var(--text);
+.search-option__icon {
+  flex-shrink: 0;
+  font-size: var(--font-md);
+  opacity: 0.7;
+}
+
+.search-option__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-option__check {
+  flex-shrink: 0;
+  color: var(--color-study);
+  font-weight: var(--weight-bold);
 }
 
 .label-filter-search__empty {
