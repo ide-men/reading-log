@@ -45,7 +45,7 @@
 
 **コード変更時はテストを書くこと**
 
-- 実行: `npm test` / ウォッチ: `npm run test:watch`
+- 実行: `npm install && npm test` / ウォッチ: `npm run test:watch`
 - 配置: `tests/` 以下に元ファイルと同じ構造で配置
 - 優先度: shared > domain > core > presentation
 - DOM依存コードはテスト対象外（E2E向き）
