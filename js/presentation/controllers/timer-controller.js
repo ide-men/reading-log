@@ -131,6 +131,134 @@ export function skipReadingBookmark() {
 }
 
 // ========================================
+// 未完了セッション復元
+// ========================================
+
+let pendingIncompleteSession = null;
+
+/**
+ * 日時を表示用にフォーマット
+ * @param {Date} date
+ * @returns {string}
+ */
+function formatDateTime(date) {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${month}月${day}日 ${hours}:${minutes}`;
+}
+
+/**
+ * datetime-local用にフォーマット
+ * @param {Date} date
+ * @returns {string}
+ */
+function formatDateTimeLocal(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+/**
+ * 未完了セッションをチェックしてモーダルを表示
+ */
+export function checkIncompleteSession() {
+  const session = timerService.getActiveSession();
+  if (!session) return;
+
+  const book = session.bookId ? bookRepository.getBookById(session.bookId) : null;
+  const startTime = new Date(session.startTime);
+  const now = new Date();
+
+  // 開始時刻が未来や、24時間以上前の場合は無効として扱う
+  if (startTime > now || (now.getTime() - startTime.getTime()) > 24 * 60 * 60 * 1000) {
+    timerService.discardIncompleteSession();
+    return;
+  }
+
+  pendingIncompleteSession = session;
+
+  // モーダルの内容を設定
+  document.getElementById('incompleteSessionBookTitle').textContent =
+    book?.title || '（本の情報なし）';
+  document.getElementById('incompleteSessionStartTime').textContent =
+    formatDateTime(startTime);
+
+  // 終了時刻の初期値を現在時刻に設定
+  const endTimeInput = document.getElementById('incompleteSessionEndTime');
+  endTimeInput.value = formatDateTimeLocal(now);
+  endTimeInput.min = formatDateTimeLocal(startTime);
+  endTimeInput.max = formatDateTimeLocal(now);
+
+  openModal('incompleteSessionModal');
+}
+
+/**
+ * 未完了セッションを記録
+ */
+function handleRecordIncompleteSession() {
+  if (!pendingIncompleteSession) return;
+
+  const endTimeValue = document.getElementById('incompleteSessionEndTime').value;
+  if (!endTimeValue) {
+    showToast('終了時刻を入力してください');
+    return;
+  }
+
+  const endTime = new Date(endTimeValue);
+  const startTime = new Date(pendingIncompleteSession.startTime);
+
+  // バリデーション
+  if (endTime <= startTime) {
+    showToast('終了時刻は開始時刻より後にしてください');
+    return;
+  }
+
+  const { minutes, isValidSession } = timerService.recordIncompleteSession(
+    pendingIncompleteSession,
+    endTime
+  );
+
+  closeModal('incompleteSessionModal');
+  pendingIncompleteSession = null;
+
+  if (isValidSession) {
+    showToast(`${minutes}分の読書を記録しました`);
+  } else {
+    showToast(`${minutes}分の読書を記録しました（10分未満のため履歴には追加されません）`);
+  }
+
+  updateUI();
+  renderReadingBooks();
+}
+
+/**
+ * 未完了セッションを破棄
+ */
+function handleDiscardIncompleteSession() {
+  timerService.discardIncompleteSession();
+  closeModal('incompleteSessionModal');
+  pendingIncompleteSession = null;
+}
+
+/**
+ * 未完了セッションモーダルのイベント初期化
+ */
+export function initIncompleteSessionEvents() {
+  document.getElementById('recordIncompleteSessionBtn').addEventListener('click', () => {
+    handleRecordIncompleteSession();
+  });
+
+  document.getElementById('discardIncompleteSessionBtn').addEventListener('click', () => {
+    handleDiscardIncompleteSession();
+  });
+}
+
+// ========================================
 // タイマーイベント初期化
 // ========================================
 export function initTimerEvents() {
