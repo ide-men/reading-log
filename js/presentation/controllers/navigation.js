@@ -174,6 +174,12 @@ export function switchShelfMode(mode) {
     el.classList.toggle('active', el.dataset.mode === mode);
   });
 
+  // ヒントボタンのdata-term属性を更新
+  const hintBtn = document.getElementById('shelfHintBtn');
+  if (hintBtn) {
+    hintBtn.dataset.term = mode;
+  }
+
   // コンテンツをレンダリング
   if (mode === 'study') {
     renderStudyBooks();

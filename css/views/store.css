@@ -36,25 +36,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-md);
-  padding: var(--space-lg) var(--space-2xl);
-  min-height: 90px;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  min-height: 60px;
   background: linear-gradient(145deg,
     rgba(15, 20, 30, 0.9) 0%,
     rgba(20, 28, 40, 0.85) 100%
   );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-xl);
   border: 1px solid rgba(245, 158, 11, 0.2);
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  margin-top: var(--space-xl);
+  margin-top: 0;
+  margin-bottom: var(--space-xl);
   box-shadow:
-    0 4px 30px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(245, 158, 11, 0.1),
-    0 0 40px rgba(245, 158, 11, 0.05),
+    0 4px 20px rgba(0, 0, 0, 0.25),
+    0 0 15px rgba(245, 158, 11, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   overflow: hidden;
@@ -80,7 +80,7 @@
 }
 
 .store-count {
-  font-size: 36px;
+  font-size: 28px;
   font-weight: var(--weight-bold);
   background: linear-gradient(135deg, var(--color-store-light), var(--color-store));
   -webkit-background-clip: text;
@@ -88,11 +88,11 @@
   background-clip: text;
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.35));
 }
 
 .store-label {
-  font-size: var(--font-lg);
+  font-size: var(--font-md);
   color: rgba(255, 255, 255, 0.7);
   font-weight: var(--weight-normal);
   position: relative;
@@ -105,9 +105,9 @@
   grid-column: 1 / -1;
 }
 
-/* 買い物かごの持ち手用のスペース */
-#tab-store .shelf {
-  margin-top: var(--space-xl);
+/* 買い物かごの持ち手用のスペース - store-statsのmargin-bottomで確保 */
+#shelfModeStore .shelf {
+  margin-top: 0;
 }
 
 /* ==========================================================================
@@ -116,17 +116,17 @@
 
 @media (min-width: 600px) {
   .store-stats {
-    padding: var(--space-xl) var(--space-3xl);
-    border-radius: var(--radius-3xl);
-    gap: var(--space-lg);
+    padding: var(--space-lg) var(--space-2xl);
+    border-radius: var(--radius-2xl);
+    gap: var(--space-md);
   }
 
   .store-count {
-    font-size: 42px;
+    font-size: 32px;
   }
 
   .store-label {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -136,14 +136,14 @@
 
 @media (min-width: 1024px) {
   .store-stats {
-    padding: var(--space-2xl) var(--space-3xl);
+    padding: var(--space-lg) var(--space-2xl);
   }
 
   .store-count {
-    font-size: 48px;
+    font-size: 36px;
   }
 
   .store-label {
-    font-size: 16px;
+    font-size: 15px;
   }
 }

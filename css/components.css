@@ -238,13 +238,21 @@
    Shelf Segment (本棚内の書斎/本屋切り替え)
    ========================================================================== */
 
+.shelf-segment-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
 .shelf-segment {
   display: flex;
-  gap: var(--space-xs);
-  padding: var(--space-xs);
-  background: var(--bg);
+  flex: 1;
+  gap: 0;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: var(--radius-xl);
-  margin-bottom: var(--space-lg);
+  border: 1px solid var(--border);
 }
 
 .shelf-segment__btn {
@@ -253,25 +261,39 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
   background: transparent;
   border: none;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  position: relative;
 }
 
 .shelf-segment__btn:hover {
-  background: var(--elevated);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .shelf-segment__btn.active {
-  background: var(--surface);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(145deg, var(--surface), var(--elevated));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+}
+
+/* 書斎アクティブ時 */
+.shelf-segment__btn.active[data-shelf-mode="study"] {
+  background: linear-gradient(145deg, rgba(139, 90, 43, 0.3), rgba(139, 90, 43, 0.15));
+  border-color: rgba(139, 90, 43, 0.4);
+}
+
+/* 本屋アクティブ時 */
+.shelf-segment__btn.active[data-shelf-mode="store"] {
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.1));
+  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .shelf-segment__icon {
-  font-size: var(--font-lg);
+  font-size: 18px;
 }
 
 .shelf-segment__label {
@@ -283,6 +305,12 @@
 
 .shelf-segment__btn.active .shelf-segment__label {
   color: var(--text);
+}
+
+/* セグメント横のヒントボタン */
+.term-hint--segment {
+  flex-shrink: 0;
+  margin-left: 0;
 }
 
 /* Shelf Mode (書斎/本屋モード切り替え) */

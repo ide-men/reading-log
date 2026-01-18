@@ -81,20 +81,22 @@
       <section class="tab" id="tab-shelf" role="tabpanel" aria-labelledby="nav-shelf">
         <div class="page-layout">
           <!-- 書斎/本屋 切り替えセグメント -->
-          <div class="shelf-segment">
-            <button class="shelf-segment__btn active" data-shelf-mode="study">
-              <span class="shelf-segment__icon">🏠</span>
-              <span class="shelf-segment__label">書斎</span>
-            </button>
-            <button class="shelf-segment__btn" data-shelf-mode="store">
-              <span class="shelf-segment__icon">🏪</span>
-              <span class="shelf-segment__label">本屋</span>
-            </button>
+          <div class="shelf-segment-wrapper">
+            <div class="shelf-segment">
+              <button class="shelf-segment__btn active" data-shelf-mode="study">
+                <span class="shelf-segment__icon">🏠</span>
+                <span class="shelf-segment__label">書斎</span>
+              </button>
+              <button class="shelf-segment__btn" data-shelf-mode="store">
+                <span class="shelf-segment__icon">🏪</span>
+                <span class="shelf-segment__label">本屋</span>
+              </button>
+            </div>
+            <button class="term-hint term-hint--segment" id="shelfHintBtn" data-term="study" aria-label="説明を見る">?</button>
           </div>
 
           <!-- 書斎モード -->
           <div class="shelf-mode active" id="shelfModeStudy" data-mode="study">
-            <button class="term-hint term-hint--corner" data-term="study" aria-label="書斎の説明を見る">?</button>
 
             <div class="status-tabs" id="studyStatusTabs">
               <button class="status-tab" data-status="completed">
@@ -129,7 +131,6 @@
 
           <!-- 本屋モード -->
           <div class="shelf-mode" id="shelfModeStore" data-mode="store">
-            <button class="term-hint term-hint--corner" data-term="store" aria-label="本屋の説明を見る">?</button>
 
             <div class="store-stats">
               <span class="store-count" id="wishlistCount">0</span>
