@@ -35,6 +35,7 @@ export const STORAGE_KEYS = {
 };
 
 export const CONFIG = {
+  minTimeRecordMinutes: 1,  // 読書時間として加算する最小分数
   minSessionMinutes: 10,
   msPerDay: 86400000,
   historyRetentionDays: 90,

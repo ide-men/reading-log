@@ -185,6 +185,30 @@ describe('timer-service.js', () => {
       expect(stateManager.updateStats).toHaveBeenCalled();
     });
 
+    it('1分未満のセッションは統計に加算されない', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+      const initialTotal = mockState.stats.total;
+      timerService.startReading();
+      vi.advanceTimersByTime(59000); // 59秒
+      const result = timerService.stopReading();
+      expect(result.minutes).toBe(0);
+      // 1分未満なので統計は更新されない（空オブジェクトが渡される）
+      const updateCall = stateManager.updateStats.mock.calls.find(
+        call => Object.keys(call[0]).length > 0
+      );
+      expect(updateCall).toBeUndefined();
+    });
+
+    it('1分以上のセッションは統計に加算される', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+      timerService.startReading();
+      vi.advanceTimersByTime(60000); // 60秒 = 1分
+      timerService.stopReading();
+      expect(stateManager.updateStats).toHaveBeenCalledWith(
+        expect.objectContaining({ total: expect.any(Number), today: expect.any(Number) })
+      );
+    });
+
     it('本の読書時間が更新される', async () => {
       const { stateManager } = await import('../../js/core/state-manager.js');
       mockState.books = [createTestBook({ id: 1, readingTime: 0 })];
@@ -192,6 +216,15 @@ describe('timer-service.js', () => {
       vi.advanceTimersByTime(120000);
       timerService.stopReading();
       expect(stateManager.updateBook).toHaveBeenCalledWith(1, { readingTime: 2 });
+    });
+
+    it('1分未満のセッションでは本の読書時間が更新されない', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+      mockState.books = [createTestBook({ id: 1, readingTime: 5 })];
+      timerService.startReading(1);
+      vi.advanceTimersByTime(59000); // 59秒
+      timerService.stopReading();
+      expect(stateManager.updateBook).not.toHaveBeenCalled();
     });
 
     it('有効セッションで履歴が追加される', async () => {
@@ -409,6 +442,39 @@ describe('アクティブセッション永続化', () => {
       expect(result.minutes).toBe(5);
       expect(result.isValidSession).toBe(false);
       expect(stateManager.addHistory).not.toHaveBeenCalled();
+    });
+
+    it('1分未満のセッションは統計に加算されない', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+      stateManager.updateStats.mockClear();
+
+      const session = {
+        startTime: Date.now() - 30 * 1000, // 30秒前
+        bookId: null
+      };
+      const endTime = new Date();
+
+      const result = timerService.recordIncompleteSession(session, endTime);
+
+      expect(result.minutes).toBe(0);
+      // 1分未満なのでupdateStatsが呼ばれない
+      expect(stateManager.updateStats).not.toHaveBeenCalled();
+    });
+
+    it('1分未満のセッションでは本の読書時間が更新されない', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+      mockState.books = [createTestBook({ id: 42, readingTime: 10 })];
+      stateManager.updateBook.mockClear();
+
+      const session = {
+        startTime: Date.now() - 30 * 1000, // 30秒前
+        bookId: 42
+      };
+      const endTime = new Date();
+
+      timerService.recordIncompleteSession(session, endTime);
+
+      expect(stateManager.updateBook).not.toHaveBeenCalled();
     });
   });
 

@@ -60,13 +60,13 @@ export function recordIncompleteSession(session, endTime) {
   const { startTime, bookId } = session;
   const minutes = Math.floor((endTime.getTime() - startTime) / 60000);
   const isValidSession = minutes >= CONFIG.minSessionMinutes;
+  const shouldRecordTime = minutes >= CONFIG.minTimeRecordMinutes;
   const state = stateManager.getState();
 
-  // 統計を更新
-  const statsUpdates = {
-    total: state.stats.total + minutes,
-    today: state.stats.today + minutes
-  };
+  // 統計を更新（閾値以上の場合のみ）
+  const statsUpdates = shouldRecordTime
+    ? { total: state.stats.total + minutes, today: state.stats.today + minutes }
+    : {};
 
   if (isValidSession) {
     statsUpdates.sessions = state.stats.sessions + 1;
@@ -75,10 +75,12 @@ export function recordIncompleteSession(session, endTime) {
     }
   }
 
-  stateManager.updateStats(statsUpdates);
+  if (Object.keys(statsUpdates).length > 0) {
+    stateManager.updateStats(statsUpdates);
+  }
 
-  // 本の読書時間を更新
-  if (bookId) {
+  // 本の読書時間を更新（閾値以上の場合のみ）
+  if (shouldRecordTime && bookId) {
     const book = stateManager.getBook(bookId);
     if (book) {
       stateManager.updateBook(bookId, {
@@ -224,12 +226,12 @@ export class TimerService {
     const state = this.deps.getState();
     const now = this.deps.now();
     const isValidSession = minutes >= CONFIG.minSessionMinutes;
+    const shouldRecordTime = minutes >= CONFIG.minTimeRecordMinutes;
 
     // すべての統計更新を一度に計算
-    const statsUpdates = {
-      total: state.stats.total + minutes,
-      today: state.stats.today + minutes
-    };
+    const statsUpdates = shouldRecordTime
+      ? { total: state.stats.total + minutes, today: state.stats.today + minutes }
+      : {};
 
     if (isValidSession) {
       statsUpdates.sessions = state.stats.sessions + 1;
@@ -241,8 +243,8 @@ export class TimerService {
     // 統計を一度に更新
     this.deps.updateStats(statsUpdates);
 
-    // 本の読書時間を更新
-    if (this.currentBookId) {
+    // 本の読書時間を更新（閾値以上の場合のみ）
+    if (shouldRecordTime && this.currentBookId) {
       const book = this.deps.getBook(this.currentBookId);
       if (book) {
         this.deps.updateBook(this.currentBookId, {
