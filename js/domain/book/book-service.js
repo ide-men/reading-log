@@ -246,7 +246,7 @@ export function completeBook(id) {
 /**
  * reading → dropped（中断）
  * @param {number} id - 本のID
- * @param {string|null} [bookmark] - 栞メモ（どこまで読んだか等）
+ * @param {string|null} [bookmark] - 栞メモ（次はどこから読むか等）
  * @returns {{ success: boolean, message: string }}
  */
 export function dropBook(id, bookmark = null) {

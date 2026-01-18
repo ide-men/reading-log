@@ -30,7 +30,7 @@ import { createValidator, required, createDuplicateChecker } from '../common/val
  * @property {string|null} completionNote - 読了時の感想（何が変わった？）
  * @property {Reflection[]} reflections - 振り返りの履歴
  * @property {number} readingTime - 累計読書時間（分）
- * @property {string|null} bookmark - 栞メモ（どこまで読んだか等）
+ * @property {string|null} bookmark - 栞メモ（次はどこから読むか等）
  * @property {number[]} labelIds - ラベルIDの配列
  */
 
