@@ -35,7 +35,7 @@ export const STORAGE_KEYS = {
 };
 
 export const CONFIG = {
-  minSessionMinutes: 10,
+  minSessionMinutes: 5,
   msPerDay: 86400000,
   historyRetentionDays: 90,
   archiveRetentionDays: 365,
