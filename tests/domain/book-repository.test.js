@@ -217,6 +217,20 @@ describe('book-repository.js', () => {
       expect(book.title).toBe('Test Book');
     });
 
+    it('文字列IDでも本を取得（DOM dataset互換）', () => {
+      const state = {
+        books: [
+          { id: 1737178234567000, title: 'Test Book' }
+        ]
+      };
+
+      // dataset.bookIdは常に文字列を返すため
+      const book = getBookByIdPure(state, '1737178234567000');
+
+      expect(book).toBeDefined();
+      expect(book.title).toBe('Test Book');
+    });
+
     it('存在しないIDはundefined', () => {
       const state = { books: [{ id: 1, title: 'Test' }] };
 
