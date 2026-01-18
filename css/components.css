@@ -320,12 +320,6 @@
   color: var(--text);
 }
 
-/* セグメント横のヒントボタン */
-.term-hint--segment {
-  flex-shrink: 0;
-  margin-left: 0;
-}
-
 /* Shelf Mode (書斎/本屋モード切り替え) */
 .shelf-mode {
   display: none;
