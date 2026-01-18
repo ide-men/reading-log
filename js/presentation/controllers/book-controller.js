@@ -1220,10 +1220,11 @@ export function initStudyEvents() {
           stateManager.clearStudySelection();
           renderStudyBooks();
         } else if (type === 'book') {
-          // 本を選択して詳細を表示
-          const bookId = option.dataset.bookId;
+          // 本を選択してインライン詳細ビューを表示
+          const bookId = Number(option.dataset.bookId);
           stateManager.setSelectedLabelId(null);
-          openBookDetail(bookId);
+          stateManager.setStudySelectedBookId(bookId);
+          renderStudyBooks();
         }
       });
     }
@@ -1309,9 +1310,10 @@ export function initStoreEvents() {
         }
 
         if (type === 'book') {
-          // 本を選択して詳細を表示
-          const bookId = option.dataset.bookId;
-          openBookDetail(bookId);
+          // 本を選択してインライン詳細ビューを表示
+          const bookId = Number(option.dataset.bookId);
+          stateManager.setStoreSelectedBookId(bookId);
+          renderStoreBooks();
         }
       });
     }
