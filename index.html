@@ -116,8 +116,18 @@
               </button>
             </div>
 
-            <div class="label-filter" id="studyLabelFilter" style="display: none;">
-              <!-- ラベルフィルターがここに動的に追加される -->
+            <div class="label-filter-search" id="studyLabelFilter">
+              <div class="label-filter-search__input-wrapper">
+                <input type="text" class="form-input label-filter-search__input" id="labelFilterSearchInput" placeholder="ラベルで絞り込み..." readonly>
+                <button class="label-filter-search__clear hidden" id="labelFilterClearBtn" aria-label="フィルター解除">×</button>
+              </div>
+              <button class="label-filter-search__manage" id="openLabelManagerBtn" aria-label="ラベル管理">⚙️</button>
+              <div class="label-filter-search__dropdown" id="labelFilterDropdown">
+                <input type="text" class="form-input label-filter-search__search" id="labelFilterDropdownSearch" placeholder="検索...">
+                <div class="label-filter-search__options" id="labelFilterOptions">
+                  <!-- ラベル一覧がここに動的に追加される -->
+                </div>
+              </div>
             </div>
 
             <div class="shelf">
@@ -483,6 +493,9 @@
         <div class="label-manager__add">
           <input type="text" class="form-input" id="labelManagerNewInput" placeholder="新しいラベルを追加...">
           <button class="btn btn-primary" id="labelManagerAddBtn">追加</button>
+        </div>
+        <div class="label-manager__search">
+          <input type="text" class="form-input" id="labelManagerSearchInput" placeholder="ラベルを検索...">
         </div>
         <div class="label-manager__list" id="labelManagerList">
           <!-- ラベル一覧がここに動的に追加される -->

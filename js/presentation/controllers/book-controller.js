@@ -10,7 +10,7 @@ import { checkDuplicateTitlePure, checkDuplicateLinkPure } from '../../domain/bo
 import { stateManager } from '../../core/state-manager.js';
 import { showAcquireCelebration } from '../effects/celebrations.js';
 import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenteredBook } from '../views/carousel-view.js';
-import { renderStudyBooks } from '../views/study-view.js';
+import { renderStudyBooks, renderLabelFilterOptions } from '../views/study-view.js';
 import { renderStoreBooks } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
 import { showToast, closeModal, openModal, renderBooks, updateUI, openLabelManager } from './navigation.js';
@@ -1155,27 +1155,77 @@ export function initStudyEvents() {
     renderStudyBooks();
   });
 
-  // ラベルフィルターのイベント
-  const labelFilter = document.getElementById('studyLabelFilter');
-  if (labelFilter) {
-    labelFilter.addEventListener('click', (e) => {
-      // 管理ボタンのクリック
-      const manageBtn = e.target.closest('.label-filter__manage');
-      if (manageBtn) {
-        openLabelManager();
-        return;
-      }
+  // ラベルフィルター検索のイベント
+  const labelFilterInput = document.getElementById('labelFilterSearchInput');
+  const labelFilterDropdown = document.getElementById('labelFilterDropdown');
+  const labelFilterDropdownSearch = document.getElementById('labelFilterDropdownSearch');
+  const labelFilterOptions = document.getElementById('labelFilterOptions');
+  const labelFilterClearBtn = document.getElementById('labelFilterClearBtn');
+  const labelManagerBtn = document.getElementById('openLabelManagerBtn');
 
-      // ラベルフィルターボタンのクリック
-      const btn = e.target.closest('.label-filter__btn');
-      if (!btn) return;
+  // 管理ボタン
+  if (labelManagerBtn) {
+    labelManagerBtn.addEventListener('click', () => {
+      openLabelManager();
+    });
+  }
 
-      const labelIdStr = btn.dataset.labelId;
-      const labelId = labelIdStr ? parseInt(labelIdStr, 10) : null;
-
-      stateManager.setSelectedLabelId(labelId);
+  // クリアボタン
+  if (labelFilterClearBtn) {
+    labelFilterClearBtn.addEventListener('click', () => {
+      stateManager.setSelectedLabelId(null);
       stateManager.clearStudySelection();
       renderStudyBooks();
+    });
+  }
+
+  // 入力欄クリックでドロップダウンを開く
+  if (labelFilterInput && labelFilterDropdown) {
+    labelFilterInput.addEventListener('click', () => {
+      if (labelFilterDropdownSearch) {
+        labelFilterDropdownSearch.value = '';
+      }
+      renderLabelFilterOptions();
+      labelFilterDropdown.classList.add('visible');
+    });
+
+    // ドロップダウン検索
+    if (labelFilterDropdownSearch) {
+      labelFilterDropdownSearch.addEventListener('input', (e) => {
+        renderLabelFilterOptions(e.target.value.trim());
+      });
+    }
+
+    // ラベル・本の選択
+    if (labelFilterOptions) {
+      labelFilterOptions.addEventListener('click', (e) => {
+        const option = e.target.closest('.label-filter-search__option');
+        if (!option) return;
+
+        const type = option.dataset.type;
+        labelFilterDropdown.classList.remove('visible');
+
+        if (type === 'label') {
+          // ラベルで絞り込み
+          const labelId = parseInt(option.dataset.labelId, 10);
+          stateManager.setSelectedLabelId(labelId);
+          stateManager.clearStudySelection();
+          renderStudyBooks();
+        } else if (type === 'book') {
+          // 本を選択して表示
+          const bookId = option.dataset.bookId;
+          stateManager.setSelectedLabelId(null);
+          stateManager.setStudySelectedBookId(bookId);
+          renderStudyBooks();
+        }
+      });
+    }
+
+    // ドロップダウン外クリックで閉じる
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.label-filter-search')) {
+        labelFilterDropdown.classList.remove('visible');
+      }
     });
   }
 
