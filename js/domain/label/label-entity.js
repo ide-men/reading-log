@@ -2,6 +2,8 @@
 // Label Entity
 // ラベルのデータ構造・バリデーション・ヘルパー
 // ========================================
+import { generateUniqueId, resetIdCounter as resetSharedIdCounter } from '../../shared/id-generator.js';
+import { createValidator, required, maxLength, createDuplicateChecker } from '../common/validator.js';
 
 // ========================================
 // Label型定義（JSDoc）
@@ -12,26 +14,6 @@
  * @property {number} id - ユニークID（タイムスタンプ）
  * @property {string} name - ラベル名
  */
-
-// ID生成用のカウンター（同一ミリ秒内の重複を防止）
-let lastIdTimestamp = 0;
-let idCounter = 0;
-
-/**
- * ユニークなIDを生成
- * @param {Date} date - 基準日時
- * @returns {number}
- */
-function generateUniqueId(date) {
-  const timestamp = date.getTime();
-  if (timestamp === lastIdTimestamp) {
-    idCounter++;
-  } else {
-    lastIdTimestamp = timestamp;
-    idCounter = 0;
-  }
-  return timestamp * 1000 + idCounter;
-}
 
 /**
  * 新しいLabelオブジェクトを作成
@@ -56,15 +38,13 @@ export function createLabel({ name }, options = {}) {
  * @param {string} name - ラベル名
  * @returns {{ valid: boolean, error?: string }}
  */
-export function validateLabelName(name) {
-  if (!name || !name.trim()) {
-    return { valid: false, error: 'ラベル名を入力してください' };
-  }
-  if (name.trim().length > 20) {
-    return { valid: false, error: 'ラベル名は20文字以内で入力してください' };
-  }
-  return { valid: true };
-}
+export const validateLabelName = createValidator(
+  required('ラベル名を入力してください'),
+  maxLength(20, 'ラベル名は20文字以内で入力してください')
+);
+
+// 重複チェッカー（内部で使用）
+const checkNameDuplicate = createDuplicateChecker({ field: 'name', caseSensitive: false });
 
 /**
  * ラベル名の重複をチェック（Pure版）
@@ -74,17 +54,10 @@ export function validateLabelName(name) {
  * @returns {{ isDuplicate: boolean, duplicateLabel?: Label }}
  */
 export function checkDuplicateLabelNamePure(name, labels, excludeId = null) {
-  if (!name || !name.trim()) {
-    return { isDuplicate: false };
-  }
-  const normalizedName = name.trim().toLowerCase();
-  const duplicateLabel = labels.find(label =>
-    label.name.toLowerCase() === normalizedName &&
-    label.id !== excludeId
-  );
+  const result = checkNameDuplicate(name, labels, excludeId);
   return {
-    isDuplicate: !!duplicateLabel,
-    duplicateLabel
+    isDuplicate: result.isDuplicate,
+    duplicateLabel: result.duplicateItem
   };
 }
 
@@ -92,6 +65,5 @@ export function checkDuplicateLabelNamePure(name, labels, excludeId = null) {
  * ID生成カウンターをリセット（テスト用）
  */
 export function resetIdCounter() {
-  lastIdTimestamp = 0;
-  idCounter = 0;
+  resetSharedIdCounter();
 }
