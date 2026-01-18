@@ -395,18 +395,18 @@ describe('アクティブセッション永続化', () => {
       expect(localStorageMock.removeItem).toHaveBeenCalledWith(STORAGE_KEYS.activeSession);
     });
 
-    it('無効なセッション（10分未満）は履歴に追加されない', async () => {
+    it('無効なセッション（5分未満）は履歴に追加されない', async () => {
       const { stateManager } = await import('../../js/core/state-manager.js');
 
       const session = {
-        startTime: Date.now() - 5 * 60 * 1000, // 5分前
+        startTime: Date.now() - 4 * 60 * 1000, // 4分前
         bookId: null
       };
       const endTime = new Date();
 
       const result = timerService.recordIncompleteSession(session, endTime);
 
-      expect(result.minutes).toBe(5);
+      expect(result.minutes).toBe(4);
       expect(result.isValidSession).toBe(false);
       expect(stateManager.addHistory).not.toHaveBeenCalled();
     });
