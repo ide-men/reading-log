@@ -655,6 +655,32 @@
     </div>
   </div>
 
+  <!-- 未完了セッション復元モーダル -->
+  <div class="modal-overlay" id="incompleteSessionModal" role="dialog" aria-modal="true" aria-labelledby="incompleteSessionModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="incompleteSessionModalTitle">前回の読書が終わっていません</h2>
+        <button class="modal-close close-btn close-btn--sm" data-close="incompleteSessionModal" aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="drop-book-info">
+          <div class="drop-book-title" id="incompleteSessionBookTitle"></div>
+        </div>
+        <p class="incomplete-session-info">
+          <span id="incompleteSessionStartTime"></span>から読書を開始しましたが、終了時刻が記録されていません。
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="incompleteSessionEndTime">読み終わった時刻</label>
+          <input type="datetime-local" class="form-input" id="incompleteSessionEndTime">
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="discardIncompleteSessionBtn">記録しない</button>
+          <button class="btn btn-primary" id="recordIncompleteSessionBtn">記録する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 読書終了時の栞モーダル -->
   <div class="modal-overlay" id="readingBookmarkModal" role="dialog" aria-modal="true" aria-labelledby="readingBookmarkModalTitle">
     <div class="modal">

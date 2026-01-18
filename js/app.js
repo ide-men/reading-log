@@ -19,7 +19,9 @@ import {
 } from './presentation/controllers/navigation.js';
 import {
   initTimerEvents,
-  initBeforeUnloadEvent
+  initBeforeUnloadEvent,
+  initIncompleteSessionEvents,
+  checkIncompleteSession
 } from './presentation/controllers/timer-controller.js';
 import {
   initAddBookEvents,
@@ -44,6 +46,7 @@ function initializeEventListeners() {
   initShelfSegmentEvents();
   initScrollNavigation();
   initTimerEvents();
+  initIncompleteSessionEvents();
   initSettingsEvents();
   initLabelManagerEvents();
   initAddBookEvents();
@@ -83,6 +86,9 @@ function init() {
 
   // 初回起動時はオンボーディングを表示
   showOnboardingIfNeeded();
+
+  // 未完了セッションがあれば復元を促す
+  checkIncompleteSession();
 
   // モバイルでホーム画面追加を促す
   initInstallPrompt();

@@ -2,10 +2,121 @@
 // Timer Service
 // タイマーのビジネスロジック（UI操作なし）
 // ========================================
-import { CONFIG } from '../../shared/constants.js';
+import { CONFIG, STORAGE_KEYS } from '../../shared/constants.js';
 import { eventBus, Events } from '../../shared/event-bus.js';
 import { stateManager } from '../../core/state-manager.js';
 import { saveState } from '../../core/storage.js';
+
+// ========================================
+// アクティブセッション永続化
+// ========================================
+
+function saveActiveSession(startTime, bookId) {
+  try {
+    localStorage.setItem(STORAGE_KEYS.activeSession, JSON.stringify({
+      startTime,
+      bookId,
+      savedAt: Date.now()
+    }));
+  } catch (e) {
+    console.error('Failed to save active session:', e);
+  }
+}
+
+function clearActiveSession() {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.activeSession);
+  } catch (e) {
+    console.error('Failed to clear active session:', e);
+  }
+}
+
+/**
+ * 保存されたアクティブセッションを取得
+ * @returns {Object|null} { startTime, bookId, savedAt } または null
+ */
+export function getActiveSession() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.activeSession);
+    if (!data) return null;
+    const session = JSON.parse(data);
+    if (typeof session.startTime !== 'number' || typeof session.savedAt !== 'number') {
+      return null;
+    }
+    return session;
+  } catch (e) {
+    console.error('Failed to get active session:', e);
+    return null;
+  }
+}
+
+/**
+ * 未完了セッションを復元して記録
+ * @param {Object} session - { startTime, bookId }
+ * @param {Date} endTime - 終了時刻
+ * @returns {Object} { minutes, isValidSession }
+ */
+export function recordIncompleteSession(session, endTime) {
+  const { startTime, bookId } = session;
+  const minutes = Math.floor((endTime.getTime() - startTime) / 60000);
+  const isValidSession = minutes >= CONFIG.minSessionMinutes;
+  const state = stateManager.getState();
+
+  // 統計を更新
+  const statsUpdates = {
+    total: state.stats.total + minutes,
+    today: state.stats.today + minutes
+  };
+
+  if (isValidSession) {
+    statsUpdates.sessions = state.stats.sessions + 1;
+    if (!state.stats.firstSessionDate) {
+      statsUpdates.firstSessionDate = endTime.toISOString();
+    }
+  }
+
+  stateManager.updateStats(statsUpdates);
+
+  // 本の読書時間を更新
+  if (bookId) {
+    const book = stateManager.getBook(bookId);
+    if (book) {
+      stateManager.updateBook(bookId, {
+        readingTime: (book.readingTime || 0) + minutes
+      });
+    }
+  }
+
+  // 有効なセッションの場合は履歴を追加
+  if (isValidSession) {
+    stateManager.addHistory({
+      d: endTime.toISOString(),
+      m: minutes,
+      h: endTime.getHours(),
+      bookId: bookId
+    });
+  }
+
+  // アクティブセッションをクリア
+  clearActiveSession();
+
+  // 状態を保存
+  saveState();
+
+  eventBus.emit(Events.TIMER_STOPPED, { minutes, isValidSession });
+  if (isValidSession) {
+    eventBus.emit(Events.SESSION_COMPLETED, { minutes, bookId });
+  }
+
+  return { minutes, isValidSession };
+}
+
+/**
+ * 未完了セッションを破棄
+ */
+export function discardIncompleteSession() {
+  clearActiveSession();
+}
 
 // ========================================
 // TimerServiceクラス（テスタビリティ向上のため）
@@ -83,6 +194,9 @@ export class TimerService {
 
     const book = bookId ? this.deps.getBook(bookId) : null;
 
+    // アクティブセッションをストレージに保存
+    saveActiveSession(this.startTime, bookId);
+
     // setIntervalは表示更新のみ（実際の経過時間はstartTimeから計算）
     this.timerId = setInterval(() => {
       this.deps.emit(Events.TIMER_TICK, {
@@ -151,6 +265,9 @@ export class TimerService {
     this.startTime = null;
     this.currentBookId = null;
 
+    // アクティブセッションをクリア
+    clearActiveSession();
+
     this.deps.save();
 
     this.deps.emit(Events.TIMER_STOPPED, { minutes, isValidSession });
@@ -168,6 +285,9 @@ export class TimerService {
     this.timerId = null;
     this.startTime = null;
     this.currentBookId = null;
+
+    // アクティブセッションをクリア
+    clearActiveSession();
 
     this.deps.emit(Events.TIMER_STOPPED, { minutes: 0, isValidSession: false, cancelled: true });
   }

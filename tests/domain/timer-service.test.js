@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { CONFIG } from '../../js/shared/constants.js';
+import { CONFIG, STORAGE_KEYS } from '../../js/shared/constants.js';
 import {
   setupFakeTimers,
   teardownFakeTimers,
@@ -7,6 +7,18 @@ import {
   createTestBook,
   createTestStats
 } from '../helpers/index.js';
+
+// localStorageをモック
+const localStorageMock = (() => {
+  let store = {};
+  return {
+    getItem: vi.fn((key) => store[key] || null),
+    setItem: vi.fn((key, value) => { store[key] = value; }),
+    removeItem: vi.fn((key) => { delete store[key]; }),
+    clear: () => { store = {}; }
+  };
+})();
+Object.defineProperty(global, 'localStorage', { value: localStorageMock });
 
 // stateManagerをモック
 const mockState = {
@@ -49,6 +61,7 @@ describe('timer-service.js', () => {
   beforeEach(async () => {
     setupFakeTimers();
     vi.clearAllMocks();
+    localStorageMock.clear();
     mockState.stats = createTestStats();
     mockState.books = [];
     vi.resetModules();
@@ -278,5 +291,139 @@ describe('TimerService クラス（依存性注入）', () => {
     expect(timer.isTimerRunning()).toBe(false);
     expect(timer.getSeconds()).toBe(0);
     expect(timer.getCurrentBookId()).toBeNull();
+  });
+});
+
+// アクティブセッション永続化のテスト
+describe('アクティブセッション永続化', () => {
+  beforeEach(async () => {
+    setupFakeTimers();
+    vi.clearAllMocks();
+    localStorageMock.clear();
+    mockState.stats = createTestStats();
+    mockState.books = [];
+    vi.resetModules();
+    timerService = await import('../../js/domain/timer/timer-service.js');
+  });
+
+  afterEach(() => {
+    if (timerService.isTimerRunning()) {
+      timerService.cancelReading();
+    }
+    teardownFakeTimers();
+  });
+
+  describe('getActiveSession', () => {
+    it('セッションがない場合はnullを返す', () => {
+      expect(timerService.getActiveSession()).toBeNull();
+    });
+
+    it('保存されたセッションを取得できる', () => {
+      const sessionData = {
+        startTime: Date.now(),
+        bookId: 42,
+        savedAt: Date.now()
+      };
+      localStorageMock.setItem(STORAGE_KEYS.activeSession, JSON.stringify(sessionData));
+
+      const session = timerService.getActiveSession();
+      expect(session).not.toBeNull();
+      expect(session.bookId).toBe(42);
+    });
+
+    it('不正なデータの場合はnullを返す', () => {
+      localStorageMock.setItem(STORAGE_KEYS.activeSession, 'invalid json');
+      expect(timerService.getActiveSession()).toBeNull();
+    });
+  });
+
+  describe('startReading時のセッション保存', () => {
+    it('読書開始時にセッションがストレージに保存される', () => {
+      mockState.books = [createTestBook({ id: 1 })];
+      timerService.startReading(1);
+
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        STORAGE_KEYS.activeSession,
+        expect.any(String)
+      );
+
+      const saved = JSON.parse(localStorageMock.setItem.mock.calls.find(
+        call => call[0] === STORAGE_KEYS.activeSession
+      )[1]);
+      expect(saved.bookId).toBe(1);
+      expect(saved.startTime).toBeDefined();
+    });
+  });
+
+  describe('stopReading時のセッションクリア', () => {
+    it('読書停止時にセッションがクリアされる', () => {
+      timerService.startReading(1);
+      vi.advanceTimersByTime(60000);
+      timerService.stopReading();
+
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(STORAGE_KEYS.activeSession);
+    });
+  });
+
+  describe('cancelReading時のセッションクリア', () => {
+    it('読書キャンセル時にセッションがクリアされる', () => {
+      timerService.startReading(1);
+      timerService.cancelReading();
+
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(STORAGE_KEYS.activeSession);
+    });
+  });
+
+  describe('recordIncompleteSession', () => {
+    it('有効なセッションを記録できる', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+      mockState.books = [createTestBook({ id: 42, readingTime: 0 })];
+
+      const session = {
+        startTime: Date.now() - 15 * 60 * 1000, // 15分前
+        bookId: 42
+      };
+      const endTime = new Date();
+
+      const result = timerService.recordIncompleteSession(session, endTime);
+
+      expect(result.minutes).toBe(15);
+      expect(result.isValidSession).toBe(true);
+      expect(stateManager.updateStats).toHaveBeenCalled();
+      expect(stateManager.updateBook).toHaveBeenCalledWith(42, { readingTime: 15 });
+      expect(stateManager.addHistory).toHaveBeenCalled();
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(STORAGE_KEYS.activeSession);
+    });
+
+    it('無効なセッション（10分未満）は履歴に追加されない', async () => {
+      const { stateManager } = await import('../../js/core/state-manager.js');
+
+      const session = {
+        startTime: Date.now() - 5 * 60 * 1000, // 5分前
+        bookId: null
+      };
+      const endTime = new Date();
+
+      const result = timerService.recordIncompleteSession(session, endTime);
+
+      expect(result.minutes).toBe(5);
+      expect(result.isValidSession).toBe(false);
+      expect(stateManager.addHistory).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('discardIncompleteSession', () => {
+    it('セッションを破棄できる', () => {
+      const sessionData = {
+        startTime: Date.now(),
+        bookId: 42,
+        savedAt: Date.now()
+      };
+      localStorageMock.setItem(STORAGE_KEYS.activeSession, JSON.stringify(sessionData));
+
+      timerService.discardIncompleteSession();
+
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(STORAGE_KEYS.activeSession);
+    });
   });
 });
