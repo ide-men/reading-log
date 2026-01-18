@@ -4,6 +4,8 @@
 // ========================================
 import { BOOK_STATUS, BOOK_COLORS } from '../../shared/constants.js';
 import { escapeHtml, adjustColor, getCoverUrlFromLink, toLocalDateString } from '../../shared/utils.js';
+import { generateUniqueId, extractTimestampFromId, resetIdCounter as resetSharedIdCounter } from '../../shared/id-generator.js';
+import { createValidator, required, createDuplicateChecker } from '../common/validator.js';
 
 // ========================================
 // Book型定義（JSDoc）
@@ -35,30 +37,6 @@ import { escapeHtml, adjustColor, getCoverUrlFromLink, toLocalDateString } from 
 // ========================================
 // Book生成
 // ========================================
-
-// ID生成用のカウンター（同一ミリ秒内の重複を防止）
-let lastIdTimestamp = 0;
-let idCounter = 0;
-
-/**
- * ユニークなIDを生成
- * 同一ミリ秒内での連続呼び出しでも重複しないIDを生成
- * @param {Date} date - 基準日時
- * @returns {number}
- */
-function generateUniqueId(date) {
-  const timestamp = date.getTime();
-  if (timestamp === lastIdTimestamp) {
-    // 同じミリ秒内なのでカウンターを増加
-    idCounter++;
-  } else {
-    // 新しいミリ秒なのでカウンターをリセット
-    lastIdTimestamp = timestamp;
-    idCounter = 0;
-  }
-  // タイムスタンプ + カウンター（最大999まで対応）
-  return timestamp * 1000 + idCounter;
-}
 
 /**
  * @typedef {Object} CreateBookOptions
@@ -117,12 +95,9 @@ export function createBook({ title, link, triggerNote, status = BOOK_STATUS.READ
  * @param {string} title - タイトル
  * @returns {{ valid: boolean, error?: string }}
  */
-export function validateBookTitle(title) {
-  if (!title || !title.trim()) {
-    return { valid: false, error: 'タイトルを入力してください' };
-  }
-  return { valid: true };
-}
+export const validateBookTitle = createValidator(
+  required('タイトルを入力してください')
+);
 
 /**
  * ステータスが有効かチェック
@@ -133,6 +108,9 @@ export function isValidStatus(status) {
   return Object.values(BOOK_STATUS).includes(status);
 }
 
+// 重複チェッカー（内部で使用）
+const checkTitleDuplicate = createDuplicateChecker({ field: 'title', caseSensitive: false });
+
 /**
  * タイトルの重複をチェック（Pure版）
  * @param {string} title - チェックするタイトル
@@ -141,17 +119,10 @@ export function isValidStatus(status) {
  * @returns {{ isDuplicate: boolean, duplicateBook?: Book }}
  */
 export function checkDuplicateTitlePure(title, books, excludeId = null) {
-  if (!title || !title.trim()) {
-    return { isDuplicate: false };
-  }
-  const normalizedTitle = title.trim().toLowerCase();
-  const duplicateBook = books.find(book =>
-    book.title.toLowerCase() === normalizedTitle &&
-    book.id !== excludeId
-  );
+  const result = checkTitleDuplicate(title, books, excludeId);
   return {
-    isDuplicate: !!duplicateBook,
-    duplicateBook
+    isDuplicate: result.isDuplicate,
+    duplicateBook: result.duplicateItem
   };
 }
 
@@ -212,13 +183,11 @@ export function getRelativeDate(dateStr) {
 
 /**
  * 本の追加日（ID=タイムスタンプ）を日付文字列として取得
- * IDは timestamp * 1000 + counter 形式なので、1000で割ってタイムスタンプを取得
  * @param {Book} book - 本
  * @returns {string}
  */
 export function getBookCreatedDateStr(book) {
-  // 新フォーマット（timestamp * 1000 + counter）と旧フォーマット（timestamp）の両方に対応
-  const timestamp = book.id > 1e15 ? Math.floor(book.id / 1000) : book.id;
+  const timestamp = extractTimestampFromId(book.id);
   return new Date(timestamp).toISOString().split('T')[0];
 }
 
@@ -226,8 +195,7 @@ export function getBookCreatedDateStr(book) {
  * ID生成カウンターをリセット（テスト用）
  */
 export function resetIdCounter() {
-  lastIdTimestamp = 0;
-  idCounter = 0;
+  resetSharedIdCounter();
 }
 
 /**
