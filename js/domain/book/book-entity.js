@@ -256,19 +256,16 @@ export function createBookCoverHtml(book, placeholder = '📕') {
 export function getMiniBookStyle(book, index) {
   const color = BOOK_COLORS[index % BOOK_COLORS.length];
   const height = 50 + ((index * 17) % 25);
-  const width = book.coverUrl ? 18 + ((index * 2) % 6) : 14 + ((index * 3) % 8);
-  const tilt = ((index * 7) % 5) - 2;
-  const darkerColor = adjustColor(color, -20);
-  const lighterColor = adjustColor(color, 15);
+  // 表紙表示: 縦横比を本らしく（約3:2）
+  const width = Math.round(height * 0.67);
 
   const bgStyle = book.coverUrl
     ? `background-color: ${color}; background-image: url('${escapeHtml(book.coverUrl)}'); background-size: cover; background-position: center;`
-    : `background: linear-gradient(to right, ${lighterColor} 0%, ${color} 15%, ${color} 85%, ${darkerColor} 100%);`;
+    : `background-color: ${color};`;
 
   return {
     height,
     width,
-    tilt,
     bgStyle,
     hasCover: !!book.coverUrl
   };
@@ -291,7 +288,6 @@ export function renderMiniBookShelf(books, selectedBookId, className = 'mini-boo
         height:${style.height}px;
         width:${style.width}px;
         ${style.bgStyle}
-        transform: rotate(${style.tilt}deg);
       "></div>`;
   }).join('');
 }

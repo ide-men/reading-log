@@ -257,7 +257,15 @@ describe('getMiniBookStyle', () => {
     expect(style.hasCover).toBe(false);
     expect(style.height).toBeGreaterThan(0);
     expect(style.width).toBeGreaterThan(0);
-    expect(style.bgStyle).toContain('linear-gradient');
+    expect(style.bgStyle).toContain('background-color');
+  });
+
+  it('幅は高さの約2/3になる', () => {
+    const book = { id: 1, coverUrl: null };
+    const style = getMiniBookStyle(book, 0);
+    const expectedWidth = Math.round(style.height * 0.67);
+
+    expect(style.width).toBe(expectedWidth);
   });
 });
 
