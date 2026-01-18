@@ -9,35 +9,39 @@ import { renderShelfContent } from './shared.js';
 import { getAllLabels } from '../../domain/label/label-service.js';
 
 // ========================================
-// ラベルフィルターのレンダリング
+// 検索フィルターのレンダリング（選択中のラベル表示）
 // ========================================
-export function renderLabelFilter() {
-  const searchInput = document.getElementById('labelFilterSearchInput');
-  const clearBtn = document.getElementById('labelFilterClearBtn');
+export function renderStudySearchFilter() {
+  const searchInput = document.getElementById('studySearchInput');
+  const clearBtn = document.getElementById('studySearchClearBtn');
   if (!searchInput || !clearBtn) return;
 
   const selectedLabelId = stateManager.getSelectedLabelId();
   const labels = getAllLabels();
 
-  // 選択中のラベルを表示
+  // 選択中のラベルを入力欄に表示
   if (selectedLabelId !== null) {
     const selectedLabel = labels.find(l => l.id === selectedLabelId);
-    searchInput.value = selectedLabel ? selectedLabel.name : '';
-    searchInput.classList.add('has-value');
+    searchInput.value = selectedLabel ? `🏷️ ${selectedLabel.name}` : '';
+    searchInput.classList.add('has-filter');
     clearBtn.classList.remove('hidden');
   } else {
-    searchInput.value = '';
-    searchInput.classList.remove('has-value');
+    // 検索クエリがあれば保持、なければ空にする
+    if (!searchInput.dataset.searching) {
+      searchInput.value = '';
+    }
+    searchInput.classList.remove('has-filter');
     clearBtn.classList.add('hidden');
   }
 }
 
 // ========================================
-// ラベルフィルタードロップダウンのレンダリング
+// 検索ドロップダウンのレンダリング
 // ========================================
-export function renderLabelFilterOptions(searchQuery = '') {
-  const optionsContainer = document.getElementById('labelFilterOptions');
-  if (!optionsContainer) return;
+export function renderStudySearchOptions(searchQuery = '') {
+  const optionsContainer = document.getElementById('studySearchOptions');
+  const dropdown = document.getElementById('studySearchDropdown');
+  if (!optionsContainer || !dropdown) return;
 
   const selectedLabelId = stateManager.getSelectedLabelId();
   const currentStudyStatus = stateManager.getCurrentStudyStatus();
@@ -59,12 +63,17 @@ export function renderLabelFilterOptions(searchQuery = '') {
       books = bookRepository.getBooksByStatus(BOOK_STATUS.COMPLETED);
   }
 
-  // 検索フィルタリング
-  if (searchQuery) {
-    const query = searchQuery.toLowerCase();
-    labels = labels.filter(label => label.name.toLowerCase().includes(query));
-    books = books.filter(book => book.title.toLowerCase().includes(query));
+  // 検索クエリがない場合はドロップダウンを閉じる
+  if (!searchQuery) {
+    dropdown.classList.remove('visible');
+    optionsContainer.innerHTML = '';
+    return;
   }
+
+  // 検索フィルタリング
+  const query = searchQuery.toLowerCase();
+  labels = labels.filter(label => label.name.toLowerCase().includes(query));
+  books = books.filter(book => book.title.toLowerCase().includes(query));
 
   // 結果を構築
   let html = '';
@@ -74,7 +83,7 @@ export function renderLabelFilterOptions(searchQuery = '') {
     html += `<div class="search-section">
       <div class="search-section__header">🏷️ ラベルで絞り込み</div>
       ${labels.map(label => `
-        <button class="label-filter-search__option" data-label-id="${label.id}" data-type="label">
+        <button class="book-search__option" data-label-id="${label.id}" data-type="label">
           <span class="search-option__icon">🏷️</span>
           <span class="search-option__text">${escapeHtml(label.name)}</span>
           ${selectedLabelId === label.id ? '<span class="search-option__check">✓</span>' : ''}
@@ -83,31 +92,27 @@ export function renderLabelFilterOptions(searchQuery = '') {
     </div>`;
   }
 
-  // 本セクション
+  // 本セクション（最大5件）
   if (books.length > 0) {
-    // 検索時は最大5件に制限
-    const displayBooks = searchQuery ? books.slice(0, 5) : [];
-    if (displayBooks.length > 0) {
-      html += `<div class="search-section">
-        <div class="search-section__header">📚 本を表示</div>
-        ${displayBooks.map(book => `
-          <button class="label-filter-search__option" data-book-id="${book.id}" data-type="book">
-            <span class="search-option__icon">📕</span>
-            <span class="search-option__text">${escapeHtml(book.title)}</span>
-          </button>
-        `).join('')}
-      </div>`;
-    }
+    const displayBooks = books.slice(0, 5);
+    html += `<div class="search-section">
+      <div class="search-section__header">📚 本を表示</div>
+      ${displayBooks.map(book => `
+        <button class="book-search__option" data-book-id="${book.id}" data-type="book">
+          <span class="search-option__icon">📕</span>
+          <span class="search-option__text">${escapeHtml(book.title)}</span>
+        </button>
+      `).join('')}
+    </div>`;
   }
 
   // 結果なし
   if (!html) {
-    html = searchQuery
-      ? '<div class="label-filter-search__empty">該当する結果がありません</div>'
-      : '<div class="label-filter-search__empty">ラベルがありません</div>';
+    html = '<div class="book-search__empty">該当する結果がありません</div>';
   }
 
   optionsContainer.innerHTML = html;
+  dropdown.classList.add('visible');
 }
 
 // ========================================
@@ -155,8 +160,8 @@ export function renderStudyBooks() {
 
   if (!shelf || !bookList) return;
 
-  // ラベルフィルターをレンダリング
-  renderLabelFilter();
+  // 検索フィルターをレンダリング
+  renderStudySearchFilter();
 
   const emptyMessages = {
     [BOOK_STATUS.COMPLETED]: { icon: '✅', text: '読了した本はまだありません', hint: '本を読み終えたらここに表示されます' },
