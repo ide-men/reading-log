@@ -1910,34 +1910,3 @@
 .modal--sm {
   max-width: 320px;
 }
-
-/* ==========================================================================
-   Label Stats (ラベル別統計)
-   ========================================================================== */
-
-.label-stats {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.label-stats__item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--elevated);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-}
-
-.label-stats__name {
-  font-size: var(--font-lg);
-  color: var(--text);
-}
-
-.label-stats__count {
-  font-size: var(--font-md);
-  color: var(--text-secondary);
-  font-weight: var(--weight-semibold);
-}
