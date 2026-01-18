@@ -96,7 +96,7 @@ export function handleStopReading() {
   updateUI();
   renderReadingBooks();
 
-  // 栞入力モーダルを表示（どこまで読んだか）
+  // 栞入力モーダルを表示（次はどこから読むか）
   if (book) {
     stateManager.setReadingBookmarkBookId(bookId);
     document.getElementById('readingBookmarkBookTitle').textContent = book.title;
