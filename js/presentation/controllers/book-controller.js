@@ -13,7 +13,7 @@ import { renderReadingBooks, selectBook, updateCarouselScrollState, selectCenter
 import { renderStudyBooks, renderStudySearchOptions } from '../views/study-view.js';
 import { renderStoreBooks, renderStoreSearchOptions } from '../views/store-view.js';
 import { openBookDetail } from '../views/shared.js';
-import { showToast, closeModal, openModal, renderBooks, updateUI, openLabelManager } from './navigation.js';
+import { showToast, closeModal, openModal, renderBooks, updateUI, openLabelManager, getCurrentShelfMode } from './navigation.js';
 import { initModalValidation, updateButtonState } from '../utils/modal-validation.js';
 import { initClearButtons } from '../utils/form-clear-button.js';
 import {
@@ -468,16 +468,20 @@ function openAddBookModalWithStatus(status) {
   const titleMap = {
     [BOOK_STATUS.READING]: 'カバンに本を追加',
     [BOOK_STATUS.UNREAD]: '書斎に本を追加',
+    [BOOK_STATUS.COMPLETED]: '書斎に本を追加',
+    [BOOK_STATUS.DROPPED]: '書斎に本を追加',
     [BOOK_STATUS.WISHLIST]: '本屋に本を追加'
   };
 
   document.getElementById('addBookModalTitle').textContent = titleMap[status] || '本を追加';
   document.getElementById('addBookStatus').value = status;
 
+  // 書斎に属するステータスの場合はセレクターを表示
+  const studyStatuses = [BOOK_STATUS.UNREAD, BOOK_STATUS.COMPLETED, BOOK_STATUS.DROPPED];
   const statusSelector = document.getElementById('studyStatusSelector');
-  if (status === BOOK_STATUS.UNREAD) {
+  if (studyStatuses.includes(status)) {
     statusSelector.style.display = 'block';
-    document.querySelector('input[name="studyStatus"][value="unread"]').checked = true;
+    document.querySelector(`input[name="studyStatus"][value="${status}"]`).checked = true;
   } else {
     statusSelector.style.display = 'none';
   }
@@ -501,13 +505,21 @@ export function initAddBookEvents() {
     const activeTab = document.querySelector('.nav button.active');
     const tabName = activeTab?.dataset.tab || 'home';
 
-    const statusMap = {
-      home: BOOK_STATUS.READING,
-      study: BOOK_STATUS.UNREAD,
-      store: BOOK_STATUS.WISHLIST
-    };
+    let status;
+    if (tabName === 'home') {
+      status = BOOK_STATUS.READING;
+    } else if (tabName === 'shelf') {
+      const shelfMode = getCurrentShelfMode();
+      if (shelfMode === 'store') {
+        status = BOOK_STATUS.WISHLIST;
+      } else {
+        // 書斎モード: 現在選択中のステータスタブに応じる
+        status = stateManager.getCurrentStudyStatus();
+      }
+    } else {
+      status = BOOK_STATUS.READING;
+    }
 
-    const status = statusMap[tabName] || BOOK_STATUS.READING;
     openAddBookModalWithStatus(status);
   });
 

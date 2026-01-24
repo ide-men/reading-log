@@ -196,6 +196,10 @@ export function initShelfSegmentEvents() {
   });
 }
 
+export function getCurrentShelfMode() {
+  return currentShelfMode;
+}
+
 // ========================================
 // スクロール連動ナビゲーション
 // ========================================
